@@ -140,7 +140,7 @@
       <DependentUpon>PortPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClInclude>
-    <ClInclude Include="src\ViewModels\DashboardViewModel.h" />
+    <ClInclude Include="include\ViewModels\DashboardViewModel.h" />
     <ClInclude Include="UPnPPage.xaml.h">
       <DependentUpon>UPnPPage.xaml</DependentUpon>
       <SubType>Code</SubType>

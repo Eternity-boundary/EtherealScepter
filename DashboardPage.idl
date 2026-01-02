@@ -4,6 +4,5 @@ namespace EtherealScepter
     runtimeclass DashboardPage : Microsoft.UI.Xaml.Controls.Page
     {
         DashboardPage();
-        Int32 MyProperty;
     }
 }
