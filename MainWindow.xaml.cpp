@@ -1,0 +1,58 @@
+#include "pch.h"
+#include "MainWindow.xaml.h"
+#if __has_include("MainWindow.g.cpp")
+#include "MainWindow.g.cpp"
+#endif
+#include <winrt/base.h>
+#include <winrt/Windows.UI.Xaml.Interop.h>
+
+
+#include "DashboardPage.xaml.h"
+#include "UPnPPage.xaml.h"
+#include "PortPage.xaml.h"
+#include "NetworkPage.xaml.h"
+
+using namespace winrt;
+using namespace Microsoft::UI::Xaml;
+using namespace Microsoft::UI::Xaml::Controls;
+using namespace winrt::Microsoft::UI::Xaml::Interop;
+
+namespace winrt::EtherealScepter::implementation
+{
+
+
+    MainWindow::MainWindow()
+    {
+        InitializeComponent();
+
+        // 預設顯示 Dashboard
+        ContentFrame().Navigate(xaml_typename<EtherealScepter::DashboardPage>());
+    }
+
+    void MainWindow::OnNavigationChanged(
+        NavigationView const& sender,
+        NavigationViewSelectionChangedEventArgs const& args)
+    {
+        if (!args.SelectedItem()) return;
+
+        auto item = args.SelectedItem().as<NavigationViewItem>();
+        auto tag = unbox_value<hstring>(item.Tag());
+
+        if (tag == L"dashboard")
+        {
+            ContentFrame().Navigate(xaml_typename<EtherealScepter::DashboardPage>());
+        }
+        else if (tag == L"upnp")
+        {
+            ContentFrame().Navigate(xaml_typename<EtherealScepter::UPnPPage>());
+        }
+        else if (tag == L"ports")
+        {
+            ContentFrame().Navigate(xaml_typename<EtherealScepter::PortPage>());
+        }
+        else if (tag == L"network")
+        {
+            ContentFrame().Navigate(xaml_typename<EtherealScepter::NetworkPage>());
+        }
+    }
+}

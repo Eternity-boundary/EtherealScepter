@@ -1,0 +1,13 @@
+<Page
+    x:Class="EtherealScepter.PortPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <StackPanel Spacing="16" Padding="24">
+        <TextBlock Text="Port Mapping"
+                   FontSize="28"
+                   FontWeight="SemiBold"/>
+
+        <TextBlock Text="Port mapping list placeholder." Opacity="0.7"/>
+    </StackPanel>
+</Page>

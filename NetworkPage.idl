@@ -1,0 +1,9 @@
+namespace EtherealScepter
+{
+    [default_interface]
+    runtimeclass NetworkPage : Microsoft.UI.Xaml.Controls.Page
+    {
+        NetworkPage();
+        Int32 MyProperty;
+    }
+}

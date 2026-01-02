@@ -1,0 +1,14 @@
+<Page
+    x:Class="EtherealScepter.UPnPPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <StackPanel Spacing="16" Padding="24">
+        <TextBlock Text="UPnP Manager"
+                   FontSize="28"
+                   FontWeight="SemiBold"/>
+
+        <Button Content="Scan UPnP Devices" Width="200"/>
+        <TextBlock Text="Result will be shown here..." Opacity="0.7"/>
+    </StackPanel>
+</Page>
