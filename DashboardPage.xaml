@@ -1,14 +1,104 @@
 <Page
     x:Class="EtherealScepter.DashboardPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
 
-    <StackPanel Spacing="16" Padding="24">
-        <TextBlock Text="Dashboard"
-                   FontSize="28"
-                   FontWeight="SemiBold"/>
+    <ScrollViewer>
+        <StackPanel Padding="32" Spacing="24">
 
-        <TextBlock Text="System overview will appear here."
-                   Opacity="0.7"/>
-    </StackPanel>
+            <!-- Title -->
+            <TextBlock
+                Text="Dashboard"
+                FontSize="28"
+                FontWeight="SemiBold" />
+
+            <TextBlock
+                Text="System overview"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Margin="0,0,0,12"/>
+
+            <!-- Status Cards -->
+            <Grid ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Network -->
+                <Border Grid.Column="0"
+                        Padding="16"
+                        CornerRadius="8"
+                        Background="#1F1F1F">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Network"
+                                   FontWeight="SemiBold"/>
+                        <TextBlock Text="Connected"
+                                   Foreground="LightGreen"
+                                   FontSize="16"/>
+                        <TextBlock Text="IPv4: 192.168.1.1"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   FontSize="12"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- UPnP -->
+                <Border Grid.Column="1"
+                        Padding="16"
+                        CornerRadius="8"
+                        Background="#1F1F1F">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="UPnP"
+                                   FontWeight="SemiBold"/>
+                        <TextBlock Text="Enabled"
+                                   Foreground="LightGreen"
+                                   FontSize="16"/>
+                        <TextBlock Text="1 device detected"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   FontSize="12"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- NAT -->
+                <Border Grid.Column="2"
+                        Padding="16"
+                        CornerRadius="8"
+                        Background="#1F1F1F">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="NAT Type"
+                                   FontWeight="SemiBold"/>
+                        <TextBlock Text="Open"
+                                   Foreground="LightGreen"
+                                   FontSize="16"/>
+                        <TextBlock Text="Port forwarding available"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   FontSize="12"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Summary -->
+            <StackPanel Spacing="12">
+                <TextBlock Text="Summary"
+                           FontSize="20"
+                           FontWeight="SemiBold"/>
+
+                <Border Padding="16"
+                        CornerRadius="8"
+                        Background="#1F1F1F">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Active Port Mappings: 3"/>
+                        <TextBlock Text="Last refresh: 12:41"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        <TextBlock Text="No errors detected"
+                                   Foreground="LightGreen"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
 </Page>
