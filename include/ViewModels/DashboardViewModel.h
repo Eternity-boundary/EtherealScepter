@@ -1,6 +1,6 @@
 //Created by: EternityBoundary on Jan 3, 2025
 #pragma once
-#include <winrt/Microsoft.UI.Xaml.Data.h>
+#include <Generated Files/winrt/Microsoft.UI.Xaml.Data.h>
 
 namespace EtherealScepter::ViewModels
 {

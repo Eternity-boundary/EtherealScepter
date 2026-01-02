@@ -31,7 +31,7 @@ namespace winrt::EtherealScepter::implementation
     }
 
     void MainWindow::OnNavigationChanged(
-        NavigationView const& sender,
+        NavigationView const& /*sender*/,
         NavigationViewSelectionChangedEventArgs const& args)
     {
         if (!args.SelectedItem()) return;
