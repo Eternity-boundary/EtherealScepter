@@ -1,13 +1,17 @@
 //Created by: EternityBoundary on Jan 3, 2025
 #include "pch.h"
+
+#include <winrt/base.h>
+
 #include "include/ViewModels/DashboardViewModel.h"
 #include "ViewModels.DashboardViewModel.g.cpp"
 
 namespace winrt::EtherealScepter::ViewModels::implementation
 {
     DashboardViewModel::DashboardViewModel()
+		: m_ui{}
     {
-        Refresh();
+        RefreshAsync();
     }
 
     winrt::event_token DashboardViewModel::PropertyChanged(
@@ -23,20 +27,47 @@ namespace winrt::EtherealScepter::ViewModels::implementation
 
     void DashboardViewModel::RaisePropertyChanged(winrt::hstring const& name)
     {
-        m_propertyChanged(*this, winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventArgs{ name });
+        m_propertyChanged(
+            *this,
+            winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventArgs{ name }
+        );
     }
 
-    void DashboardViewModel::Refresh()
+    winrt::Windows::Foundation::IAsyncAction DashboardViewModel::RefreshAsync()
     {
-        m_networkStatus = L"Connected";
-        m_upnpStatus = L"Enabled";
-        m_natType = L"Open";
-        m_summary = L"Active Port Mappings: 3";
+        if (m_refreshing)
+            co_return;
 
-        RaisePropertyChanged(L"NetworkStatus");
-        RaisePropertyChanged(L"UpnpStatus");
-        RaisePropertyChanged(L"NatType");
-        RaisePropertyChanged(L"SummaryText");
+        m_refreshing = true;
+
+        try {
+            co_await winrt::resume_background();
+            //TODO: Replace with actual network status retrieval logic
+            winrt::hstring network = L"Connected";
+            winrt::hstring upnp = L"Enabled";
+            winrt::hstring nat = L"Open";
+            winrt::hstring summary = L"Active Port Mappings: 3";
+
+            co_await winrt::resume_after(std::chrono::seconds(1));
+
+            co_await m_ui;
+
+            m_networkStatus = network;
+            m_upnpStatus = upnp;
+            m_natType = nat;
+            m_summary = summary;
+
+            RaisePropertyChanged(L"NetworkStatus");
+            RaisePropertyChanged(L"UpnpStatus");
+            RaisePropertyChanged(L"NatType");
+            RaisePropertyChanged(L"SummaryText");
+        }
+        catch (...)
+        {
+            // Handle exceptions as needed
+		}
+
+        m_refreshing = false;
     }
 
     winrt::hstring DashboardViewModel::NetworkStatus() { return m_networkStatus; }
