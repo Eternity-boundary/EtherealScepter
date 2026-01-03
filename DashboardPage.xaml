@@ -5,10 +5,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    xmlns:local="using:EtherealScepter"
+    
+    >
 
-    <ScrollViewer>
-        <StackPanel Padding="32" Spacing="24">
+    <ScrollViewer >
+        <StackPanel Padding="32" Spacing="24" >
 
             <!-- Title -->
             <TextBlock
@@ -37,7 +40,7 @@
                     <StackPanel Spacing="6">
                         <TextBlock Text="Network"
                                    FontWeight="SemiBold"/>
-                        <TextBlock Text="Connected"
+                        <TextBlock Text="{x:Bind ViewModel.NetworkStatus,Mode=OneWay}"
                                    Foreground="LightGreen"
                                    FontSize="16"/>
                         <TextBlock Text="IPv4: 192.168.1.1"
@@ -54,7 +57,7 @@
                     <StackPanel Spacing="6">
                         <TextBlock Text="UPnP"
                                    FontWeight="SemiBold"/>
-                        <TextBlock Text="Enabled"
+                        <TextBlock Text="{x:Bind ViewModel.UpnpStatus,Mode=OneWay}"
                                    Foreground="LightGreen"
                                    FontSize="16"/>
                         <TextBlock Text="1 device detected"
@@ -71,7 +74,7 @@
                     <StackPanel Spacing="6">
                         <TextBlock Text="NAT Type"
                                    FontWeight="SemiBold"/>
-                        <TextBlock Text="Open"
+                        <TextBlock Text="{x:Bind ViewModel.NatType,Mode=OneWay}"
                                    Foreground="LightGreen"
                                    FontSize="16"/>
                         <TextBlock Text="Port forwarding available"
@@ -91,7 +94,7 @@
                         CornerRadius="8"
                         Background="#1F1F1F">
                     <StackPanel Spacing="6">
-                        <TextBlock Text="Active Port Mappings: 3"/>
+                        <TextBlock Text="{x:Bind ViewModel.SummaryText,Mode=OneWay}"/>
                         <TextBlock Text="Last refresh: 12:41"
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                         <TextBlock Text="No errors detected"

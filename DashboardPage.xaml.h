@@ -1,7 +1,5 @@
 //Created by: EternityBoundary on Jan 3, 2025
 #pragma once
-
-#pragma once
 #include "DashboardPage.g.h"
 #include "include/ViewModels/DashboardViewModel.h"
 
@@ -11,10 +9,10 @@ namespace winrt::EtherealScepter::implementation
     {
         DashboardPage();
 
-        ::EtherealScepter::ViewModels::DashboardViewModel& ViewModel() noexcept;
+        winrt::EtherealScepter::ViewModels::DashboardViewModel ViewModel() noexcept;
 
     private:
-        winrt::com_ptr<::EtherealScepter::ViewModels::DashboardViewModel> m_viewModel;
+        winrt::EtherealScepter::ViewModels::DashboardViewModel m_viewModel{ nullptr };
     };
 }
 

@@ -6,19 +6,18 @@
 #endif
 
 
-using namespace winrt;
-
 namespace winrt::EtherealScepter::implementation
 {
     DashboardPage::DashboardPage()
     {
         InitializeComponent();
-        m_viewModel = winrt::make_self<::EtherealScepter::ViewModels::DashboardViewModel>();
-        m_viewModel->Refresh();
+
+        m_viewModel =
+            winrt::make<winrt::EtherealScepter::ViewModels::implementation::DashboardViewModel>();
     }
 
-    ::EtherealScepter::ViewModels::DashboardViewModel& DashboardPage::ViewModel() noexcept
+    winrt::EtherealScepter::ViewModels::DashboardViewModel DashboardPage::ViewModel() noexcept
     {
-        return *m_viewModel;
+        return m_viewModel;
     }
 }

@@ -196,6 +196,7 @@
       <DependentUpon>DashboardPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Midl>
+    <Midl Include="DashboardViewModel.idl" />
     <Midl Include="MainWindow.idl" />
     <Midl Include="NetworkPage.idl">
       <DependentUpon>NetworkPage.xaml</DependentUpon>

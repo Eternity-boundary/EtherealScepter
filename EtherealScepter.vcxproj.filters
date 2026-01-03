@@ -4,25 +4,28 @@
     <ApplicationDefinition Include="App.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="MainWindow.xaml" >
-     <Filter>MainWindow</Filter>
-     </Page>
+    <Page Include="MainWindow.xaml">
+      <Filter>MainWindow</Filter>
+    </Page>
     <Page Include="DashboardPage.xaml" />
     <Page Include="UPnPPage.xaml" />
     <Page Include="PortPage.xaml" />
     <Page Include="NetworkPage.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <Midl Include="MainWindow.idl" >
-    <Filter>MainWindow</Filter>
+    <Midl Include="MainWindow.idl">
+      <Filter>MainWindow</Filter>
     </Midl>
+    <Midl Include="include\ViewModels\DashboardViewModel.idl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
+    <ClCompile Include="src\ViewModels\DashboardViewModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="include\ViewModels\DashboardViewModel.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Wide310x150Logo.scale-200.png">
@@ -52,12 +55,11 @@
       <UniqueIdentifier>{d45af539-7186-4e51-872c-9f1d11d6a88b}</UniqueIdentifier>
     </Filter>
     <Filter Include="MainWindow">
-  <UniqueIdentifier>{E156312F-EA14-4FBB-BB18-D8136AE8CBCB}</UniqueIdentifier>
-</Filter>
-
+      <UniqueIdentifier>{E156312F-EA14-4FBB-BB18-D8136AE8CBCB}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="readme.txt" />
+    <Text Include="readme.md" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="app.manifest" />
@@ -67,5 +69,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis" />
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natstepfilter" />
   </ItemGroup>
 </Project>

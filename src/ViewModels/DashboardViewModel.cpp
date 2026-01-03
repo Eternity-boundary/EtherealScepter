@@ -1,30 +1,29 @@
 //Created by: EternityBoundary on Jan 3, 2025
 #include "pch.h"
 #include "include/ViewModels/DashboardViewModel.h"
+#include "ViewModels.DashboardViewModel.g.cpp"
 
-using namespace winrt;
-
-namespace EtherealScepter::ViewModels
+namespace winrt::EtherealScepter::ViewModels::implementation
 {
     DashboardViewModel::DashboardViewModel()
     {
         Refresh();
     }
 
-    event_token DashboardViewModel::PropertyChanged(
-        Microsoft::UI::Xaml::Data::PropertyChangedEventHandler const& value) noexcept
+    winrt::event_token DashboardViewModel::PropertyChanged(
+        winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventHandler const& handler)
     {
-        return m_propertyChanged.add(value);
+        return m_propertyChanged.add(handler);
     }
 
-	void DashboardViewModel::PropertyChanged(event_token const& token) noexcept
+    void DashboardViewModel::PropertyChanged(winrt::event_token const& token)
     {
         m_propertyChanged.remove(token);
     }
 
-    void DashboardViewModel::RaisePropertyChanged(hstring const& name)
+    void DashboardViewModel::RaisePropertyChanged(winrt::hstring const& name)
     {
-        m_propertyChanged(*this, Microsoft::UI::Xaml::Data::PropertyChangedEventArgs{ name });
+        m_propertyChanged(*this, winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventArgs{ name });
     }
 
     void DashboardViewModel::Refresh()
@@ -40,8 +39,8 @@ namespace EtherealScepter::ViewModels
         RaisePropertyChanged(L"SummaryText");
     }
 
-    hstring DashboardViewModel::NetworkStatus() const { return m_networkStatus; }
-    hstring DashboardViewModel::UpnpStatus() const { return m_upnpStatus; }
-    hstring DashboardViewModel::NatType() const { return m_natType; }
-    hstring DashboardViewModel::SummaryText() const { return m_summary; }
+    winrt::hstring DashboardViewModel::NetworkStatus() { return m_networkStatus; }
+    winrt::hstring DashboardViewModel::UpnpStatus() { return m_upnpStatus; }
+    winrt::hstring DashboardViewModel::NatType() { return m_natType; }
+    winrt::hstring DashboardViewModel::SummaryText() { return m_summary; }
 }

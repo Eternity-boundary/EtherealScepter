@@ -1,0 +1,15 @@
+namespace EtherealScepter.ViewModels
+{
+    [default_interface]
+    runtimeclass DashboardViewModel : Microsoft.UI.Xaml.Data.INotifyPropertyChanged
+    {
+        DashboardViewModel();
+
+        String NetworkStatus { get; };
+        String UpnpStatus { get; };
+        String NatType { get; };
+        String SummaryText { get; };
+
+        void Refresh();
+    }
+}
