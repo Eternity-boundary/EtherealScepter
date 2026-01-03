@@ -9,9 +9,11 @@ namespace EtherealScepter.ViewModels
         String UpnpStatus { get; };
         String NatType { get; };
         String SummaryText { get; };
-		String IPAddress{ get; };
 		String NumberOfUPnPDevice{ get; };
 		String IsPortForwardingAvailable{ get; };
+		String LocalIp{ get; };
+		String WanIp{ get; };
+		String CgnatStatus{ get; };
 
         Microsoft.UI.Xaml.Media.Brush NetworkStatusBrush{ get; };
         Microsoft.UI.Xaml.Media.Brush UpnpStatusBrush{ get; };

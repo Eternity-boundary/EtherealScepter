@@ -19,9 +19,11 @@ namespace winrt::EtherealScepter::ViewModels::implementation
         winrt::hstring UpnpStatus();
         winrt::hstring NatType();
         winrt::hstring SummaryText();
-		winrt::hstring IPAddress();
 		winrt::hstring NumberOfUPnPDevice();
 		winrt::hstring IsPortForwardingAvailable();
+		winrt::hstring LocalIp();
+		winrt::hstring WanIp();
+		winrt::hstring CgnatStatus();
 
         winrt::Windows::Foundation::IAsyncAction RefreshAsync();
 
@@ -50,7 +52,9 @@ namespace winrt::EtherealScepter::ViewModels::implementation
         winrt::hstring m_upnpStatus;
         winrt::hstring m_natType;
         winrt::hstring m_summary;
-		winrt::hstring m_IPAddress;
+        winrt::hstring m_localIp;
+		winrt::hstring m_wanIp;
+		winrt::hstring m_cgnatStatus;
         winrt::hstring m_numberOfUPnPDevice;
         winrt::hstring m_isPortForwardingAvailable;
 

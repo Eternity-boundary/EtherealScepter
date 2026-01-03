@@ -125,6 +125,7 @@
       <DependentUpon>DashboardPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClInclude>
+    <ClInclude Include="include\Services\NetworkStatusService.h" />
     <ClInclude Include="NetworkPage.xaml.h">
       <DependentUpon>NetworkPage.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -185,6 +186,7 @@
       <DependentUpon>PortPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClCompile>
+    <ClCompile Include="src\Services\NetworkStatusService.cpp" />
     <ClCompile Include="src\ViewModels\DashboardViewModel.cpp" />
     <ClCompile Include="UPnPPage.xaml.cpp">
       <DependentUpon>UPnPPage.xaml</DependentUpon>

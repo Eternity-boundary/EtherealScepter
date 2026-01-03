@@ -16,16 +16,18 @@
     <Midl Include="MainWindow.idl">
       <Filter>MainWindow</Filter>
     </Midl>
-    <Midl Include="include\ViewModels\DashboardViewModel.idl" />
+    <Midl Include="DashboardViewModel.idl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
     <ClCompile Include="src\ViewModels\DashboardViewModel.cpp" />
+    <ClCompile Include="src\Services\NetworkStatusService.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="include\ViewModels\DashboardViewModel.h" />
+    <ClInclude Include="include\Services\NetworkStatusService.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Wide310x150Logo.scale-200.png">
