@@ -5,6 +5,7 @@
 #include <winrt/Microsoft.UI.Xaml.Data.h>
 #include <winrt/Microsoft.UI.Dispatching.h>
 #include <winrt/base.h>
+#include <winrt/Microsoft.UI.Xaml.Media.h>
 
 #include "ViewModels.DashboardViewModel.g.h"
 
@@ -18,6 +19,9 @@ namespace winrt::EtherealScepter::ViewModels::implementation
         winrt::hstring UpnpStatus();
         winrt::hstring NatType();
         winrt::hstring SummaryText();
+		winrt::hstring IPAddress();
+		winrt::hstring NumberOfUPnPDevice();
+		winrt::hstring IsPortForwardingAvailable();
 
         winrt::Windows::Foundation::IAsyncAction RefreshAsync();
 
@@ -26,7 +30,9 @@ namespace winrt::EtherealScepter::ViewModels::implementation
 
         void PropertyChanged(winrt::event_token const& token);
 
-
+        winrt::Microsoft::UI::Xaml::Media::Brush NetworkStatusBrush();
+        winrt::Microsoft::UI::Xaml::Media::Brush UpnpStatusBrush();
+        winrt::Microsoft::UI::Xaml::Media::Brush NatTypeBrush();
 
     private:
         void RaisePropertyChanged(winrt::hstring const& name);
@@ -44,6 +50,10 @@ namespace winrt::EtherealScepter::ViewModels::implementation
         winrt::hstring m_upnpStatus;
         winrt::hstring m_natType;
         winrt::hstring m_summary;
+		winrt::hstring m_IPAddress;
+        winrt::hstring m_numberOfUPnPDevice;
+        winrt::hstring m_isPortForwardingAvailable;
+
     };
 }
 

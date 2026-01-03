@@ -41,9 +41,9 @@
                         <TextBlock Text="Network"
                                    FontWeight="SemiBold"/>
                         <TextBlock Text="{x:Bind ViewModel.NetworkStatus,Mode=OneWay}"
-                                   Foreground="LightGreen"
+                                   Foreground="{x:Bind ViewModel.NetworkStatusBrush,Mode=OneWay}"
                                    FontSize="16"/>
-                        <TextBlock Text="IPv4: 192.168.1.1"
+                        <TextBlock Text="{x:Bind ViewModel.IPAddress,Mode=OneWay}"
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                    FontSize="12"/>
                     </StackPanel>
@@ -58,9 +58,9 @@
                         <TextBlock Text="UPnP"
                                    FontWeight="SemiBold"/>
                         <TextBlock Text="{x:Bind ViewModel.UpnpStatus,Mode=OneWay}"
-                                   Foreground="LightGreen"
+                                   Foreground="{x:Bind ViewModel.UpnpStatusBrush,Mode=OneWay}"
                                    FontSize="16"/>
-                        <TextBlock Text="1 device detected"
+                        <TextBlock Text="{x:Bind ViewModel.NumberOfUPnPDevice,Mode=OneWay}"
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                    FontSize="12"/>
                     </StackPanel>
@@ -75,9 +75,9 @@
                         <TextBlock Text="NAT Type"
                                    FontWeight="SemiBold"/>
                         <TextBlock Text="{x:Bind ViewModel.NatType,Mode=OneWay}"
-                                   Foreground="LightGreen"
+                                   Foreground="{x:Bind ViewModel.NatTypeBrush,Mode=OneWay}"
                                    FontSize="16"/>
-                        <TextBlock Text="Port forwarding available"
+                        <TextBlock Text="{x:Bind ViewModel.IsPortForwardingAvailable,Mode=OneWay}"
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                    FontSize="12"/>
                     </StackPanel>
