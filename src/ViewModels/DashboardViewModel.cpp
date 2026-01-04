@@ -1,8 +1,6 @@
 //Created by: EternityBoundary on Jan 3, 2025
 #include "pch.h"
 
-#include <winrt/base.h>
-
 #include "include/ViewModels/DashboardViewModel.h"
 #include "ViewModels.DashboardViewModel.g.cpp"
 #include "include/Services/NetworkStatusService.h"

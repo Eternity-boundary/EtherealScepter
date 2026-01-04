@@ -1,11 +1,8 @@
 //Created by: EternityBoundary on Jan 4, 2025
 #include "pch.h"
 
-#include <winrt/Windows.Networking.h>
-#include <winrt/Windows.Networking.Connectivity.h>
-#include <winrt/Windows.Web.Http.h>
-
 #include "include/Services/NetworkStatusService.h"
+#include "include/Services/UpnpDiscoveryService.h"
 
 using namespace winrt;
 using namespace Windows::Networking;

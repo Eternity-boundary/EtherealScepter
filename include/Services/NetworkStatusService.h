@@ -1,7 +1,10 @@
 //Created by: EternityBoundary on Jan 4, 2025
 #pragma once
-#pragma once
 #include <winrt/base.h>
+
+#include "include/Services/UpnpDiscoveryService.h"
+#include "include/Services/UpnpSoapClient.h"
+#include "include/Services/IgdDescriptionParser.h"
 
 namespace EtherealScepter::Services
 {
@@ -16,7 +19,11 @@ namespace EtherealScepter::Services
 
         winrt::hstring localIp;          
         winrt::hstring wanIp;            
-        winrt::hstring cgnatStatus;      
+        winrt::hstring cgnatStatus;     
+
+        Upnp::UpnpDiscoveryService   m_upnpDiscovery;
+        Upnp::UpnpSoapClient         m_upnpSoap;
+        Upnp::IgdDescriptionParser  m_igdParser;
     };
 
     struct NetworkStatusService
