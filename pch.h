@@ -3,6 +3,11 @@
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 
+#include <unordered_set>
+#include <string>
+#include <vector>
+#include <chrono>
+
 #include <winsock2.h>
 #include <ws2tcpip.h>
 

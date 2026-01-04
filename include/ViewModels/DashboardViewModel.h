@@ -35,6 +35,7 @@ namespace winrt::EtherealScepter::ViewModels::implementation
         winrt::Microsoft::UI::Xaml::Media::Brush NetworkStatusBrush();
         winrt::Microsoft::UI::Xaml::Media::Brush UpnpStatusBrush();
         winrt::Microsoft::UI::Xaml::Media::Brush NatTypeBrush();
+		winrt::Microsoft::UI::Xaml::Media::Brush CgnatStatusBrush();
 
     private:
         void RaisePropertyChanged(winrt::hstring const& name);

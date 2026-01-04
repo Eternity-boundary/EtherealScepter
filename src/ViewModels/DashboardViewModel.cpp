@@ -23,6 +23,15 @@ namespace winrt::EtherealScepter::ViewModels::implementation
         return SolidColorBrush(Colors::Gray());
     }
 
+    Brush DashboardViewModel::CgnatStatusBrush()
+    {
+        if (m_cgnatStatus == L"CGNAT")
+            return SolidColorBrush(Colors::Red());
+        if (m_cgnatStatus == L"Open")
+            return SolidColorBrush(Colors::Green());
+        return SolidColorBrush(Colors::Gray());
+	}
+
     Brush DashboardViewModel::UpnpStatusBrush()
     {
         if (m_upnpStatus == L"Enabled")
@@ -108,6 +117,7 @@ namespace winrt::EtherealScepter::ViewModels::implementation
             RaisePropertyChanged(L"LocalIp");
             RaisePropertyChanged(L"WanIp");
             RaisePropertyChanged(L"CgnatStatus");
+			RaisePropertyChanged(L"CgnatStatusBrush");
 
 			RaisePropertyChanged(L"NumberOfUPnPDevice");
 			RaisePropertyChanged(L"IsPortForwardingAvailable");

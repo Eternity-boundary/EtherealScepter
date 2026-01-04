@@ -18,6 +18,7 @@ namespace EtherealScepter.ViewModels
         Microsoft.UI.Xaml.Media.Brush NetworkStatusBrush{ get; };
         Microsoft.UI.Xaml.Media.Brush UpnpStatusBrush{ get; };
         Microsoft.UI.Xaml.Media.Brush NatTypeBrush{ get; };
+		Microsoft.UI.Xaml.Media.Brush CgnatStatusBrush{ get; };
 
         Windows.Foundation.IAsyncAction RefreshAsync();
     }

@@ -84,7 +84,7 @@
                                 Text="NAT:" />
                             <TextBlock
                                 FontSize="12"
-                                Foreground="{x:Bind ViewModel.NatTypeBrush, Mode=OneWay}"
+                                Foreground="{x:Bind ViewModel.CgnatStatusBrush, Mode=OneWay}"
                                 Text="{x:Bind ViewModel.CgnatStatus, Mode=OneWay}" />
                         </StackPanel>
 
