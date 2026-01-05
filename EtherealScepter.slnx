@@ -4,7 +4,7 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="EtherealScepter.vcxproj">
+  <Project Path="EtherealScepter.vcxproj" Id="d45af539-7186-4e51-872c-9f1d11d6a88b">
     <Deploy />
   </Project>
 </Solution>
