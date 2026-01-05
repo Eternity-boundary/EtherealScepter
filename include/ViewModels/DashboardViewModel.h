@@ -14,6 +14,7 @@ namespace winrt::EtherealScepter::ViewModels::implementation
     struct DashboardViewModel : DashboardViewModelT<DashboardViewModel>
     {
         DashboardViewModel();
+        ~DashboardViewModel();
 
         winrt::hstring NetworkStatus();
         winrt::hstring UpnpStatus();
@@ -24,6 +25,10 @@ namespace winrt::EtherealScepter::ViewModels::implementation
 		winrt::hstring LocalIp();
 		winrt::hstring WanIp();
 		winrt::hstring CgnatStatus();
+        winrt::hstring LastRefreshText();
+        winrt::hstring StatusMessage();
+        winrt::Microsoft::UI::Xaml::Media::Brush StatusBrush();
+
 
         winrt::Windows::Foundation::IAsyncAction RefreshAsync();
 
@@ -46,6 +51,8 @@ namespace winrt::EtherealScepter::ViewModels::implementation
 
         winrt::Microsoft::UI::Dispatching::DispatcherQueue m_dispatcher{ nullptr };
 
+        winrt::Microsoft::UI::Dispatching::DispatcherQueueTimer m_refreshTimer{ nullptr };
+
         winrt::apartment_context m_ui;
         bool m_refreshing{ false };
 
@@ -58,6 +65,11 @@ namespace winrt::EtherealScepter::ViewModels::implementation
 		winrt::hstring m_cgnatStatus;
         winrt::hstring m_numberOfUPnPDevice;
         winrt::hstring m_isPortForwardingAvailable;
+
+        winrt::hstring m_lastRefreshText{ L"-" };
+        winrt::hstring m_statusMessage{ L"Idle" };
+        bool m_hasError{ false };
+
 
     };
 }

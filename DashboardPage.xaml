@@ -144,8 +144,8 @@
                     CornerRadius="8">
                     <StackPanel Spacing="6">
                         <TextBlock Text="{x:Bind ViewModel.SummaryText, Mode=OneWay}" />
-                        <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="Last refresh: 12:41" />
-                        <TextBlock Foreground="LightGreen" Text="No errors detected" />
+                        <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind ViewModel.LastRefreshText, Mode=OneWay}" />
+                        <TextBlock Foreground="{x:Bind ViewModel.StatusBrush, Mode=OneWay}" Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}" />
                     </StackPanel>
                 </Border>
             </StackPanel>

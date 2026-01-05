@@ -55,11 +55,42 @@ namespace winrt::EtherealScepter::ViewModels::implementation
         return SolidColorBrush(Colors::Gray());
     }
 
+    Brush DashboardViewModel::StatusBrush()
+    {
+        if (m_hasError)
+            return SolidColorBrush(Colors::Red());
+
+        return SolidColorBrush(Colors::LightGreen());
+    }
+
+	// Constructor
     DashboardViewModel::DashboardViewModel()
 		: m_ui{}
     {
-        RefreshAsync();
+		RefreshAsync();
+        auto dispatcherQueue =
+            winrt::Microsoft::UI::Dispatching::DispatcherQueue::GetForCurrentThread();
+
+        m_refreshTimer = dispatcherQueue.CreateTimer();
+        m_refreshTimer.Interval(std::chrono::seconds(30));
+        m_refreshTimer.IsRepeating(true);
+
+        m_refreshTimer.Tick([this](auto&&, auto&&)
+            {
+                RefreshAsync();
+            });
+
+        m_refreshTimer.Start();
     }
+
+    DashboardViewModel::~DashboardViewModel()
+    {
+        if (m_refreshTimer)
+        {
+            m_refreshTimer.Stop();
+            m_refreshTimer = nullptr;
+        }
+	}
 
     winrt::event_token DashboardViewModel::PropertyChanged(
         winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventHandler const& handler)
@@ -94,7 +125,9 @@ namespace winrt::EtherealScepter::ViewModels::implementation
         // ===== 1. 先在 UI thread 顯示 loading =====
         {
             m_summary = L"Refreshing…";
+			m_hasError = false;
             RaisePropertyChanged(L"SummaryText");
+			RaisePropertyChanged(L"StatusBrush");
         }
 
         // ===== 2. 背景執行（只做同步 / 可能丟例外的事）=====
@@ -108,14 +141,17 @@ namespace winrt::EtherealScepter::ViewModels::implementation
             hasError = true;
         }
 
-        // ===== 3. 回 UI thread（catch 後再 await，合法）=====
+        // ===== 3. 回 UI thread=====
         co_await m_ui;
 
         if (hasError)
         {
             // UI-safe error handling
             m_summary = L"Network status unavailable";
+            m_statusMessage = L"Error occurred";
+            m_hasError = true;
             RaisePropertyChanged(L"SummaryText");
+			RaisePropertyChanged(L"StatusMessage");
 
             m_refreshing = false;
             co_return;
@@ -133,6 +169,22 @@ namespace winrt::EtherealScepter::ViewModels::implementation
 
         m_numberOfUPnPDevice = snapshot.upnpDeviceCount;
         m_isPortForwardingAvailable = snapshot.portForwardingStatus;
+
+        auto now = std::chrono::system_clock::now();
+        std::time_t t = std::chrono::system_clock::to_time_t(now);
+
+        std::tm tmLocal{};
+        localtime_s(&tmLocal, &t);
+
+        wchar_t buf[64]{};
+        wcsftime(buf, 64, L"%H:%M:%S", &tmLocal);
+
+        m_lastRefreshText =
+            winrt::hstring(L"Last refresh: ") + buf;
+
+        m_statusMessage = L"No errors detected";
+        m_hasError = false;
+
 
         RaisePropertyChanged(L"NetworkStatus");
         RaisePropertyChanged(L"NetworkStatusBrush");
@@ -153,6 +205,10 @@ namespace winrt::EtherealScepter::ViewModels::implementation
         RaisePropertyChanged(L"NumberOfUPnPDevice");
         RaisePropertyChanged(L"IsPortForwardingAvailable");
 
+        RaisePropertyChanged(L"LastRefreshText");
+        RaisePropertyChanged(L"StatusMessage");
+        RaisePropertyChanged(L"StatusBrush");
+
         m_refreshing = false;
     }
 
@@ -166,4 +222,7 @@ namespace winrt::EtherealScepter::ViewModels::implementation
 	winrt::hstring DashboardViewModel::LocalIp() { return m_localIp; }
 	winrt::hstring DashboardViewModel::WanIp() { return m_wanIp; }
 	winrt::hstring DashboardViewModel::CgnatStatus() { return m_cgnatStatus; }
+    winrt::hstring DashboardViewModel::LastRefreshText() {return m_lastRefreshText;}
+    winrt::hstring DashboardViewModel::StatusMessage(){return m_statusMessage;}
+
 }

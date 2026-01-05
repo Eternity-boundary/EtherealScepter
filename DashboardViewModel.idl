@@ -14,11 +14,14 @@ namespace EtherealScepter.ViewModels
 		String LocalIp{ get; };
 		String WanIp{ get; };
 		String CgnatStatus{ get; };
+        String LastRefreshText{ get; };
+        String StatusMessage{ get; };
 
         Microsoft.UI.Xaml.Media.Brush NetworkStatusBrush{ get; };
         Microsoft.UI.Xaml.Media.Brush UpnpStatusBrush{ get; };
         Microsoft.UI.Xaml.Media.Brush NatTypeBrush{ get; };
 		Microsoft.UI.Xaml.Media.Brush CgnatStatusBrush{ get; };
+        Microsoft.UI.Xaml.Media.Brush StatusBrush{ get; };
 
         Windows.Foundation.IAsyncAction RefreshAsync();
     }
