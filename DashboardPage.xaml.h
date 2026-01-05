@@ -1,25 +1,22 @@
+//Created by: EternityBoundary on Jan 3, 2025
 #pragma once
-
 #include "DashboardPage.g.h"
+#include "include/ViewModels/DashboardViewModel.h"
 
 namespace winrt::EtherealScepter::implementation
 {
     struct DashboardPage : DashboardPageT<DashboardPage>
     {
-        DashboardPage()
-        {
-            // Xaml objects should not call InitializeComponent during construction.
-            // See https://github.com/microsoft/cppwinrt/tree/master/nuget#initializecomponent
-        }
+        DashboardPage();
 
-        int32_t MyProperty();
-        void MyProperty(int32_t value);
+        winrt::EtherealScepter::ViewModels::DashboardViewModel ViewModel() noexcept;
+
+    private:
+        winrt::EtherealScepter::ViewModels::DashboardViewModel m_viewModel{ nullptr };
     };
 }
 
 namespace winrt::EtherealScepter::factory_implementation
 {
-    struct DashboardPage : DashboardPageT<DashboardPage, implementation::DashboardPage>
-    {
-    };
+    struct DashboardPage : DashboardPageT<DashboardPage, implementation::DashboardPage> {};
 }

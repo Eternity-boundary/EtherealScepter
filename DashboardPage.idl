@@ -1,9 +1,10 @@
+import "DashboardViewModel.idl";
 namespace EtherealScepter
 {
     [default_interface]
     runtimeclass DashboardPage : Microsoft.UI.Xaml.Controls.Page
     {
         DashboardPage();
-        Int32 MyProperty;
+        EtherealScepter.ViewModels.DashboardViewModel ViewModel{ get; };
     }
 }

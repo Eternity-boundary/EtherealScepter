@@ -1,3 +1,4 @@
+//Created by: EternityBoundary on Jan 3, 2025
 #include "pch.h"
 #include "MainWindow.xaml.h"
 #if __has_include("MainWindow.g.cpp")
@@ -30,7 +31,7 @@ namespace winrt::EtherealScepter::implementation
     }
 
     void MainWindow::OnNavigationChanged(
-        NavigationView const& sender,
+        NavigationView const& /*sender*/,
         NavigationViewSelectionChangedEventArgs const& args)
     {
         if (!args.SelectedItem()) return;
