@@ -30,4 +30,6 @@ namespace EtherealScepter::Services
     {
         static NetworkSnapshot Query();
     };
+
+    
 }

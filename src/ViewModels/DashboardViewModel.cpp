@@ -7,6 +7,7 @@
 
 using namespace winrt::Microsoft::UI;
 using namespace winrt::Microsoft::UI::Xaml::Media;
+using namespace EtherealScepter::Services;
 using EtherealScepter::Services::NetworkStatusService;
 
 namespace winrt::EtherealScepter::ViewModels::implementation
@@ -79,56 +80,82 @@ namespace winrt::EtherealScepter::ViewModels::implementation
         );
     }
 
-    winrt::Windows::Foundation::IAsyncAction DashboardViewModel::RefreshAsync()
+    winrt::Windows::Foundation::IAsyncAction
+        DashboardViewModel::RefreshAsync()
     {
         if (m_refreshing)
             co_return;
 
         m_refreshing = true;
 
-        try {
-            co_await winrt::resume_background();
-			auto snapshot = NetworkStatusService::Query();
-            co_await winrt::resume_after(std::chrono::seconds(1));
+        NetworkSnapshot snapshot{};
+        bool hasError = false;
 
-            co_await m_ui;
-
-            m_networkStatus = snapshot.networkStatus;
-			m_upnpStatus = snapshot.upnpStatus;
-			m_natType = snapshot.natType;
-			m_summary = snapshot.summary;
-			m_localIp = snapshot.localIp;
-			m_wanIp = snapshot.wanIp;
-			m_cgnatStatus = snapshot.cgnatStatus;
-            m_numberOfUPnPDevice = snapshot.upnpDeviceCount;
-			m_isPortForwardingAvailable = snapshot.portForwardingStatus;
-
-            RaisePropertyChanged(L"NetworkStatus");
-            RaisePropertyChanged(L"NetworkStatusBrush");
-
-            RaisePropertyChanged(L"UpnpStatus");
-            RaisePropertyChanged(L"UpnpStatusBrush");
-
-            RaisePropertyChanged(L"NatType");
-            RaisePropertyChanged(L"NatTypeBrush");
-
+        // ===== 1. 先在 UI thread 顯示 loading =====
+        {
+            m_summary = L"Refreshing…";
             RaisePropertyChanged(L"SummaryText");
+        }
 
-            RaisePropertyChanged(L"LocalIp");
-            RaisePropertyChanged(L"WanIp");
-            RaisePropertyChanged(L"CgnatStatus");
-			RaisePropertyChanged(L"CgnatStatusBrush");
-
-			RaisePropertyChanged(L"NumberOfUPnPDevice");
-			RaisePropertyChanged(L"IsPortForwardingAvailable");
+        // ===== 2. 背景執行（只做同步 / 可能丟例外的事）=====
+        try
+        {
+            co_await winrt::resume_background();
+            snapshot = NetworkStatusService::Query();
         }
         catch (...)
         {
-            // Handle exceptions as needed
-		}
+            hasError = true;
+        }
+
+        // ===== 3. 回 UI thread（catch 後再 await，合法）=====
+        co_await m_ui;
+
+        if (hasError)
+        {
+            // UI-safe error handling
+            m_summary = L"Network status unavailable";
+            RaisePropertyChanged(L"SummaryText");
+
+            m_refreshing = false;
+            co_return;
+        }
+
+        // ===== 4. 正常套用 snapshot =====
+        m_networkStatus = snapshot.networkStatus;
+        m_upnpStatus = snapshot.upnpStatus;
+        m_natType = snapshot.natType;
+        m_summary = snapshot.summary;
+
+        m_localIp = snapshot.localIp;
+        m_wanIp = snapshot.wanIp;
+        m_cgnatStatus = snapshot.cgnatStatus;
+
+        m_numberOfUPnPDevice = snapshot.upnpDeviceCount;
+        m_isPortForwardingAvailable = snapshot.portForwardingStatus;
+
+        RaisePropertyChanged(L"NetworkStatus");
+        RaisePropertyChanged(L"NetworkStatusBrush");
+
+        RaisePropertyChanged(L"UpnpStatus");
+        RaisePropertyChanged(L"UpnpStatusBrush");
+
+        RaisePropertyChanged(L"NatType");
+        RaisePropertyChanged(L"NatTypeBrush");
+
+        RaisePropertyChanged(L"SummaryText");
+
+        RaisePropertyChanged(L"LocalIp");
+        RaisePropertyChanged(L"WanIp");
+        RaisePropertyChanged(L"CgnatStatus");
+        RaisePropertyChanged(L"CgnatStatusBrush");
+
+        RaisePropertyChanged(L"NumberOfUPnPDevice");
+        RaisePropertyChanged(L"IsPortForwardingAvailable");
 
         m_refreshing = false;
     }
+
 
     winrt::hstring DashboardViewModel::NetworkStatus() { return m_networkStatus; }
     winrt::hstring DashboardViewModel::UpnpStatus() { return m_upnpStatus; }
