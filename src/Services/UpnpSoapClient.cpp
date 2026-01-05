@@ -10,7 +10,55 @@
 namespace EtherealScepter::Services::Upnp
 {
 
-    static std::wstring CombineUrl(const std::wstring& baseUrl, const std::wstring& controlUrl)
+    std::optional<std::wstring>
+        UpnpSoapClient::GetExternalIPAddressViaStatus(
+            const UpnpIgdServiceInfo& igd)
+    {
+        // 組合 control URL
+        const std::wstring url =
+            CombineUrl(igd.baseUrl, igd.controlUrl);
+
+        // SOAPAction: "<serviceType>#GetStatusInfo"
+        const std::wstring soapAction =
+            igd.serviceType + L"#GetStatusInfo";
+
+        // SOAP Body
+        std::wstring body =
+            L"<?xml version=\"1.0\"?>"
+            L"<s:Envelope "
+            L"xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" "
+            L"s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
+            L"<s:Body>"
+            L"<u:GetStatusInfo xmlns:u=\"" + igd.serviceType + L"\"/>"
+            L"</s:Body>"
+            L"</s:Envelope>";
+
+        // 轉 UTF-8（IP 內容是 ASCII，這樣足夠）
+        std::string bodyUtf8(body.begin(), body.end());
+
+        // 發送 SOAP
+        auto respBytesOpt =
+            WinHttpPostSoap(url, soapAction, bodyUtf8);
+
+        if (!respBytesOpt)
+            return std::nullopt;
+
+        // 回應 XML（通常 ASCII / UTF-8）
+        const std::string& respBytes = *respBytesOpt;
+        std::wstring xml(respBytes.begin(), respBytes.end());
+
+        // 嘗試解析 <NewExternalIPAddress>
+        auto ip =
+            ExtractXmlValue(xml, L"NewExternalIPAddress");
+
+        if (!ip || ip->empty())
+            return std::nullopt;
+
+        return ip;
+    }
+
+
+    std::wstring EtherealScepter::Services::Upnp::UpnpSoapClient::CombineUrl(const std::wstring& baseUrl, const std::wstring& controlUrl)
     {
         // controlUrl could be:
         //  - "/upnp/control/..." (relative)
@@ -24,8 +72,8 @@ namespace EtherealScepter::Services::Upnp
         return baseUrl + L"/" + controlUrl;
     }
 
-    static std::optional<std::wstring> ExtractXmlValue(
-        const std::wstring& xml,
+    std::optional<std::wstring> EtherealScepter::Services::Upnp::UpnpSoapClient::ExtractXmlValue(
+        const std::wstring& xml, 
         const std::wstring& tag)
     {
         const std::wstring open = L"<" + tag + L">";
@@ -42,10 +90,10 @@ namespace EtherealScepter::Services::Upnp
     }
 
     // WinHTTP: send SOAP POST and return response body (UTF-8/ASCII XML usually)
-    static std::optional<std::string> WinHttpPostSoap(
-        const std::wstring& url,
-        const std::wstring& soapAction,
-        const std::string& bodyUtf8)
+     std::optional<std::string> EtherealScepter::Services::Upnp::UpnpSoapClient::WinHttpPostSoap(
+         const std::wstring& url, 
+         const std::wstring& soapAction, 
+         const std::string& bodyUtf8)
     {
         URL_COMPONENTS uc{};
         uc.dwStructSize = sizeof(uc);

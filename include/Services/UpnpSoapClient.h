@@ -14,7 +14,23 @@ namespace EtherealScepter::Services::Upnp
         static std::optional<std::wstring>
             GetExternalIPAddress(const UpnpIgdServiceInfo& igd);
 
+        std::optional<std::wstring>
+            GetExternalIPAddressViaStatus(const UpnpIgdServiceInfo& igd);
+
         //extend later:
         // AddPortMapping / DeletePortMapping / GetGenericPortMappingEntry...
+	private:
+        static std::wstring CombineUrl(
+            const std::wstring& baseUrl,
+            const std::wstring& controlUrl);
+
+        static std::optional<std::string> WinHttpPostSoap(
+            const std::wstring& url,
+            const std::wstring& soapAction,
+            const std::string& bodyUtf8);
+
+        static std::optional<std::wstring> ExtractXmlValue(
+            const std::wstring& xml,
+            const std::wstring& tag);
     };
 }

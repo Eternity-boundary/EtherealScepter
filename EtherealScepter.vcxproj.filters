@@ -26,6 +26,7 @@
     <ClCompile Include="src\Services\UpnpDiscoveryService.cpp" />
     <ClCompile Include="src\Services\IgdDescriptionParser.cpp" />
     <ClCompile Include="src\Services\UpnpSoapClient.cpp" />
+    <ClCompile Include="src\Services\SsdpParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -35,6 +36,7 @@
     <ClInclude Include="include\Services\IgdDescriptionParser.h" />
     <ClInclude Include="include\Services\UpnpIgdServiceInfo.h" />
     <ClInclude Include="include\Services\UpnpSoapClient.h" />
+    <ClInclude Include="include\Services\SsdpParser.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Wide310x150Logo.scale-200.png">

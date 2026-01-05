@@ -127,6 +127,7 @@
     </ClInclude>
     <ClInclude Include="include\Services\IgdDescriptionParser.h" />
     <ClInclude Include="include\Services\NetworkStatusService.h" />
+    <ClInclude Include="include\Services\SsdpParser.h" />
     <ClInclude Include="include\Services\UpnpDiscoveryService.h" />
     <ClInclude Include="include\Services\UpnpIgdServiceInfo.h" />
     <ClInclude Include="include\Services\UpnpSoapClient.h" />
@@ -192,6 +193,7 @@
     </ClCompile>
     <ClCompile Include="src\Services\IgdDescriptionParser.cpp" />
     <ClCompile Include="src\Services\NetworkStatusService.cpp" />
+    <ClCompile Include="src\Services\SsdpParser.cpp" />
     <ClCompile Include="src\Services\UpnpDiscoveryService.cpp" />
     <ClCompile Include="src\Services\UpnpSoapClient.cpp" />
     <ClCompile Include="src\ViewModels\DashboardViewModel.cpp" />

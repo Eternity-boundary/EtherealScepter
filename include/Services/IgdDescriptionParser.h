@@ -11,7 +11,7 @@ namespace EtherealScepter::Services::Upnp
     {
     public:
         // location = SSDP LOCATION (igd.xml URL)
-        static std::optional<UpnpIgdServiceInfo>
-            ParseFromLocation(const std::wstring& location);
+        static std::optional<UpnpIgdServiceInfo> ParseFromLocation(std::wstring const& location);
     };
+
 }

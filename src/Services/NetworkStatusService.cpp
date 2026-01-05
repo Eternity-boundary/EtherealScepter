@@ -67,12 +67,10 @@ namespace EtherealScepter::Services
     {
         NetworkSnapshot snapshot{};
 
-        // =====================================================
-        // 1. OS-authoritative network connectivity
-        // =====================================================
-        auto profile = NetworkInformation::GetInternetConnectionProfile();
-        if (profile &&
-            profile.GetNetworkConnectivityLevel() != NetworkConnectivityLevel::None)
+        // 1. OS network status
+        snapshot.networkStatus = L"Disconnected";
+
+        if (auto profile = NetworkInformation::GetInternetConnectionProfile())
         {
             switch (profile.GetNetworkConnectivityLevel())
             {
@@ -83,44 +81,36 @@ namespace EtherealScepter::Services
                 snapshot.networkStatus = L"Local Network";
                 break;
             default:
-                snapshot.networkStatus = L"Disconnected";
                 break;
             }
         }
-        else
-        {
-            snapshot.networkStatus = L"Disconnected";
-        }
 
-        // =====================================================
-        // 2. Baseline IP info (always available)
-        // =====================================================
+        // 2. Baseline IP (HTTP fallback)
         snapshot.localIp = GetLocalIPv4();
         snapshot.wanIp = QueryWanIpHttpFallback();
         snapshot.cgnatStatus = DetectCGNAT(snapshot.wanIp);
-
-        // Default safe values
-        snapshot.upnpStatus = L"Unavailable";
-        snapshot.upnpDeviceCount = L"0 Devices";
-        snapshot.natType = L"Unknown";
-        snapshot.portForwardingStatus = L"Unavailable";
         snapshot.summary = L"WAN IP via HTTP";
 
-        // =====================================================
+        bool httpWanOk = (snapshot.wanIp != L"-");
+
+        // Default UPnP values
+        snapshot.upnpStatus = L"Unavailable";
+        snapshot.upnpDeviceCount = L"0 Devices";
+        snapshot.portForwardingStatus = L"Unavailable";
+        snapshot.natType = L"Unknown";
+
         // 3. UPnP Discovery
-        // =====================================================
         EtherealScepter::Services::Upnp::UpnpDiscoveryService discovery;
         auto devices = discovery.Discover();
-        if (devices.empty())
-            return snapshot;
 
-        snapshot.upnpStatus = L"Enabled";
-        snapshot.upnpDeviceCount =
-            winrt::to_hstring(devices.size()) + L" Devices Found";
+        if (!devices.empty())
+        {
+            snapshot.upnpStatus = L"Enabled";
+            snapshot.upnpDeviceCount =
+                winrt::to_hstring(devices.size()) + L" Devices Found";
+        }
 
-        // =====================================================
-        // 4. Pick first valid IGD service (WANIP / WANPPP)
-        // =====================================================
+        // 4. Parse IGD (WANIP / WANPPP)
         std::optional<EtherealScepter::Services::Upnp::UpnpIgdServiceInfo> igdService;
 
         for (auto const& device : devices)
@@ -133,31 +123,34 @@ namespace EtherealScepter::Services
                 break;
         }
 
-        if (!igdService)
+        // 5. SOAP WAN IP (primary + fallback)
+        if (igdService)
         {
-            snapshot.portForwardingStatus = L"UPnP IGD Not Found";
-            return snapshot;
+            EtherealScepter::Services::Upnp::UpnpSoapClient soap;
+
+            std::optional<std::wstring> wanIp;
+
+            wanIp = soap.GetExternalIPAddress(*igdService);
+
+            // fallback
+            if (!wanIp)
+                wanIp = soap.GetExternalIPAddressViaStatus(*igdService);
+
+            if (wanIp && !wanIp->empty())
+            {
+                snapshot.wanIp = winrt::hstring{ wanIp->c_str() };
+                snapshot.cgnatStatus = DetectCGNAT(snapshot.wanIp);
+                snapshot.summary = L"WAN IP via UPnP";
+                snapshot.portForwardingStatus = L"Forwarding Supported";
+                snapshot.natType = L"Open";
+            }
+            else
+            {
+                snapshot.summary = L"UPnP IGD found, but WAN IP unavailable";
+            }
         }
-
-        // =====================================================
-        // 5. SOAP: GetExternalIPAddress
-        // =====================================================
-        EtherealScepter::Services::Upnp::UpnpSoapClient soap;
-        auto externalIpOpt = soap.GetExternalIPAddress(*igdService);
-
-        if (externalIpOpt && !externalIpOpt->empty())
-        {
-            snapshot.wanIp = winrt::hstring{ externalIpOpt->c_str() };
-            snapshot.cgnatStatus = DetectCGNAT(snapshot.wanIp);
-            snapshot.summary = L"WAN IP via UPnP";
-        }
-
-        // =====================================================
-        // 6. Interpretation (best-effort)
-        // =====================================================
-        snapshot.natType = L"Open";                 // conservative default
-        snapshot.portForwardingStatus = L"Supported";
 
         return snapshot;
     }
+
 }
