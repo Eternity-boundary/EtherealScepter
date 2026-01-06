@@ -130,6 +130,7 @@
     <ClInclude Include="include\Services\SsdpParser.h" />
     <ClInclude Include="include\Services\UpnpDiscoveryService.h" />
     <ClInclude Include="include\Services\UpnpIgdServiceInfo.h" />
+    <ClInclude Include="include\ViewModels\UpnpViewModel.h" />
     <ClInclude Include="include\Services\UpnpSoapClient.h" />
     <ClInclude Include="NetworkPage.xaml.h">
       <DependentUpon>NetworkPage.xaml</DependentUpon>
@@ -197,6 +198,7 @@
     <ClCompile Include="src\Services\UpnpDiscoveryService.cpp" />
     <ClCompile Include="src\Services\UpnpSoapClient.cpp" />
     <ClCompile Include="src\ViewModels\DashboardViewModel.cpp" />
+    <ClCompile Include="src\ViewModels\UpnpViewModel.cpp" />
     <ClCompile Include="UPnPPage.xaml.cpp">
       <DependentUpon>UPnPPage.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -208,7 +210,10 @@
       <SubType>Code</SubType>
     </Midl>
     <Midl Include="DashboardViewModel.idl" />
+    <Midl Include="UpnpDeviceItem.idl" />
+    <Midl Include="UpnpViewModel.idl" />
     <Midl Include="MainWindow.idl" />
+    <Midl Include="Models.idl" />
     <Midl Include="NetworkPage.idl">
       <DependentUpon>NetworkPage.xaml</DependentUpon>
       <SubType>Code</SubType>

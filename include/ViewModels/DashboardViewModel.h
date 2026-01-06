@@ -8,6 +8,7 @@
 #include <winrt/Microsoft.UI.Xaml.Media.h>
 
 #include "ViewModels.DashboardViewModel.g.h"
+#include "winrt/EtherealScepter.Models.h"
 
 namespace winrt::EtherealScepter::ViewModels::implementation
 {
@@ -29,6 +30,8 @@ namespace winrt::EtherealScepter::ViewModels::implementation
         winrt::hstring StatusMessage();
         winrt::Microsoft::UI::Xaml::Media::Brush StatusBrush();
 
+        winrt::Windows::Foundation::Collections::IObservableVector<winrt::EtherealScepter::Models::UpnpDeviceInfo>
+            UpnpDevices() const { return m_upnpDevices; }
 
         winrt::Windows::Foundation::IAsyncAction RefreshAsync();
 
@@ -70,6 +73,8 @@ namespace winrt::EtherealScepter::ViewModels::implementation
         winrt::hstring m_statusMessage{ L"Idle" };
         bool m_hasError{ false };
 
+        winrt::Windows::Foundation::Collections::IObservableVector<winrt::EtherealScepter::Models::UpnpDeviceInfo>
+            m_upnpDevices{ winrt::single_threaded_observable_vector<winrt::EtherealScepter::Models::UpnpDeviceInfo>() };
 
     };
 }

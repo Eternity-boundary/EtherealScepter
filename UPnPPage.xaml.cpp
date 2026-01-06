@@ -5,21 +5,31 @@
 #include "UPnPPage.g.cpp"
 #endif
 
-using namespace winrt;
-using namespace Microsoft::UI::Xaml;
+#include "App.xaml.h"
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+#include "include/ViewModels/UpnpViewModel.h" 
 
 namespace winrt::EtherealScepter::implementation
 {
-    int32_t UPnPPage::MyProperty()
+    UPnPPage::UPnPPage()
     {
-        throw hresult_not_implemented();
+        InitializeComponent();
+
+        auto dashboardVm = App::Current().DashboardViewModel();
+        m_viewModel =
+            winrt::make<winrt::EtherealScepter::ViewModels::implementation::UpnpViewModel>(dashboardVm);
     }
 
-    void UPnPPage::MyProperty(int32_t /* value */)
+    winrt::EtherealScepter::ViewModels::UpnpViewModel UPnPPage::ViewModel() noexcept
     {
-        throw hresult_not_implemented();
+        return m_viewModel;
     }
+
+    winrt::Microsoft::UI::Xaml::Visibility UPnPPage::BoolToVisibility(bool value) noexcept
+    {
+        return value
+            ? winrt::Microsoft::UI::Xaml::Visibility::Visible
+            : winrt::Microsoft::UI::Xaml::Visibility::Collapsed;
+    }
+
 }
