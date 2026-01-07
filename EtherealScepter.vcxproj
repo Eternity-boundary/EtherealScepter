@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="packages\Microsoft.Windows.SDK.BuildTools.10.0.26100.7175\build\Microsoft.Windows.SDK.BuildTools.props" Condition="Exists('packages\Microsoft.Windows.SDK.BuildTools.10.0.26100.7175\build\Microsoft.Windows.SDK.BuildTools.props')" />
   <Import Project="packages\Microsoft.Windows.CppWinRT.2.0.250303.1\build\native\Microsoft.Windows.CppWinRT.props" Condition="Exists('packages\Microsoft.Windows.CppWinRT.2.0.250303.1\build\native\Microsoft.Windows.CppWinRT.props')" />
@@ -140,6 +140,7 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     </ClInclude>
     <ClInclude Include="include\Services\IgdDescriptionParser.h" />
     <ClInclude Include="include\Services\NetworkStatusService.h" />
+    <ClInclude Include="include\Services\UpnpNatPortMappingService.h" />
     <ClInclude Include="include\Services\SsdpParser.h" />
     <ClInclude Include="include\Services\UpnpDiscoveryService.h" />
     <ClInclude Include="include\Services\UpnpIgdServiceInfo.h" />
@@ -162,6 +163,7 @@ echo #include "AddPortRuleDialog.xaml.g.h"
       <SubType>Code</SubType>
     </ClInclude>
     <ClInclude Include="include\ViewModels\DashboardViewModel.h" />
+    <ClInclude Include="src\Services\PortMappingService.h" />
     <ClInclude Include="UPnPPage.xaml.h">
       <DependentUpon>UPnPPage.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -217,6 +219,7 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     <ClCompile Include="src\Services\NetworkStatusService.cpp" />
     <ClCompile Include="src\Services\SsdpParser.cpp" />
     <ClCompile Include="src\Services\UpnpDiscoveryService.cpp" />
+    <ClCompile Include="src\Services\UpnpNatPortMappingService.cpp" />
     <ClCompile Include="src\Services\UpnpSoapClient.cpp" />
     <ClCompile Include="src\ViewModels\DashboardViewModel.cpp" />
     <ClCompile Include="src\ViewModels\PortPageViewModel.cpp" />

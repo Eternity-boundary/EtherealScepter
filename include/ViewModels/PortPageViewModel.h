@@ -2,6 +2,7 @@
 #pragma once
 
 #include "ViewModels.PortPageViewModel.g.h"
+#include "include/Services/UpnpNatPortMappingService.h"
 
 #include <winrt/EtherealScepter.Models.h>
 #include <winrt/Microsoft.UI.Xaml.Data.h>
@@ -26,6 +27,9 @@ namespace winrt::EtherealScepter::ViewModels::implementation
     private:
         winrt::event<Microsoft::UI::Xaml::Data::PropertyChangedEventHandler> m_propertyChanged;
         Windows::Foundation::Collections::IObservableVector<EtherealScepter::Models::PortMappingInfo> m_portMappings{ nullptr };
+
+        winrt::apartment_context m_ui{};
+        ::EtherealScepter::Services::UpnpNatPortMappingService m_service{};
     };
 }
 

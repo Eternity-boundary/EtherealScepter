@@ -3,8 +3,28 @@
 #include "include/ViewModels/PortPageViewModel.h"
 #include "ViewModels.PortPageViewModel.g.cpp"
 
+#include "include/Services/UpnpNatPortMappingService.h"
+
 using namespace winrt;
 using namespace Windows::Foundation::Collections;
+
+namespace
+{
+    ::EtherealScepter::Services::UpnpNatPortMappingService g_upnpService;
+
+    inline void LoadMappingsFromRouter(
+        winrt::Windows::Foundation::Collections::IObservableVector<winrt::EtherealScepter::Models::PortMappingInfo> const& vec)
+    {
+        vec.Clear();
+
+        // 可能丟例外：路由器不支援 UPnP / IGD、UPnP 關閉、無權限、或路由器不回應
+        auto list = g_upnpService.Enumerate();
+        for (auto const& m : list)
+        {
+            vec.Append(m);
+        }
+    }
+}
 
 namespace winrt::EtherealScepter::ViewModels::implementation
 {
@@ -12,9 +32,14 @@ namespace winrt::EtherealScepter::ViewModels::implementation
     {
         m_portMappings = single_threaded_observable_vector<EtherealScepter::Models::PortMappingInfo>();
 
-        // fake data
-        m_portMappings.Append({ L"HTTP Server", 80, 8080, L"TCP", L"192.168.1.10" });
-        m_portMappings.Append({ L"Game Server", 25565, 25565, L"UDP", L"192.168.1.20" });
+        try
+        {
+            LoadMappingsFromRouter(m_portMappings);
+        }
+        catch (...)
+        {
+			//TODO: 顯示錯誤訊息？
+        }
     }
 
     IObservableVector<EtherealScepter::Models::PortMappingInfo> PortPageViewModel::PortMappings()
@@ -24,13 +49,16 @@ namespace winrt::EtherealScepter::ViewModels::implementation
 
     void PortPageViewModel::AddMapping(EtherealScepter::Models::PortMappingInfo const& mapping)
     {
+        g_upnpService.Add(mapping);
+
         m_portMappings.Append(mapping);
     }
 
     void PortPageViewModel::RemoveMapping(EtherealScepter::Models::PortMappingInfo const& mapping)
     {
-        // 簡單比對
-        //TODO
+        g_upnpService.Remove(mapping);
+
+        //簡單比對
         uint32_t i = 0;
         for (auto const& m : m_portMappings)
         {
@@ -47,7 +75,8 @@ namespace winrt::EtherealScepter::ViewModels::implementation
         }
     }
 
-    winrt::event_token PortPageViewModel::PropertyChanged(Microsoft::UI::Xaml::Data::PropertyChangedEventHandler const& handler)
+    winrt::event_token PortPageViewModel::PropertyChanged(
+        Microsoft::UI::Xaml::Data::PropertyChangedEventHandler const& handler)
     {
         return m_propertyChanged.add(handler);
     }
