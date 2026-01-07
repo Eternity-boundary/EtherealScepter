@@ -13,4 +13,7 @@ namespace EtherealScepter.Models
 
         Microsoft.UI.Xaml.Visibility IgdBadgeVisibility;
     };
+
 }
+
+

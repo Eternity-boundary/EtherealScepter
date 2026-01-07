@@ -1,3 +1,4 @@
+//Created by: EternityBoundary on Jan 6, 2025
 #include "pch.h"
 #include "include/ViewModels/UpnpViewModel.h"
 #include "ViewModels.UpnpViewModel.g.cpp"
@@ -16,7 +17,7 @@ namespace winrt::EtherealScepter::ViewModels::implementation
             {
                 auto name = e.PropertyName();
 
-                // 這些屬性變更時，UPnP Page 要刷新對應 x:Bind
+                // 這些屬性變更時，UPnP Page刷新對應 x:Bind
                 if (name == L"UpnpDevices")
                 {
                     RaisePropertyChanged(L"Devices");

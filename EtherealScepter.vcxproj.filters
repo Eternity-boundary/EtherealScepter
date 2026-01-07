@@ -11,6 +11,7 @@
     <Page Include="UPnPPage.xaml" />
     <Page Include="PortPage.xaml" />
     <Page Include="NetworkPage.xaml" />
+    <Page Include="AddPortRuleDialog.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="MainWindow.idl">
@@ -20,6 +21,9 @@
     <Midl Include="Models.idl" />
     <Midl Include="UpnpViewModel.idl" />
     <Midl Include="UpnpDeviceItem.idl" />
+    <Midl Include="PortPageViewModel.idl" />
+    <Midl Include="Models.PortMappingInfo.idl" />
+    <Midl Include="AddPortRuleDialog.idl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -31,6 +35,7 @@
     <ClCompile Include="src\Services\UpnpSoapClient.cpp" />
     <ClCompile Include="src\Services\SsdpParser.cpp" />
     <ClCompile Include="src\ViewModels\UpnpViewModel.cpp" />
+    <ClCompile Include="src\ViewModels\PortPageViewModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -42,6 +47,7 @@
     <ClInclude Include="include\Services\UpnpSoapClient.h" />
     <ClInclude Include="include\Services\SsdpParser.h" />
     <ClInclude Include="include\ViewModels\UpnpViewModel.h" />
+    <ClInclude Include="include\ViewModels\PortPageViewModel.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Wide310x150Logo.scale-200.png">

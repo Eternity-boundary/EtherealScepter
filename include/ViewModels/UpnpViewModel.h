@@ -1,3 +1,4 @@
+//Created by: EternityBoundary on Jan 6, 2025
 #pragma once
 #include "ViewModels.UpnpViewModel.g.h"
 
@@ -39,5 +40,7 @@ namespace winrt::EtherealScepter::ViewModels::implementation
 
 namespace winrt::EtherealScepter::ViewModels::factory_implementation
 {
-    struct UpnpViewModel : UpnpViewModelT<UpnpViewModel, implementation::UpnpViewModel> {};
+    struct UpnpViewModel : UpnpViewModelT<UpnpViewModel, implementation::UpnpViewModel>
+    {
+    };
 }
