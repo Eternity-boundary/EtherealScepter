@@ -2,25 +2,30 @@
 #pragma once
 
 #include "PortPage.g.h"
+#include "include/ViewModels/PortPageViewModel.h"
 
 namespace winrt::EtherealScepter::implementation
 {
     struct PortPage : PortPageT<PortPage>
     {
-        PortPage()
-        {
-            // Xaml objects should not call InitializeComponent during construction.
-            // See https://github.com/microsoft/cppwinrt/tree/master/nuget#initializecomponent
-        }
+        PortPage();
 
-        int32_t MyProperty();
-        void MyProperty(int32_t value);
+        EtherealScepter::ViewModels::PortPageViewModel ViewModel() const;
+
+        winrt::fire_and_forget OnAddRuleClicked(
+            winrt::Windows::Foundation::IInspectable const& sender,
+            Microsoft::UI::Xaml::RoutedEventArgs const& e);
+
+        void OnDeleteClicked(
+            winrt::Windows::Foundation::IInspectable const& sender,
+            Microsoft::UI::Xaml::RoutedEventArgs const& e);
+
+    private:
+        EtherealScepter::ViewModels::PortPageViewModel m_viewModel{ nullptr };
     };
 }
 
 namespace winrt::EtherealScepter::factory_implementation
 {
-    struct PortPage : PortPageT<PortPage, implementation::PortPage>
-    {
-    };
+    struct PortPage : PortPageT<PortPage, implementation::PortPage> {};
 }

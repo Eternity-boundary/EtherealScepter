@@ -130,7 +130,7 @@ namespace winrt::EtherealScepter::ViewModels::implementation
 			RaisePropertyChanged(L"StatusBrush");
         }
 
-        // ===== 2. 背景執行（只做同步 / 可能丟例外的事）=====
+        // ===== 2. 背景執行=====
         try
         {
             co_await winrt::resume_background();
@@ -169,6 +169,13 @@ namespace winrt::EtherealScepter::ViewModels::implementation
 
         m_numberOfUPnPDevice = snapshot.upnpDeviceCount;
         m_isPortForwardingAvailable = snapshot.portForwardingStatus;
+
+        m_upnpDevices.Clear();
+        for (auto const& d : snapshot.upnpDevices)
+        {
+            m_upnpDevices.Append(d);
+        }
+        
 
         auto now = std::chrono::system_clock::now();
         std::time_t t = std::chrono::system_clock::to_time_t(now);
@@ -209,9 +216,10 @@ namespace winrt::EtherealScepter::ViewModels::implementation
         RaisePropertyChanged(L"StatusMessage");
         RaisePropertyChanged(L"StatusBrush");
 
+        RaisePropertyChanged(L"UpnpDevices");
+
         m_refreshing = false;
     }
-
 
     winrt::hstring DashboardViewModel::NetworkStatus() { return m_networkStatus; }
     winrt::hstring DashboardViewModel::UpnpStatus() { return m_upnpStatus; }

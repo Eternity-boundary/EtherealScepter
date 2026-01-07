@@ -1,0 +1,78 @@
+<!--  Created by: EternityBoundary on Jan 6, 2025  -->
+<ContentDialog
+    x:Class="EtherealScepter.Views.Dialogs.AddPortRuleDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Add Port Forwarding Rule"
+    DefaultButton="Primary"
+    PrimaryButtonText="Add"
+    SecondaryButtonText="Cancel"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Spacing="16">
+
+            <!--  Description  -->
+            <StackPanel Spacing="6">
+                <TextBlock FontWeight="SemiBold" Text="Description" />
+                <TextBox
+                    x:Name="DescriptionBox"
+                    Background="#1F1F1F"
+                    PlaceholderText="Optional description" />
+            </StackPanel>
+
+            <!--  Ports  -->
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!--  External Port  -->
+                <StackPanel Grid.Column="0" Spacing="6">
+                    <TextBlock FontWeight="SemiBold" Text="External Port" />
+                    <NumberBox
+                        x:Name="ExternalPortBox"
+                        Background="#1F1F1F"
+                        Maximum="65535"
+                        Minimum="1"
+                        PlaceholderText="e.g. 8080"
+                        SpinButtonPlacementMode="Hidden" />
+                </StackPanel>
+
+                <!--  Internal Port  -->
+                <StackPanel Grid.Column="1" Spacing="6">
+                    <TextBlock FontWeight="SemiBold" Text="Internal Port" />
+                    <NumberBox
+                        x:Name="InternalPortBox"
+                        Background="#1F1F1F"
+                        Maximum="65535"
+                        Minimum="1"
+                        PlaceholderText="e.g. 80"
+                        SpinButtonPlacementMode="Hidden" />
+                </StackPanel>
+            </Grid>
+
+            <!--  Protocol  -->
+            <StackPanel Spacing="6">
+                <TextBlock FontWeight="SemiBold" Text="Protocol" />
+                <ComboBox x:Name="ProtocolBox" SelectedIndex="0">
+                    <ComboBoxItem Content="TCP" />
+                    <ComboBoxItem Content="UDP" />
+                </ComboBox>
+            </StackPanel>
+
+            <!--  Internal Client  -->
+            <StackPanel Spacing="6">
+                <TextBlock FontWeight="SemiBold" Text="Internal Client IP" />
+                <TextBox
+                    x:Name="InternalClientBox"
+                    Background="#1F1F1F"
+                    PlaceholderText="e.g. 192.168.1.100" />
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</ContentDialog>

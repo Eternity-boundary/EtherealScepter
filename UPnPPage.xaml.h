@@ -2,25 +2,24 @@
 #pragma once
 
 #include "UPnPPage.g.h"
+#include <winrt/EtherealScepter.ViewModels.h>
 
 namespace winrt::EtherealScepter::implementation
 {
     struct UPnPPage : UPnPPageT<UPnPPage>
     {
-        UPnPPage()
-        {
-            // Xaml objects should not call InitializeComponent during construction.
-            // See https://github.com/microsoft/cppwinrt/tree/master/nuget#initializecomponent
-        }
+        UPnPPage();
 
-        int32_t MyProperty();
-        void MyProperty(int32_t value);
+        winrt::EtherealScepter::ViewModels::UpnpViewModel ViewModel() noexcept;
+        winrt::Microsoft::UI::Xaml::Visibility BoolToVisibility(bool value) noexcept;
+
+
+    private:
+        winrt::EtherealScepter::ViewModels::UpnpViewModel m_viewModel{ nullptr };
     };
 }
 
 namespace winrt::EtherealScepter::factory_implementation
 {
-    struct UPnPPage : UPnPPageT<UPnPPage, implementation::UPnPPage>
-    {
-    };
+    struct UPnPPage : UPnPPageT<UPnPPage, implementation::UPnPPage> {};
 }

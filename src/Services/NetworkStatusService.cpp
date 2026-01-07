@@ -11,6 +11,7 @@ using namespace Windows::Networking;
 using namespace Windows::Foundation;
 using namespace Windows::Web::Http;
 using namespace Windows::Networking::Connectivity;
+namespace ES = ::EtherealScepter;
 
 namespace
 {
@@ -66,6 +67,8 @@ namespace EtherealScepter::Services
     NetworkSnapshot NetworkStatusService::Query()
     {
         NetworkSnapshot snapshot{};
+        std::optional<ES::Services::Upnp::UpnpIgdServiceInfo> igdService;
+        winrt::hstring igdLocation;
 
         // 1. OS network status
         snapshot.networkStatus = L"Disconnected";
@@ -100,8 +103,33 @@ namespace EtherealScepter::Services
         snapshot.natType = L"Unknown";
 
         // 3. UPnP Discovery
-        EtherealScepter::Services::Upnp::UpnpDiscoveryService discovery;
+        ES::Services::Upnp::UpnpDiscoveryService discovery;
         auto devices = discovery.Discover();
+
+        snapshot.upnpDevices.clear();
+        snapshot.upnpDevices.reserve(devices.size());
+
+        for (auto const& d : devices)
+        {
+            winrt::EtherealScepter::Models::UpnpDeviceInfo info{};
+
+            info.Location = winrt::hstring{ d.location.c_str() };
+
+            // TODO:沒有 St/Server 欄位：先暫用現有欄位讓 UI 能顯示
+            info.DeviceType = winrt::hstring{ d.st.c_str() };  
+            info.Manufacturer = winrt::hstring{ d.server.c_str() };    
+
+            if (!d.st.empty())
+                info.FriendlyName = winrt::hstring{ d.st.c_str() };
+            else if (!d.server.empty())
+                info.FriendlyName = winrt::hstring{ d.server.c_str() };
+            else
+                info.FriendlyName = L"(UPnP Device)";
+
+            info.IsIgd = false;
+
+            snapshot.upnpDevices.push_back(std::move(info));
+        }
 
         if (!devices.empty())
         {
@@ -111,30 +139,46 @@ namespace EtherealScepter::Services
         }
 
         // 4. Parse IGD (WANIP / WANPPP)
-        std::optional<EtherealScepter::Services::Upnp::UpnpIgdServiceInfo> igdService;
-
         for (auto const& device : devices)
         {
-            igdService =
-                EtherealScepter::Services::Upnp::IgdDescriptionParser
+            auto parsed =
+                ES::Services::Upnp::IgdDescriptionParser
                 ::ParseFromLocation(device.location);
 
-            if (igdService)
+            if (parsed) {
+                snapshot.igdService = std::move(parsed);
+                igdLocation = winrt::hstring{ device.location.c_str() };
                 break;
+            }
+        }
+
+        if (snapshot.igdService && !igdLocation.empty())
+        {
+            for (auto& info : snapshot.upnpDevices)
+            {
+                if (info.Location == igdLocation)
+                {
+                    info.IsIgd = true;
+                    info.IgdBadgeVisibility = winrt::Microsoft::UI::Xaml::Visibility::Visible;
+                    //TODO:IgdServiceType / IgdControlUrl / IgdBaseUrl...
+
+                    break;
+                }
+            }
         }
 
         // 5. SOAP WAN IP (primary + fallback)
-        if (igdService)
+        if (snapshot.igdService)
         {
-            EtherealScepter::Services::Upnp::UpnpSoapClient soap;
+            ES::Services::Upnp::UpnpSoapClient soap;
 
             std::optional<std::wstring> wanIp;
 
-            wanIp = soap.GetExternalIPAddress(*igdService);
+            wanIp = soap.GetExternalIPAddress(*snapshot.igdService);
 
             // fallback
             if (!wanIp)
-                wanIp = soap.GetExternalIPAddressViaStatus(*igdService);
+                wanIp = soap.GetExternalIPAddressViaStatus(*snapshot.igdService);
 
             if (wanIp && !wanIp->empty())
             {

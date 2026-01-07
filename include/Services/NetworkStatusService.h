@@ -6,8 +6,12 @@
 #include "include/Services/UpnpSoapClient.h"
 #include "include/Services/IgdDescriptionParser.h"
 
+#include "winrt/EtherealScepter.Models.h"
+
 namespace EtherealScepter::Services
 {
+    namespace ES = ::EtherealScepter;
+
     struct NetworkSnapshot
     {
         winrt::hstring networkStatus;
@@ -19,7 +23,11 @@ namespace EtherealScepter::Services
 
         winrt::hstring localIp;          
         winrt::hstring wanIp;            
-        winrt::hstring cgnatStatus;     
+        winrt::hstring cgnatStatus;   
+
+        std::optional<ES::Services::Upnp::UpnpIgdServiceInfo> igdService;
+
+        std::vector<winrt::EtherealScepter::Models::UpnpDeviceInfo> upnpDevices;
 
         Upnp::UpnpDiscoveryService   m_upnpDiscovery;
         Upnp::UpnpSoapClient         m_upnpSoap;

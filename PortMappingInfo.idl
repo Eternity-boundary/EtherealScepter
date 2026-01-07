@@ -1,0 +1,19 @@
+namespace EtherealScepter.Models
+{
+    runtimeclass PortMappingInfo
+    {
+        PortMappingInfo(
+            String name,
+            Int32 externalPort,
+            Int32 internalPort,
+            String protocol,
+            String internalClient
+        );
+
+        String Name;
+        Int32 ExternalPort;
+        Int32 InternalPort;
+        String Protocol;
+        String InternalClient;
+    }
+}
