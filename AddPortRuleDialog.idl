@@ -1,0 +1,13 @@
+namespace EtherealScepter.Views.Dialogs
+{
+    runtimeclass AddPortRuleDialog : Microsoft.UI.Xaml.Controls.ContentDialog
+    {
+        AddPortRuleDialog();
+
+        String Description{ get; };
+        UInt16 ExternalPort{ get; };
+        UInt16 InternalPort{ get; };
+        String Protocol{ get; };
+        String InternalClient{ get; };
+    }
+}

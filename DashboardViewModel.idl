@@ -1,3 +1,5 @@
+import "Models.idl";
+
 namespace EtherealScepter.ViewModels
 {
     [default_interface]
@@ -22,6 +24,8 @@ namespace EtherealScepter.ViewModels
         Microsoft.UI.Xaml.Media.Brush NatTypeBrush{ get; };
 		Microsoft.UI.Xaml.Media.Brush CgnatStatusBrush{ get; };
         Microsoft.UI.Xaml.Media.Brush StatusBrush{ get; };
+
+        Windows.Foundation.Collections.IObservableVector<EtherealScepter.Models.UpnpDeviceInfo> UpnpDevices{ get; };
 
         Windows.Foundation.IAsyncAction RefreshAsync();
     }

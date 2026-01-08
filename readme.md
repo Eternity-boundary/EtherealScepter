@@ -24,7 +24,7 @@ EtherealScepter 目前是一個「UPnP 開關工具」，向下列目標發展�
 - CGNAT 判斷
 - Port Mapping 摘要
 
-### Network
+### Network(未完成)
 - 本機網路資訊
 - WAN / CGNAT 判斷邏輯整合
 - 為後續自動偵測做準備
@@ -32,11 +32,11 @@ EtherealScepter 目前是一個「UPnP 開關工具」，向下列目標發展�
 ### UPnP
 - IGD 裝置探索（SSDP）
 - External IP 查詢
-- Port Mapping 管理（規劃中）
+- Port Mapping 管理
 
 ### Port
 - 顯示目前 Port Mapping
-- 新增 / 移除對應規則（規劃中）
+- 新增 / 移除對應規則
 
 ---
 
@@ -46,10 +46,9 @@ EtherealScepter 目前是一個「UPnP 開關工具」，向下列目標發展�
 - **語言**：C++23
 - **WinRT 投影**：C++/WinRT
 - **架構模式**：MVVM
-- **資料綁定**：`x:Bind`（強型別）
+- **資料綁定**：`x:Bind`
 - **非同步模型**：C++ coroutine (`IAsyncAction`)
 - **UI Thread 回切**：`winrt::apartment_context`
-- **IDL / winmd**：明確定義 public surface，避免隱性耦合
 
 ---
 ⚠ 注意事項

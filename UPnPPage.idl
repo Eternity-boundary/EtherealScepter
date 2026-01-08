@@ -1,9 +1,10 @@
+import "UpnpViewModel.idl";
 namespace EtherealScepter
 {
     [default_interface]
     runtimeclass UPnPPage : Microsoft.UI.Xaml.Controls.Page
     {
         UPnPPage();
-        Int32 MyProperty;
+        EtherealScepter.ViewModels.UpnpViewModel ViewModel{ get; };
     }
 }

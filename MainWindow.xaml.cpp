@@ -6,7 +6,11 @@
 #endif
 #include <winrt/base.h>
 #include <winrt/Windows.UI.Xaml.Interop.h>
-
+#include <microsoft.ui.xaml.window.h>     
+#include <winrt/Microsoft.UI.Interop.h>   
+#include <winrt/Microsoft.UI.Windowing.h> 
+#include <winrt/Windows.ApplicationModel.h> 
+#include <winrt/Windows.Storage.h>
 
 #include "DashboardPage.xaml.h"
 #include "UPnPPage.xaml.h"
@@ -17,6 +21,28 @@ using namespace winrt;
 using namespace Microsoft::UI::Xaml;
 using namespace Microsoft::UI::Xaml::Controls;
 using namespace winrt::Microsoft::UI::Xaml::Interop;
+using namespace winrt::Microsoft::UI::Windowing;
+
+static HWND GetHwnd(winrt::Microsoft::UI::Xaml::Window const& window)
+{
+    HWND hwnd{};
+    auto native = window.as<IWindowNative>();
+    check_hresult(native->get_WindowHandle(&hwnd));
+    return hwnd;
+}
+
+void SetTitleBarIcon(winrt::Microsoft::UI::Xaml::Window const& window)
+{
+    HWND hwnd = GetHwnd(window);
+
+    auto windowId = Microsoft::UI::GetWindowIdFromWindow(hwnd);
+    auto appWindow = Microsoft::UI::Windowing::AppWindow::GetFromWindowId(windowId);
+
+    auto root = Windows::ApplicationModel::Package::Current().InstalledLocation().Path();
+    winrt::hstring iconPath = root + L"\\Assets\\flash.ico";
+
+    appWindow.SetIcon(iconPath);
+}
 
 namespace winrt::EtherealScepter::implementation
 {
@@ -25,7 +51,7 @@ namespace winrt::EtherealScepter::implementation
     MainWindow::MainWindow()
     {
         InitializeComponent();
-
+        SetTitleBarIcon(*this);
         // 預設顯示 Dashboard
         ContentFrame().Navigate(xaml_typename<EtherealScepter::DashboardPage>());
     }
