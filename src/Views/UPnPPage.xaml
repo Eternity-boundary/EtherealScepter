@@ -1,0 +1,133 @@
+﻿<!--  Created by: EternityBoundary on Jan 3, 2025  -->
+<Page
+    x:Class="EtherealScepter.UPnPPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:EtherealScepter"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:EtherealScepter.Models"
+    x:Name="Root"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+
+        <StackPanel Padding="32" Spacing="24">
+
+            <!--  Title  -->
+            <TextBlock
+                FontSize="28"
+                FontWeight="SemiBold"
+                Text="UPnP" />
+
+            <TextBlock
+                Margin="0,0,0,12"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Text="Discovered devices on the local network" />
+
+            <!--  Summary Card  -->
+            <Border
+                Padding="16"
+                Background="#1F1F1F"
+                CornerRadius="8">
+                <StackPanel Spacing="8">
+
+                    <TextBlock
+                        FontWeight="SemiBold"
+                        Opacity="0.9"
+                        Text="Status" />
+
+                    <TextBlock
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="{x:Bind ViewModel.UpnpStatusBrush, Mode=OneWay}"
+                        Text="{x:Bind ViewModel.UpnpStatus, Mode=OneWay}" />
+
+                    <TextBlock
+                        FontSize="12"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Text="{x:Bind ViewModel.NumberOfUPnPDevice, Mode=OneWay}" />
+
+                </StackPanel>
+            </Border>
+
+            <!--  Devices  -->
+            <StackPanel Spacing="12">
+
+                <TextBlock
+                    FontSize="20"
+                    FontWeight="SemiBold"
+                    Text="Devices" />
+
+                <ItemsControl ItemsSource="{x:Bind ViewModel.Devices, Mode=OneWay}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:UpnpDeviceInfo">
+                            <Border
+                                Margin="0,0,0,12"
+                                Padding="16"
+                                Background="#1F1F1F"
+                                CornerRadius="8">
+
+                                <StackPanel Spacing="8">
+
+                                    <!--  Header Row: FriendlyName + IGD badge  -->
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock
+                                            Grid.Column="0"
+                                            FontWeight="SemiBold"
+                                            Text="{x:Bind FriendlyName}"
+                                            TextTrimming="CharacterEllipsis" />
+
+                                        <!--  IGD badge  -->
+                                        <Border
+                                            Grid.Column="1"
+                                            Padding="10,4"
+                                            Background="#1E2A1E"
+                                            BorderBrush="#2E5A2E"
+                                            BorderThickness="1"
+                                            CornerRadius="999"
+                                            Visibility="{x:Bind IgdBadgeVisibility, Mode=OneWay}">
+                                            <TextBlock
+                                                FontSize="12"
+                                                FontWeight="SemiBold"
+                                                Foreground="LightGreen"
+                                                Text="IGD" />
+                                        </Border>
+                                    </Grid>
+
+                                    <!--  DeviceType / Manufacturer  -->
+                                    <TextBlock
+                                        FontSize="12"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="{x:Bind DeviceType}"
+                                        TextTrimming="CharacterEllipsis" />
+
+                                    <TextBlock
+                                        FontSize="12"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="{x:Bind Manufacturer}"
+                                        TextTrimming="CharacterEllipsis" />
+
+                                    <!--  Location  -->
+                                    <TextBlock
+                                        FontSize="12"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="{x:Bind Location}"
+                                        TextWrapping="WrapWholeWords" />
+
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

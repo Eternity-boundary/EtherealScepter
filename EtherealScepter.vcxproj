@@ -105,6 +105,7 @@
       <LanguageStandard Condition="'$(VisualStudioVersion)' &gt;= '18.0'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(VisualStudioVersion)' &lt; '18.0'">stdcpp17</LanguageStandard>
       <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(GeneratedFilesDir)src\Views;$(GeneratedFilesDir)src\Views\Dialogs;$(GeneratedFilesDir)src\App;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
@@ -142,14 +143,12 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     <Manifest Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AddPortRuleDialog.xaml.h">
-      <DependentUpon>AddPortRuleDialog.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </ClInclude>
-    <ClInclude Include="DashboardPage.xaml.h">
-      <DependentUpon>DashboardPage.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </ClInclude>
+    <ClInclude Include="Generated Files\App.xaml.g.h" />
+    <ClInclude Include="Generated Files\DashboardPage.xaml.g.h" />
+    <ClInclude Include="Generated Files\MainWindow.xaml.g.h" />
+    <ClInclude Include="Generated Files\NetworkPage.xaml.g.h" />
+    <ClInclude Include="Generated Files\PortPage.xaml.g.h" />
+    <ClInclude Include="Generated Files\UPnPPage.xaml.g.h" />
     <ClInclude Include="include\Services\IgdDescriptionParser.h" />
     <ClInclude Include="include\Services\NetworkStatusService.h" />
     <ClInclude Include="include\Services\UpnpNatPortMappingService.h" />
@@ -159,73 +158,50 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     <ClInclude Include="include\ViewModels\PortPageViewModel.h" />
     <ClInclude Include="include\ViewModels\UpnpViewModel.h" />
     <ClInclude Include="include\Services\UpnpSoapClient.h" />
-    <ClInclude Include="NetworkPage.xaml.h">
-      <DependentUpon>NetworkPage.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </ClInclude>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="App.xaml.h">
-      <DependentUpon>App.xaml</DependentUpon>
-    </ClInclude>
-    <ClInclude Include="MainWindow.xaml.h">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-    </ClInclude>
-    <ClInclude Include="PortPage.xaml.h">
-      <DependentUpon>PortPage.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </ClInclude>
     <ClInclude Include="include\ViewModels\DashboardViewModel.h" />
+    <ClInclude Include="src\App\App.xaml.g.h" />
+    <ClInclude Include="src\App\App.xaml.h">
+      <DependentUpon>src\App\App.xaml</DependentUpon>
+    </ClInclude>
     <ClInclude Include="src\Services\PortMappingService.h" />
-    <ClInclude Include="UPnPPage.xaml.h">
-      <DependentUpon>UPnPPage.xaml</DependentUpon>
-      <SubType>Code</SubType>
+    <ClInclude Include="src\Views\DashboardPage.xaml.h">
+      <DependentUpon>src\Views\DashboardPage.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="src\Views\Dialogs\AddPortRuleDialog.xaml.h">
+      <DependentUpon>src\Views\Dialogs\AddPortRuleDialog.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="src\Views\MainWindow.xaml.h">
+      <DependentUpon>src\Views\MainWindow.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="src\Views\NetworkPage.xaml.h">
+      <DependentUpon>src\Views\NetworkPage.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="src\Views\PortPage.xaml.h">
+      <DependentUpon>src\Views\PortPage.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="src\Views\UPnPPage.xaml.h">
+      <DependentUpon>src\Views\UPnPPage.xaml</DependentUpon>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml" />
-    <Page Include="AddPortRuleDialog.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="DashboardPage.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="MainWindow.xaml" />
-    <Page Include="NetworkPage.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="PortPage.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UPnPPage.xaml">
-      <SubType>Designer</SubType>
-    </Page>
+    <ApplicationDefinition Include="src\App\App.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AddPortRuleDialog.xaml.cpp">
-      <DependentUpon>AddPortRuleDialog.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </ClCompile>
-    <ClCompile Include="DashboardPage.xaml.cpp">
-      <DependentUpon>DashboardPage.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </ClCompile>
-    <ClCompile Include="NetworkPage.xaml.cpp">
-      <DependentUpon>NetworkPage.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </ClCompile>
+    <Page Include="src\Views\DashboardPage.xaml" />
+    <Page Include="src\Views\Dialogs\AddPortRuleDialog.xaml" />
+    <Page Include="src\Views\MainWindow.xaml" />
+    <Page Include="src\Views\NetworkPage.xaml" />
+    <Page Include="src\Views\PortPage.xaml" />
+    <Page Include="src\Views\UPnPPage.xaml" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="App.xaml.cpp">
-      <DependentUpon>App.xaml</DependentUpon>
-    </ClCompile>
-    <ClCompile Include="MainWindow.xaml.cpp">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-    </ClCompile>
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
-    <ClCompile Include="PortPage.xaml.cpp">
-      <DependentUpon>PortPage.xaml</DependentUpon>
-      <SubType>Code</SubType>
+    <ClCompile Include="src\App\App.xaml.cpp">
+      <DependentUpon>src\App\App.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="src\Services\IgdDescriptionParser.cpp" />
     <ClCompile Include="src\Services\NetworkStatusService.cpp" />
@@ -236,36 +212,38 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     <ClCompile Include="src\ViewModels\DashboardViewModel.cpp" />
     <ClCompile Include="src\ViewModels\PortPageViewModel.cpp" />
     <ClCompile Include="src\ViewModels\UpnpViewModel.cpp" />
-    <ClCompile Include="UPnPPage.xaml.cpp">
-      <DependentUpon>UPnPPage.xaml</DependentUpon>
-      <SubType>Code</SubType>
+    <ClCompile Include="src\Views\DashboardPage.xaml.cpp">
+      <DependentUpon>src\Views\DashboardPage.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="src\Views\Dialogs\AddPortRuleDialog.xaml.cpp">
+      <DependentUpon>src\Views\Dialogs\AddPortRuleDialog.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="src\Views\MainWindow.xaml.cpp">
+      <DependentUpon>src\Views\MainWindow.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="src\Views\NetworkPage.xaml.cpp">
+      <DependentUpon>src\Views\NetworkPage.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="src\Views\PortPage.xaml.cpp">
+      <DependentUpon>src\Views\PortPage.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="src\Views\UPnPPage.xaml.cpp">
+      <DependentUpon>src\Views\UPnPPage.xaml</DependentUpon>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Midl Include="AddPortRuleDialog.idl" />
-    <Midl Include="DashboardPage.idl">
-      <DependentUpon>DashboardPage.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Midl>
     <Midl Include="DashboardViewModel.idl" />
     <Midl Include="Models.PortMappingInfo.idl" />
     <Midl Include="PortPageViewModel.idl" />
+    <Midl Include="src\Views\DashboardPage.idl" />
+    <Midl Include="src\Views\Dialogs\AddPortRuleDialog.idl" />
+    <Midl Include="src\Views\MainWindow.idl" />
+    <Midl Include="src\Views\NetworkPage.idl" />
+    <Midl Include="src\Views\PortPage.idl" />
+    <Midl Include="src\Views\UPnPPage.idl" />
     <Midl Include="UpnpDeviceItem.idl" />
     <Midl Include="UpnpViewModel.idl" />
-    <Midl Include="MainWindow.idl" />
     <Midl Include="Models.idl" />
-    <Midl Include="NetworkPage.idl">
-      <DependentUpon>NetworkPage.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Midl>
-    <Midl Include="PortPage.idl">
-      <DependentUpon>PortPage.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Midl>
-    <Midl Include="UPnPPage.idl">
-      <DependentUpon>UPnPPage.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Midl>
   </ItemGroup>
   <ItemGroup>
     <Text Include="readme.md">
@@ -342,6 +320,8 @@ echo #include "AddPortRuleDialog.xaml.g.h"
   <ItemGroup>
     <None Include="EtherealScepter_TemporaryKey.pfx" />
     <None Include="packages.config" />
+    <None Include="tools\update_proj_paths.ps1" />
+    <None Include="tools\update_proj_paths_cleanup.ps1" />
   </ItemGroup>
   <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>

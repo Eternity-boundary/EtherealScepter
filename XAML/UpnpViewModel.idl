@@ -1,0 +1,17 @@
+﻿import "XAML/DashboardViewModel.idl";
+namespace EtherealScepter.ViewModels
+{
+    runtimeclass UpnpViewModel : Microsoft.UI.Xaml.Data.INotifyPropertyChanged
+    {
+        UpnpViewModel(EtherealScepter.ViewModels.DashboardViewModel dashboard);
+
+        Windows.Foundation.Collections.IObservableVector<EtherealScepter.Models.UpnpDeviceInfo> Devices{ get; };
+
+        String UpnpStatus{ get; };
+        Microsoft.UI.Xaml.Media.Brush UpnpStatusBrush{ get; };
+
+        String NumberOfUPnPDevice{ get; };
+
+        Microsoft.UI.Xaml.Visibility BoolToVisibility(Boolean value);
+    }
+}

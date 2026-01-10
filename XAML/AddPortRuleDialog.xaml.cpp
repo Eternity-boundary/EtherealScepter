@@ -1,4 +1,4 @@
-//Created by: EternityBoundary on Jan 7, 2025
+﻿//Created by: EternityBoundary on Jan 7, 2025
 #include "pch.h"
 #include "AddPortRuleDialog.xaml.h"
 #include "Views.Dialogs.AddPortRuleDialog.g.cpp"
@@ -7,8 +7,7 @@ using namespace winrt;
 using namespace Microsoft::UI::Xaml;
 using namespace Microsoft::UI::Xaml::Controls;
 
-namespace winrt::EtherealScepter::Views::Dialogs::implementation
-{
+namespace winrt::EtherealScepter::Views::Dialogs::implementation::XAML {
     static uint16_t ClampPort(double v)
     {
 		constexpr double MAX_PORT = 65535.0;

@@ -1,0 +1,11 @@
+namespace EtherealScepter.Models
+{
+    struct PortMappingInfo
+    {
+        String Description;
+        UInt16 ExternalPort;
+        UInt16 InternalPort;
+        String Protocol;
+        String InternalClient;
+    };
+}

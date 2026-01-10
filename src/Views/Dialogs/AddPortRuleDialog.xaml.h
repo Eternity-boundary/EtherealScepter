@@ -1,4 +1,4 @@
-//Created by: EternityBoundary on Jan 7, 2025
+﻿//Created by: EternityBoundary on Jan 7, 2025
 #pragma once
 
 #include "Views.Dialogs.AddPortRuleDialog.g.h"

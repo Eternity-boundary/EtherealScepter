@@ -1,4 +1,4 @@
-//Created by: EternityBoundary on Jan 3, 2025
+﻿//Created by: EternityBoundary on Jan 3, 2025
 #include "pch.h"
 #include "DashboardPage.xaml.h"
 #if __has_include("DashboardPage.g.cpp")
@@ -6,8 +6,7 @@
 #endif
 
 
-namespace winrt::EtherealScepter::implementation
-{
+namespace winrt::EtherealScepter::implementation::XAML {
     DashboardPage::DashboardPage()
     {
         InitializeComponent();

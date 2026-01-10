@@ -1,0 +1,155 @@
+﻿<!--  Created by: EternityBoundary on Jan 3, 2025  -->
+<Page
+    x:Class="EtherealScepter.DashboardPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:EtherealScepter"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Padding="32" Spacing="24">
+
+            <!--  Title  -->
+            <TextBlock
+                FontSize="28"
+                FontWeight="SemiBold"
+                Text="Dashboard" />
+
+            <TextBlock
+                Margin="0,0,0,12"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Text="System overview" />
+
+            <!--  Status Cards  -->
+            <Grid ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!--  Network  -->
+                <Border
+                    Grid.Column="0"
+                    Padding="16"
+                    Background="#1F1F1F"
+                    CornerRadius="8">
+
+                    <StackPanel Spacing="8">
+
+                        <!--  Title  -->
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Opacity="0.9"
+                            Text="Network" />
+
+                        <!--  Network Status  -->
+                        <TextBlock
+                            FontSize="16"
+                            FontWeight="SemiBold"
+                            Foreground="{x:Bind ViewModel.NetworkStatusBrush, Mode=OneWay}"
+                            Text="{x:Bind ViewModel.NetworkStatus, Mode=OneWay}" />
+
+                        <!--  Local IP  -->
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Text="Local IP:" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Text="{x:Bind ViewModel.LocalIp, Mode=OneWay}" />
+                        </StackPanel>
+
+                        <!--  WAN IP  -->
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Text="WAN IP:" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Text="{x:Bind ViewModel.WanIp, Mode=OneWay}" />
+                        </StackPanel>
+
+                        <!--  NAT / CGNAT  -->
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Text="NAT:" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{x:Bind ViewModel.CgnatStatusBrush, Mode=OneWay}"
+                                Text="{x:Bind ViewModel.CgnatStatus, Mode=OneWay}" />
+                        </StackPanel>
+
+                    </StackPanel>
+                </Border>
+
+
+                <!--  UPnP  -->
+                <Border
+                    Grid.Column="1"
+                    Padding="16"
+                    Background="#1F1F1F"
+                    CornerRadius="8">
+                    <StackPanel Spacing="6">
+                        <TextBlock FontWeight="SemiBold" Text="UPnP" />
+                        <TextBlock
+                            FontSize="16"
+                            Foreground="{x:Bind ViewModel.UpnpStatusBrush, Mode=OneWay}"
+                            Text="{x:Bind ViewModel.UpnpStatus, Mode=OneWay}" />
+                        <TextBlock
+                            FontSize="12"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="{x:Bind ViewModel.NumberOfUPnPDevice, Mode=OneWay}" />
+                    </StackPanel>
+                </Border>
+
+                <!--  NAT  -->
+                <Border
+                    Grid.Column="2"
+                    Padding="16"
+                    Background="#1F1F1F"
+                    CornerRadius="8">
+                    <StackPanel Spacing="6">
+                        <TextBlock FontWeight="SemiBold" Text="NAT Type" />
+                        <TextBlock
+                            FontSize="16"
+                            Foreground="{x:Bind ViewModel.NatTypeBrush, Mode=OneWay}"
+                            Text="{x:Bind ViewModel.NatType, Mode=OneWay}" />
+                        <TextBlock
+                            FontSize="12"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="{x:Bind ViewModel.IsPortForwardingAvailable, Mode=OneWay}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!--  Summary  -->
+            <StackPanel Spacing="12">
+                <TextBlock
+                    FontSize="20"
+                    FontWeight="SemiBold"
+                    Text="Summary" />
+
+                <Border
+                    Padding="16"
+                    Background="#1F1F1F"
+                    CornerRadius="8">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="{x:Bind ViewModel.SummaryText, Mode=OneWay}" />
+                        <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind ViewModel.LastRefreshText, Mode=OneWay}" />
+                        <TextBlock Foreground="{x:Bind ViewModel.StatusBrush, Mode=OneWay}" Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

@@ -1,42 +1,49 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml" />
+    <ApplicationDefinition Include="src\App\App.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="MainWindow.xaml">
-      <Filter>MainWindow</Filter>
-    </Page>
-    <Page Include="DashboardPage.xaml" />
-    <Page Include="UPnPPage.xaml" />
-    <Page Include="PortPage.xaml" />
-    <Page Include="NetworkPage.xaml" />
-    <Page Include="AddPortRuleDialog.xaml" />
+    <Page Include="src\Views\DashboardPage.xaml" />
+    <Page Include="src\Views\Dialogs\AddPortRuleDialog.xaml" />
+    <Page Include="src\Views\MainWindow.xaml" />
+    <Page Include="src\Views\NetworkPage.xaml" />
+    <Page Include="src\Views\PortPage.xaml" />
+    <Page Include="src\Views\UPnPPage.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <Midl Include="MainWindow.idl">
-      <Filter>MainWindow</Filter>
-    </Midl>
     <Midl Include="DashboardViewModel.idl" />
     <Midl Include="Models.idl" />
     <Midl Include="UpnpViewModel.idl" />
     <Midl Include="UpnpDeviceItem.idl" />
     <Midl Include="PortPageViewModel.idl" />
     <Midl Include="Models.PortMappingInfo.idl" />
-    <Midl Include="AddPortRuleDialog.idl" />
+    <Midl Include="src\Views\DashboardPage.idl" />
+    <Midl Include="src\Views\Dialogs\AddPortRuleDialog.idl" />
+    <Midl Include="src\Views\MainWindow.idl" />
+    <Midl Include="src\Views\NetworkPage.idl" />
+    <Midl Include="src\Views\PortPage.idl" />
+    <Midl Include="src\Views\UPnPPage.idl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
+    <ClCompile Include="src\App\App.xaml.cpp" />
     <ClCompile Include="src\ViewModels\DashboardViewModel.cpp" />
+    <ClCompile Include="src\ViewModels\PortPageViewModel.cpp" />
+    <ClCompile Include="src\ViewModels\UpnpViewModel.cpp" />
     <ClCompile Include="src\Services\NetworkStatusService.cpp" />
     <ClCompile Include="src\Services\UpnpDiscoveryService.cpp" />
     <ClCompile Include="src\Services\IgdDescriptionParser.cpp" />
     <ClCompile Include="src\Services\UpnpSoapClient.cpp" />
     <ClCompile Include="src\Services\SsdpParser.cpp" />
-    <ClCompile Include="src\ViewModels\UpnpViewModel.cpp" />
-    <ClCompile Include="src\ViewModels\PortPageViewModel.cpp" />
     <ClCompile Include="src\Services\UpnpNatPortMappingService.cpp" />
+    <ClCompile Include="src\Views\DashboardPage.xaml.cpp" />
+    <ClCompile Include="src\Views\Dialogs\AddPortRuleDialog.xaml.cpp" />
+    <ClCompile Include="src\Views\MainWindow.xaml.cpp" />
+    <ClCompile Include="src\Views\NetworkPage.xaml.cpp" />
+    <ClCompile Include="src\Views\PortPage.xaml.cpp" />
+    <ClCompile Include="src\Views\UPnPPage.xaml.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -51,6 +58,13 @@
     <ClInclude Include="include\ViewModels\PortPageViewModel.h" />
     <ClInclude Include="src\Services\PortMappingService.h" />
     <ClInclude Include="include\Services\UpnpNatPortMappingService.h" />
+    <ClInclude Include="src\App\App.xaml.h" />
+    <ClInclude Include="src\Views\DashboardPage.xaml.h" />
+    <ClInclude Include="src\Views\Dialogs\AddPortRuleDialog.xaml.h" />
+    <ClInclude Include="src\Views\MainWindow.xaml.h" />
+    <ClInclude Include="src\Views\NetworkPage.xaml.h" />
+    <ClInclude Include="src\Views\PortPage.xaml.h" />
+    <ClInclude Include="src\Views\UPnPPage.xaml.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Wide310x150Logo.scale-200.png">
@@ -226,6 +240,8 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="EtherealScepter_TemporaryKey.pfx" />
+    <None Include="tools\update_proj_paths.ps1" />
+    <None Include="tools\update_proj_paths_cleanup.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis" />

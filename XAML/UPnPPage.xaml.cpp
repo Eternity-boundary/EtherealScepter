@@ -1,4 +1,4 @@
-//Created by: EternityBoundary on Jan 3, 2025
+﻿//Created by: EternityBoundary on Jan 3, 2025
 #include "pch.h"
 #include "UPnPPage.xaml.h"
 #if __has_include("UPnPPage.g.cpp")
@@ -9,8 +9,7 @@
 
 #include "include/ViewModels/UpnpViewModel.h" 
 
-namespace winrt::EtherealScepter::implementation
-{
+namespace winrt::EtherealScepter::implementation::XAML {
     UPnPPage::UPnPPage()
     {
         InitializeComponent();

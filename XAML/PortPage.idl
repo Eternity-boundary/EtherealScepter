@@ -1,0 +1,11 @@
+﻿import "XAML/PortPageViewModel.idl";
+
+namespace EtherealScepter
+{
+    runtimeclass PortPage : Microsoft.UI.Xaml.Controls.Page
+    {
+        PortPage();
+
+        EtherealScepter.ViewModels.PortPageViewModel ViewModel{ get; };
+    }
+}
