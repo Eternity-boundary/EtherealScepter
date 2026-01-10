@@ -1,0 +1,32 @@
+﻿import "XAML/Models.idl";
+
+namespace EtherealScepter.ViewModels
+{
+    [default_interface]
+    runtimeclass DashboardViewModel : Microsoft.UI.Xaml.Data.INotifyPropertyChanged
+    {
+        DashboardViewModel();
+
+        String NetworkStatus { get; };
+        String UpnpStatus { get; };
+        String NatType { get; };
+        String SummaryText { get; };
+		String NumberOfUPnPDevice{ get; };
+		String IsPortForwardingAvailable{ get; };
+		String LocalIp{ get; };
+		String WanIp{ get; };
+		String CgnatStatus{ get; };
+        String LastRefreshText{ get; };
+        String StatusMessage{ get; };
+
+        Microsoft.UI.Xaml.Media.Brush NetworkStatusBrush{ get; };
+        Microsoft.UI.Xaml.Media.Brush UpnpStatusBrush{ get; };
+        Microsoft.UI.Xaml.Media.Brush NatTypeBrush{ get; };
+		Microsoft.UI.Xaml.Media.Brush CgnatStatusBrush{ get; };
+        Microsoft.UI.Xaml.Media.Brush StatusBrush{ get; };
+
+        Windows.Foundation.Collections.IObservableVector<EtherealScepter.Models.UpnpDeviceInfo> UpnpDevices{ get; };
+
+        Windows.Foundation.IAsyncAction RefreshAsync();
+    }
+}

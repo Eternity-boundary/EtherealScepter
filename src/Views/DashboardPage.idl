@@ -1,4 +1,4 @@
-import "DashboardViewModel.idl";
+﻿import "DashboardViewModel.idl";
 namespace EtherealScepter
 {
     [default_interface]

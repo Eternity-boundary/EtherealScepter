@@ -1,11 +1,10 @@
-//Created by: EternityBoundary on Jan 3, 2025
+﻿//Created by: EternityBoundary on Jan 3, 2025
 #pragma once
 
 #include "PortPage.g.h"
 #include "include/ViewModels/PortPageViewModel.h"
 
-namespace winrt::EtherealScepter::implementation
-{
+namespace winrt::EtherealScepter::implementation::XAML {
     struct PortPage : PortPageT<PortPage>
     {
         PortPage();
@@ -27,5 +26,5 @@ namespace winrt::EtherealScepter::implementation
 
 namespace winrt::EtherealScepter::factory_implementation
 {
-    struct PortPage : PortPageT<PortPage, implementation::PortPage> {};
+    struct PortPage : PortPageT<PortPage, implementation::XAML::PortPage> {};
 }

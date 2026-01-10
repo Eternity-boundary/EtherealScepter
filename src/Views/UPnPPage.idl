@@ -1,4 +1,4 @@
-import "UpnpViewModel.idl";
+﻿import "UpnpViewModel.idl";
 namespace EtherealScepter
 {
     [default_interface]

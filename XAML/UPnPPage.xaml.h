@@ -1,11 +1,10 @@
-//Created by: EternityBoundary on Jan 3, 2025
+﻿//Created by: EternityBoundary on Jan 3, 2025
 #pragma once
 
 #include "UPnPPage.g.h"
 #include <winrt/EtherealScepter.ViewModels.h>
 
-namespace winrt::EtherealScepter::implementation
-{
+namespace winrt::EtherealScepter::implementation::XAML {
     struct UPnPPage : UPnPPageT<UPnPPage>
     {
         UPnPPage();

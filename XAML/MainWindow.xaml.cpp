@@ -1,4 +1,4 @@
-//Created by: EternityBoundary on Jan 3, 2025
+﻿//Created by: EternityBoundary on Jan 3, 2025
 #include "pch.h"
 #include "MainWindow.xaml.h"
 #if __has_include("MainWindow.g.cpp")
@@ -44,8 +44,7 @@ void SetTitleBarIcon(winrt::Microsoft::UI::Xaml::Window const& window)
     appWindow.SetIcon(iconPath);
 }
 
-namespace winrt::EtherealScepter::implementation
-{
+namespace winrt::EtherealScepter::implementation::XAML {
 
 
     MainWindow::MainWindow()

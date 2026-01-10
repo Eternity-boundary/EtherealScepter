@@ -1,0 +1,19 @@
+namespace EtherealScepter.Models
+{
+    struct UpnpDeviceInfo
+    {
+        String Location;          // SSDP LOCATION
+        String Usn;               // USN
+        String FriendlyName;      // device friendly name 
+        String DeviceType;        // deviceType
+        String Manufacturer;
+        String ModelName;
+        String PresentationUrl;
+        Boolean IsIgd;            // 是否為 IGD / Router
+
+        Microsoft.UI.Xaml.Visibility IgdBadgeVisibility;
+    };
+
+}
+
+

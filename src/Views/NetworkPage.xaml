@@ -1,0 +1,14 @@
+﻿<!--Created by: EternityBoundary on Jan 3, 2025-->
+    <Page
+    x:Class="EtherealScepter.NetworkPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <StackPanel Spacing="16" Padding="24">
+        <TextBlock Text="Network Diagnostics"
+                   FontSize="28"
+                   FontWeight="SemiBold"/>
+
+        <TextBlock Text="Network info will appear here." Opacity="0.7"/>
+    </StackPanel>
+</Page>

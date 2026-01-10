@@ -1,8 +1,8 @@
-//Created by: EternityBoundary on Jan 3, 2025
+﻿//Created by: EternityBoundary on Jan 3, 2025
 #pragma once
 #include "MainWindow.g.h"
 
-namespace winrt::EtherealScepter::implementation
+namespace winrt::EtherealScepter::implementation::XAML
 {
     struct MainWindow : MainWindowT<MainWindow>
     {
@@ -16,7 +16,7 @@ namespace winrt::EtherealScepter::implementation
 
 namespace winrt::EtherealScepter::factory_implementation
 {
-    struct MainWindow : MainWindowT<MainWindow, implementation::MainWindow>
+    struct MainWindow : MainWindowT<MainWindow, implementation::XAML::MainWindow>
     {
     };
 }

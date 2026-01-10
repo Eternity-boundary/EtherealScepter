@@ -1,11 +1,11 @@
-import "PortPageViewModel.idl";
-
+﻿import "PortPageViewModel.idl";
+import "Models.PortMappingInfo.idl";
 namespace EtherealScepter
 {
+    [default_interface]
     runtimeclass PortPage : Microsoft.UI.Xaml.Controls.Page
     {
         PortPage();
-
         EtherealScepter.ViewModels.PortPageViewModel ViewModel{ get; };
     }
 }
