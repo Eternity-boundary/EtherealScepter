@@ -8,4 +8,7 @@
   <Project Path="EtherealScepter.vcxproj" Id="d45af539-7186-4e51-872c-9f1d11d6a88b">
     <Deploy />
   </Project>
+  <Project Path="tests/EtherealScepter.Tests/EtherealScepter.Tests.vcxproj" Id="f8a1b2c3-d4e5-6789-abcd-ef0123456789">
+    <Platform Solution="*|ARM64" Project="x64" />
+  </Project>
 </Solution>
