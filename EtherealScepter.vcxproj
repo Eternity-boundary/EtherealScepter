@@ -318,6 +318,7 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     the Windows App SDK Nuget package has not yet been restored.
   -->
   <ItemGroup>
+    <None Include="EtherealScepter.vcxproj.filters.new" />
     <None Include="EtherealScepter_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="tools\update_proj_paths.ps1" />

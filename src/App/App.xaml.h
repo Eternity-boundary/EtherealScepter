@@ -11,15 +11,12 @@ namespace winrt::EtherealScepter::implementation
 
         void OnLaunched(Microsoft::UI::Xaml::LaunchActivatedEventArgs const&);
 
-
-        // ✅ 給頁面取得 App implementation（不依賴 winrt::EtherealScepter::App 投影）
         static App& Current()
         {
             WINRT_ASSERT(s_current);
             return *s_current;
         }
 
-        // ✅ 你要共享給各頁面的 VM
         winrt::EtherealScepter::ViewModels::DashboardViewModel DashboardViewModel() const
         {
             return m_dashboardVm;
