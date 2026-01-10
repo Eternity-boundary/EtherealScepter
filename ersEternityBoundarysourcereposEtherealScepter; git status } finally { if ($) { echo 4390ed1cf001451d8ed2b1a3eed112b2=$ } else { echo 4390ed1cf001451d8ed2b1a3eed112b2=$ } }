@@ -1,0 +1,15 @@
+[33mcommit fcf0f2f6f6329dce787befac57449cdb881fadb8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mchore/restructure-folders[m[33m)[m
+Author: EternityBoundary <45254650+Eternity-boundary@users.noreply.github.com>
+Date:   Sun Jan 11 05:02:07 2026 +0900
+
+    chore: 重組專案資料夾結構並修正vcxproj格式錯誤
+    
+    - 將 XAML 視圖檔案移動至 src/Views/ 目錄
+    
+    - 將 App 相關檔案移動至 src/App/ 目錄
+    
+    - 將對話框檔案移動至 src/Views/Dialogs/ 目錄
+    
+    - 新增 tools/ 目錄存放工具腳本
+    
+    - 修正 vcxproj 中的 XML 格式錯誤 (移除錯誤的換行符號)
