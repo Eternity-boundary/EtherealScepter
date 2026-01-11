@@ -125,13 +125,13 @@ echo #include "AddPortRuleDialog.xaml.g.h"
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
     <ClCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Full</Optimization>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MaxSpeed</Optimization>
       <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <LinkTimeCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|x64'">UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <LinkTimeCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|x64'">UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup Condition="'$(WindowsPackageType)'!='None' and Exists('Package.appxmanifest')">
@@ -173,6 +173,7 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     <ClInclude Include="src\Views\Dialogs\AddPortRuleDialog.xaml.h">
       <DependentUpon>src\Views\Dialogs\AddPortRuleDialog.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="src\Views\Dialogs\Views.Dialogs.AddPortRuleDialog.xaml.g.h" />
     <ClInclude Include="src\Views\MainWindow.xaml.h">
       <DependentUpon>src\Views\MainWindow.xaml</DependentUpon>
     </ClInclude>

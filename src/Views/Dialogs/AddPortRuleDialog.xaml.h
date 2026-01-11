@@ -2,6 +2,7 @@
 #pragma once
 
 #include "Views.Dialogs.AddPortRuleDialog.g.h"
+#include "Views.Dialogs.AddPortRuleDialog.xaml.g.h"
 
 namespace winrt::EtherealScepter::Views::Dialogs::implementation
 {
