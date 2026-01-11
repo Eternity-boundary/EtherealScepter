@@ -1,4 +1,4 @@
-//Created by: EternityBoundary on Jan 3, 2025
+﻿//Created by: EternityBoundary on Jan 3, 2025
 #pragma once
 
 #include <winrt/Windows.Foundation.h>
@@ -9,6 +9,7 @@
 
 #include "ViewModels.DashboardViewModel.g.h"
 #include "winrt/EtherealScepter.Models.h"
+#include "include/Services/NetworkStatusService.h"
 
 namespace winrt::EtherealScepter::ViewModels::implementation
 {
@@ -47,16 +48,15 @@ namespace winrt::EtherealScepter::ViewModels::implementation
 
     private:
         void RaisePropertyChanged(winrt::hstring const& name);
+        void RaiseAll();
+        void ApplySnapshot(::EtherealScepter::Services::NetworkSnapshot const& snapshot);
 
         winrt::event<
             winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventHandler
         > m_propertyChanged;
 
-        winrt::Microsoft::UI::Dispatching::DispatcherQueue m_dispatcher{ nullptr };
-
         winrt::Microsoft::UI::Dispatching::DispatcherQueueTimer m_refreshTimer{ nullptr };
 
-        winrt::apartment_context m_ui;
         bool m_refreshing{ false };
 
         winrt::hstring m_networkStatus;
@@ -76,6 +76,7 @@ namespace winrt::EtherealScepter::ViewModels::implementation
         winrt::Windows::Foundation::Collections::IObservableVector<winrt::EtherealScepter::Models::UpnpDeviceInfo>
             m_upnpDevices{ winrt::single_threaded_observable_vector<winrt::EtherealScepter::Models::UpnpDeviceInfo>() };
 
+        uint64_t m_subscriptionId{ 0 };
     };
 }
 

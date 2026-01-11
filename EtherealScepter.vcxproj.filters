@@ -26,15 +26,28 @@
     <Filter Include="Tools">
       <UniqueIdentifier>{8E9F0A1B-2C3D-4E5F-6A7B-8C9D0E1F2A3B}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ViewModels\include">
+      <UniqueIdentifier>{c30f2017-d45f-4eaa-a507-6308edff0532}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ViewModels\src">
+      <UniqueIdentifier>{ca605559-ac1d-4e3a-9a5f-2ffbb24478d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ViewModels\idl">
+      <UniqueIdentifier>{c6a3c13b-5837-4fe2-930e-fd1a21c96516}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Services\include">
+      <UniqueIdentifier>{62738bc9-1971-49a9-842f-ab6e1f4f1ab8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Services\src">
+      <UniqueIdentifier>{ac14a620-cfad-4905-9887-3bd0b8b7b3cf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
-
   <!-- App XAML -->
   <ItemGroup>
     <ApplicationDefinition Include="src\App\App.xaml">
       <Filter>App</Filter>
     </ApplicationDefinition>
   </ItemGroup>
-
   <!-- Views XAML Pages -->
   <ItemGroup>
     <Page Include="src\Views\MainWindow.xaml">
@@ -56,7 +69,6 @@
       <Filter>Views\Dialogs</Filter>
     </Page>
   </ItemGroup>
-
   <!-- IDL Files -->
   <ItemGroup>
     <Midl Include="src\Views\MainWindow.idl">
@@ -77,15 +89,6 @@
     <Midl Include="src\Views\Dialogs\AddPortRuleDialog.idl">
       <Filter>Views\Dialogs</Filter>
     </Midl>
-    <Midl Include="DashboardViewModel.idl">
-      <Filter>ViewModels</Filter>
-    </Midl>
-    <Midl Include="UpnpViewModel.idl">
-      <Filter>ViewModels</Filter>
-    </Midl>
-    <Midl Include="PortPageViewModel.idl">
-      <Filter>ViewModels</Filter>
-    </Midl>
     <Midl Include="UpnpDeviceItem.idl">
       <Filter>Models</Filter>
     </Midl>
@@ -95,8 +98,19 @@
     <Midl Include="Models.PortMappingInfo.idl">
       <Filter>Models</Filter>
     </Midl>
+    <Midl Include="DashboardViewModel.idl">
+      <Filter>ViewModels\idl</Filter>
+    </Midl>
+    <Midl Include="PortPageViewModel.idl">
+      <Filter>ViewModels\idl</Filter>
+    </Midl>
+    <Midl Include="UpnpViewModel.idl">
+      <Filter>ViewModels\idl</Filter>
+    </Midl>
+    <Midl Include="NetworkPageViewModel.idl">
+      <Filter>ViewModels\idl</Filter>
+    </Midl>
   </ItemGroup>
-
   <!-- Source Files (.cpp) -->
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -123,34 +137,39 @@
       <Filter>Views\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="src\ViewModels\DashboardViewModel.cpp">
-      <Filter>ViewModels</Filter>
+      <Filter>ViewModels\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ViewModels\NetworkPageViewModel.cpp">
+      <Filter>ViewModels\src</Filter>
     </ClCompile>
     <ClCompile Include="src\ViewModels\PortPageViewModel.cpp">
-      <Filter>ViewModels</Filter>
+      <Filter>ViewModels\src</Filter>
     </ClCompile>
     <ClCompile Include="src\ViewModels\UpnpViewModel.cpp">
-      <Filter>ViewModels</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Services\NetworkStatusService.cpp">
-      <Filter>Services</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Services\UpnpDiscoveryService.cpp">
-      <Filter>Services</Filter>
+      <Filter>ViewModels\src</Filter>
     </ClCompile>
     <ClCompile Include="src\Services\IgdDescriptionParser.cpp">
-      <Filter>Services</Filter>
+      <Filter>Services\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Services\UpnpSoapClient.cpp">
-      <Filter>Services</Filter>
+    <ClCompile Include="src\Services\NetworkStatusService.cpp">
+      <Filter>Services\src</Filter>
     </ClCompile>
     <ClCompile Include="src\Services\SsdpParser.cpp">
-      <Filter>Services</Filter>
+      <Filter>Services\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Services\UpnpDiscoveryService.cpp">
+      <Filter>Services\src</Filter>
     </ClCompile>
     <ClCompile Include="src\Services\UpnpNatPortMappingService.cpp">
-      <Filter>Services</Filter>
+      <Filter>Services\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Services\UpnpSoapClient.cpp">
+      <Filter>Services\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Services\NetworkStatusProvider.cpp">
+      <Filter>Services\src</Filter>
     </ClCompile>
   </ItemGroup>
-
   <!-- Header Files (.h) -->
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -175,41 +194,53 @@
     <ClInclude Include="src\Views\Dialogs\AddPortRuleDialog.xaml.h">
       <Filter>Views\Dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="Generated Files\App.xaml.g.h" />
+    <ClInclude Include="Generated Files\DashboardPage.xaml.g.h" />
+    <ClInclude Include="Generated Files\MainWindow.xaml.g.h" />
+    <ClInclude Include="Generated Files\NetworkPage.xaml.g.h" />
+    <ClInclude Include="Generated Files\PortPage.xaml.g.h" />
+    <ClInclude Include="Generated Files\UPnPPage.xaml.g.h" />
+    <ClInclude Include="src\App\App.xaml.g.h" />
     <ClInclude Include="include\ViewModels\DashboardViewModel.h">
-      <Filter>ViewModels</Filter>
+      <Filter>ViewModels\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\ViewModels\UpnpViewModel.h">
-      <Filter>ViewModels</Filter>
+    <ClInclude Include="include\ViewModels\NetworkPageViewModel.h">
+      <Filter>ViewModels\include</Filter>
     </ClInclude>
     <ClInclude Include="include\ViewModels\PortPageViewModel.h">
-      <Filter>ViewModels</Filter>
+      <Filter>ViewModels\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\Services\NetworkStatusService.h">
-      <Filter>Services</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Services\UpnpDiscoveryService.h">
-      <Filter>Services</Filter>
+    <ClInclude Include="include\ViewModels\UpnpViewModel.h">
+      <Filter>ViewModels\include</Filter>
     </ClInclude>
     <ClInclude Include="include\Services\IgdDescriptionParser.h">
-      <Filter>Services</Filter>
+      <Filter>Services\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\Services\UpnpIgdServiceInfo.h">
-      <Filter>Services</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Services\UpnpSoapClient.h">
-      <Filter>Services</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Services\SsdpParser.h">
-      <Filter>Services</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Services\UpnpNatPortMappingService.h">
-      <Filter>Services</Filter>
+    <ClInclude Include="include\Services\NetworkStatusService.h">
+      <Filter>Services\include</Filter>
     </ClInclude>
     <ClInclude Include="src\Services\PortMappingService.h">
-      <Filter>Services</Filter>
+      <Filter>Services\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Services\SsdpParser.h">
+      <Filter>Services\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Services\UpnpDiscoveryService.h">
+      <Filter>Services\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Services\UpnpIgdServiceInfo.h">
+      <Filter>Services\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Services\UpnpNatPortMappingService.h">
+      <Filter>Services\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Services\UpnpSoapClient.h">
+      <Filter>Services\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Services\NetworkStatusProvider.h">
+      <Filter>Services\include</Filter>
     </ClInclude>
   </ItemGroup>
-
   <!-- Image Assets -->
   <ItemGroup>
     <Image Include="icon1.ico" />
@@ -367,7 +398,6 @@
       <Filter>Assets</Filter>
     </Image>
   </ItemGroup>
-
   <!-- Other Files -->
   <ItemGroup>
     <Text Include="readme.md" />
@@ -387,6 +417,7 @@
     <None Include="tools\update_proj_paths_cleanup.ps1">
       <Filter>Tools</Filter>
     </None>
+    <None Include="EtherealScepter.vcxproj.filters.new" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis" />
