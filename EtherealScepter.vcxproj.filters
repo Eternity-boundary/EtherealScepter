@@ -240,6 +240,7 @@
     <ClInclude Include="include\Services\NetworkStatusProvider.h">
       <Filter>Services\include</Filter>
     </ClInclude>
+    <ClInclude Include="src\Views\Dialogs\Views.Dialogs.AddPortRuleDialog.xaml.g.h" />
   </ItemGroup>
   <!-- Image Assets -->
   <ItemGroup>
