@@ -4,7 +4,7 @@
 一個以 **WinUI 3 + C++/WinRT** 打造的UPnP管理工具，用於快速建立網路連接埠轉發
 
 ---
-## ⚠開發中，功能尚未完成(1%完成)
+## ⚠開發中，功能尚未完成
 ## ✨ 專案目標
 
 EtherealScepter 目前是一個「UPnP 開關工具」，向下列目標發展：
@@ -25,9 +25,8 @@ EtherealScepter 目前是一個「UPnP 開關工具」，向下列目標發展�
 - Port Mapping 摘要
 
 ### Network(未完成)
-- 本機網路資訊
+- 連接埠/DNS測試
 - WAN / CGNAT 判斷邏輯整合
-- 為後續自動偵測做準備
 
 ### UPnP
 - IGD 裝置探索（SSDP）
