@@ -1,0 +1,40 @@
+﻿namespace EtherealScepter.ViewModels {
+[default_interface] runtimeclass NetworkPageViewModel
+    : Microsoft.UI.Xaml.Data.INotifyPropertyChanged {
+  NetworkPageViewModel();
+
+  // --- External IP Verification ---
+  String HttpExternalIp;
+  String UpnpExternalIp;
+  String VerificationStatus;
+  Microsoft.UI.Xaml.Media.Brush VerificationStatusBrush { get; };
+
+  // --- Connectivity Tests ---
+  String PingGatewayResult;
+  Microsoft.UI.Xaml.Media.Brush PingGatewayBrush { get; };
+  String PingGoogleResult;
+  Microsoft.UI.Xaml.Media.Brush PingGoogleBrush { get; };
+  String HttpReachabilityResult;
+  Microsoft.UI.Xaml.Media.Brush HttpReachabilityBrush { get; };
+  Boolean IsRunningTests;
+
+  // --- DNS Diagnostics ---
+  String SystemDnsResult;
+  String IspDnsResult;
+  Microsoft.UI.Xaml.Media.Brush IspDnsBrush { get; };
+  String PublicDnsResult;
+
+  // --- Port Reachability ---
+  String PortTestResult;
+  Microsoft.UI.Xaml.Media.Brush PortTestBrush { get; };
+  String ExternalPortTestResult;
+  Microsoft.UI.Xaml.Media.Brush ExternalPortTestBrush { get; };
+  Boolean IsTestingPort;
+
+  // --- Actions ---
+  Windows.Foundation.IAsyncAction RefreshAsync();
+  Windows.Foundation.IAsyncAction RunConnectivityTestsAsync();
+  Windows.Foundation.IAsyncAction TestPortAsync(Int32 port);
+  Windows.Foundation.IAsyncAction TestExternalPortAsync(Int32 port);
+}
+} // namespace EtherealScepter.ViewModels

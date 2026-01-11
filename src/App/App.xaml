@@ -6,6 +6,12 @@
     xmlns:local="using:EtherealScepter">
     <Application.Resources>
         <ResourceDictionary>
+            <!--  Card Border Style  -->
+            <Style x:Key="CardBorderStyle" TargetType="Border">
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="Padding" Value="16" />
+                <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+            </Style>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <!--  Other merged dictionaries here  -->

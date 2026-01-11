@@ -47,5 +47,7 @@
 
   <Capabilities>
     <rescap:Capability Name="runFullTrust" />
+    <Capability Name="privateNetworkClientServer"/>
+    <Capability Name="internetClientServer"/>
   </Capabilities>
 </Package>

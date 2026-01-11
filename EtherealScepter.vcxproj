@@ -150,11 +150,13 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     <ClInclude Include="Generated Files\PortPage.xaml.g.h" />
     <ClInclude Include="Generated Files\UPnPPage.xaml.g.h" />
     <ClInclude Include="include\Services\IgdDescriptionParser.h" />
+    <ClInclude Include="include\Services\NetworkStatusProvider.h" />
     <ClInclude Include="include\Services\NetworkStatusService.h" />
     <ClInclude Include="include\Services\UpnpNatPortMappingService.h" />
     <ClInclude Include="include\Services\SsdpParser.h" />
     <ClInclude Include="include\Services\UpnpDiscoveryService.h" />
     <ClInclude Include="include\Services\UpnpIgdServiceInfo.h" />
+    <ClInclude Include="include\ViewModels\NetworkPageViewModel.h" />
     <ClInclude Include="include\ViewModels\PortPageViewModel.h" />
     <ClInclude Include="include\ViewModels\UpnpViewModel.h" />
     <ClInclude Include="include\Services\UpnpSoapClient.h" />
@@ -204,12 +206,14 @@ echo #include "AddPortRuleDialog.xaml.g.h"
       <DependentUpon>src\App\App.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="src\Services\IgdDescriptionParser.cpp" />
+    <ClCompile Include="src\Services\NetworkStatusProvider.cpp" />
     <ClCompile Include="src\Services\NetworkStatusService.cpp" />
     <ClCompile Include="src\Services\SsdpParser.cpp" />
     <ClCompile Include="src\Services\UpnpDiscoveryService.cpp" />
     <ClCompile Include="src\Services\UpnpNatPortMappingService.cpp" />
     <ClCompile Include="src\Services\UpnpSoapClient.cpp" />
     <ClCompile Include="src\ViewModels\DashboardViewModel.cpp" />
+    <ClCompile Include="src\ViewModels\NetworkPageViewModel.cpp" />
     <ClCompile Include="src\ViewModels\PortPageViewModel.cpp" />
     <ClCompile Include="src\ViewModels\UpnpViewModel.cpp" />
     <ClCompile Include="src\Views\DashboardPage.xaml.cpp">
@@ -234,6 +238,7 @@ echo #include "AddPortRuleDialog.xaml.g.h"
   <ItemGroup>
     <Midl Include="DashboardViewModel.idl" />
     <Midl Include="Models.PortMappingInfo.idl" />
+    <Midl Include="NetworkPageViewModel.idl" />
     <Midl Include="PortPageViewModel.idl" />
     <Midl Include="src\Views\DashboardPage.idl" />
     <Midl Include="src\Views\Dialogs\AddPortRuleDialog.idl" />
@@ -318,6 +323,7 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     the Windows App SDK Nuget package has not yet been restored.
   -->
   <ItemGroup>
+    <None Include="EtherealScepter.vcxproj.filters.new" />
     <None Include="EtherealScepter_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="tools\update_proj_paths.ps1" />
