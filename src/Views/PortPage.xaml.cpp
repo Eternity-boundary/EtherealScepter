@@ -1,4 +1,4 @@
-﻿//Created by: EternityBoundary on Jan 3, 2025
+﻿//Created by: EternityBoundary on Jan 3, 2026
 #include "pch.h"
 #include "PortPage.xaml.h"
 #include "PortPage.g.cpp"
@@ -9,6 +9,7 @@
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
 using namespace Microsoft::UI::Xaml::Controls;
+namespace Services = ::EtherealScepter::Services;
 
 namespace winrt::EtherealScepter::implementation
 {
@@ -16,11 +17,54 @@ namespace winrt::EtherealScepter::implementation
     {
         InitializeComponent();
         m_viewModel = winrt::EtherealScepter::ViewModels::PortPageViewModel{};
+
+        // 訂閱主題變更
+        m_themeSubscriptionId = Services::ThemeService::Instance().Subscribe(
+            [weak_this = get_weak()](Services::ThemeType theme) {
+                if (auto strong_this = weak_this.get()) {
+                    strong_this->OnThemeChanged(theme);
+                }
+            });
+    }
+
+    PortPage::~PortPage()
+    {
+        if (m_themeSubscriptionId != 0) {
+            Services::ThemeService::Instance().Unsubscribe(m_themeSubscriptionId);
+            m_themeSubscriptionId = 0;
+        }
     }
 
     EtherealScepter::ViewModels::PortPageViewModel PortPage::ViewModel() const
     {
         return m_viewModel;
+    }
+
+    void PortPage::OnPageLoaded(IInspectable const& /*sender*/, RoutedEventArgs const& /*args*/)
+    {
+        ApplyThemeToCards();
+    }
+
+    void PortPage::OnThemeChanged(Services::ThemeType /*theme*/)
+    {
+        ApplyThemeToCards();
+    }
+
+    void PortPage::ApplyThemeToCards()
+    {
+        auto& themeService = Services::ThemeService::Instance();
+        bool isCustomTheme = themeService.IsCustomThemeActive();
+
+        auto tableCard = TableCard();
+
+        if (isCustomTheme) {
+            auto brush = themeService.GetCardBackgroundBrush();
+            if (brush) {
+                if (tableCard) tableCard.Background(brush);
+            }
+        } else {
+            if (tableCard) tableCard.Background(nullptr);
+        }
     }
 
     winrt::fire_and_forget PortPage::OnAddRuleClicked(IInspectable const&, RoutedEventArgs const&)

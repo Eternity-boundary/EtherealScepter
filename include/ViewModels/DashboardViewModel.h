@@ -1,4 +1,4 @@
-﻿// Created by: EternityBoundary on Jan 3, 2025
+﻿// Created by: EternityBoundary on Jan 3, 2026
 #pragma once
 
 #include <winrt/Microsoft.UI.Dispatching.h>

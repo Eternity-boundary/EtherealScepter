@@ -80,6 +80,10 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <EnableASAN>false</EnableASAN>
+    <EnableFuzzer>false</EnableFuzzer>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -111,6 +115,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
     <ClCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</TreatWarningAsError>
     </ClCompile>
     <PreBuildEvent>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">set "GF=$(ProjectDir)Generated Files"
@@ -152,12 +157,14 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     <ClInclude Include="include\Services\IgdDescriptionParser.h" />
     <ClInclude Include="include\Services\NetworkStatusProvider.h" />
     <ClInclude Include="include\Services\NetworkStatusService.h" />
+    <ClInclude Include="include\Services\ThemeService.h" />
     <ClInclude Include="include\Services\UpnpNatPortMappingService.h" />
     <ClInclude Include="include\Services\SsdpParser.h" />
     <ClInclude Include="include\Services\UpnpDiscoveryService.h" />
     <ClInclude Include="include\Services\UpnpIgdServiceInfo.h" />
     <ClInclude Include="include\ViewModels\NetworkPageViewModel.h" />
     <ClInclude Include="include\ViewModels\PortPageViewModel.h" />
+    <ClInclude Include="include\ViewModels\SettingsPageViewModel.h" />
     <ClInclude Include="include\ViewModels\UpnpViewModel.h" />
     <ClInclude Include="include\Services\UpnpSoapClient.h" />
     <ClInclude Include="pch.h" />
@@ -183,6 +190,11 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     <ClInclude Include="src\Views\PortPage.xaml.h">
       <DependentUpon>src\Views\PortPage.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="src\Views\SettingsPage.xaml.h">
+      <DependentUpon>src\Views\SettingsPage.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="src\Views\Theme\DefaultThemes.h" />
+    <ClInclude Include="src\Views\Theme\Theme.h" />
     <ClInclude Include="src\Views\UPnPPage.xaml.h">
       <DependentUpon>src\Views\UPnPPage.xaml</DependentUpon>
     </ClInclude>
@@ -196,6 +208,7 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     <Page Include="src\Views\MainWindow.xaml" />
     <Page Include="src\Views\NetworkPage.xaml" />
     <Page Include="src\Views\PortPage.xaml" />
+    <Page Include="src\Views\SettingsPage.xaml" />
     <Page Include="src\Views\UPnPPage.xaml" />
   </ItemGroup>
   <ItemGroup>
@@ -210,12 +223,14 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     <ClCompile Include="src\Services\NetworkStatusProvider.cpp" />
     <ClCompile Include="src\Services\NetworkStatusService.cpp" />
     <ClCompile Include="src\Services\SsdpParser.cpp" />
+    <ClCompile Include="src\Services\ThemeService.cpp" />
     <ClCompile Include="src\Services\UpnpDiscoveryService.cpp" />
     <ClCompile Include="src\Services\UpnpNatPortMappingService.cpp" />
     <ClCompile Include="src\Services\UpnpSoapClient.cpp" />
     <ClCompile Include="src\ViewModels\DashboardViewModel.cpp" />
     <ClCompile Include="src\ViewModels\NetworkPageViewModel.cpp" />
     <ClCompile Include="src\ViewModels\PortPageViewModel.cpp" />
+    <ClCompile Include="src\ViewModels\SettingsPageViewModel.cpp" />
     <ClCompile Include="src\ViewModels\UpnpViewModel.cpp" />
     <ClCompile Include="src\Views\DashboardPage.xaml.cpp">
       <DependentUpon>src\Views\DashboardPage.xaml</DependentUpon>
@@ -232,6 +247,10 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     <ClCompile Include="src\Views\PortPage.xaml.cpp">
       <DependentUpon>src\Views\PortPage.xaml</DependentUpon>
     </ClCompile>
+    <ClCompile Include="src\Views\SettingsPage.xaml.cpp">
+      <DependentUpon>src\Views\SettingsPage.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="src\Views\Theme\DefaultThemes.cpp" />
     <ClCompile Include="src\Views\UPnPPage.xaml.cpp">
       <DependentUpon>src\Views\UPnPPage.xaml</DependentUpon>
     </ClCompile>
@@ -241,11 +260,13 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     <Midl Include="Models.PortMappingInfo.idl" />
     <Midl Include="NetworkPageViewModel.idl" />
     <Midl Include="PortPageViewModel.idl" />
+    <Midl Include="SettingsPageViewModel.idl" />
     <Midl Include="src\Views\DashboardPage.idl" />
     <Midl Include="src\Views\Dialogs\AddPortRuleDialog.idl" />
     <Midl Include="src\Views\MainWindow.idl" />
     <Midl Include="src\Views\NetworkPage.idl" />
     <Midl Include="src\Views\PortPage.idl" />
+    <Midl Include="src\Views\SettingsPage.idl" />
     <Midl Include="src\Views\UPnPPage.idl" />
     <Midl Include="UpnpDeviceItem.idl" />
     <Midl Include="UpnpViewModel.idl" />
@@ -263,6 +284,8 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     <Image Include="Assets\LargeTile.scale-150.png" />
     <Image Include="Assets\LargeTile.scale-200.png" />
     <Image Include="Assets\LargeTile.scale-400.png" />
+    <Image Include="Assets\LeafMain.png" />
+    <Image Include="Assets\LeafSide.png" />
     <Image Include="Assets\SmallTile.scale-100.png" />
     <Image Include="Assets\SmallTile.scale-125.png" />
     <Image Include="Assets\SmallTile.scale-150.png" />
@@ -298,6 +321,8 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     <Image Include="Assets\Square44x44Logo.targetsize-256.png" />
     <Image Include="Assets\Square44x44Logo.targetsize-32.png" />
     <Image Include="Assets\Square44x44Logo.targetsize-48.png" />
+    <Image Include="Assets\StarrySkyMain.png" />
+    <Image Include="Assets\StarrySkySide.png" />
     <Image Include="Assets\StoreLogo.scale-100.png" />
     <Image Include="Assets\StoreLogo.scale-125.png" />
     <Image Include="Assets\StoreLogo.scale-150.png" />

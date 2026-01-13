@@ -41,6 +41,9 @@
     <Filter Include="Services\src">
       <UniqueIdentifier>{ac14a620-cfad-4905-9887-3bd0b8b7b3cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Views\Theme">
+      <UniqueIdentifier>{0eca1d00-55dc-4bf6-b55c-ae8198b29d53}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <!-- App XAML -->
   <ItemGroup>
@@ -67,6 +70,9 @@
     </Page>
     <Page Include="src\Views\Dialogs\AddPortRuleDialog.xaml">
       <Filter>Views\Dialogs</Filter>
+    </Page>
+    <Page Include="src\Views\SettingsPage.xaml">
+      <Filter>Views</Filter>
     </Page>
   </ItemGroup>
   <!-- IDL Files -->
@@ -109,6 +115,12 @@
     </Midl>
     <Midl Include="NetworkPageViewModel.idl">
       <Filter>ViewModels\idl</Filter>
+    </Midl>
+    <Midl Include="SettingsPageViewModel.idl">
+      <Filter>ViewModels\idl</Filter>
+    </Midl>
+    <Midl Include="src\Views\SettingsPage.idl">
+      <Filter>Views</Filter>
     </Midl>
   </ItemGroup>
   <!-- Source Files (.cpp) -->
@@ -168,6 +180,15 @@
     </ClCompile>
     <ClCompile Include="src\Services\NetworkStatusProvider.cpp">
       <Filter>Services\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ViewModels\SettingsPageViewModel.cpp">
+      <Filter>ViewModels\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Services\ThemeService.cpp">
+      <Filter>Services\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Views\Theme\DefaultThemes.cpp">
+      <Filter>Views\Theme</Filter>
     </ClCompile>
   </ItemGroup>
   <!-- Header Files (.h) -->
@@ -241,6 +262,16 @@
       <Filter>Services\include</Filter>
     </ClInclude>
     <ClInclude Include="src\Views\Dialogs\Views.Dialogs.AddPortRuleDialog.xaml.g.h" />
+    <ClInclude Include="include\ViewModels\SettingsPageViewModel.h">
+      <Filter>ViewModels\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Services\ThemeService.h">
+      <Filter>Services\include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Views\Theme\Theme.h" />
+    <ClInclude Include="src\Views\Theme\DefaultThemes.h">
+      <Filter>Views\Theme</Filter>
+    </ClInclude>
   </ItemGroup>
   <!-- Image Assets -->
   <ItemGroup>
@@ -396,6 +427,18 @@
       <Filter>Assets</Filter>
     </Image>
     <Image Include="Assets\StoreLogo.scale-400.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\StarrySkyMain.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\StarrySkySide.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\LeafMain.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\LeafSide.png">
       <Filter>Assets</Filter>
     </Image>
   </ItemGroup>

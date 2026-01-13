@@ -1,4 +1,4 @@
-﻿<!--  Created by: EternityBoundary on Jan 3, 2025  -->
+﻿<!--  Created by: EternityBoundary on Jan 3, 2026  -->
 <Page
     x:Class="EtherealScepter.PortPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -6,9 +6,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:EtherealScepter.Models"
+    Background="Transparent"
+    Loaded="OnPageLoaded"
     mc:Ignorable="d">
 
-    <ScrollViewer>
+    <ScrollViewer Background="Transparent">
         <StackPanel Padding="32" Spacing="24">
 
             <StackPanel Spacing="6">
@@ -23,7 +25,12 @@
                 <Button Click="OnAddRuleClicked" Content="Add Rule" />
             </StackPanel>
 
-            <Border Background="#1F1F1F" CornerRadius="8">
+            <Border
+                x:Name="TableCard"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="8">
                 <StackPanel>
 
                     <!--  Header  -->
@@ -71,8 +78,8 @@
 
                     <Rectangle
                         Height="1"
-                        Fill="White"
-                        Opacity="0.15" />
+                        Fill="{ThemeResource DividerStrokeColorDefaultBrush}"
+                        Opacity="0.5" />
 
                     <!--  Rows  -->
                     <ListView ItemsSource="{x:Bind ViewModel.PortMappings, Mode=OneWay}" SelectionMode="None">

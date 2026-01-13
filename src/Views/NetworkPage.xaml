@@ -1,4 +1,4 @@
-﻿<!--  Created by: EternityBoundary on Jan 3, 2025  -->
+﻿<!--  Created by: EternityBoundary on Jan 3, 2026  -->
 <Page
     x:Class="EtherealScepter.NetworkPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -6,9 +6,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:EtherealScepter"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="Transparent"
+    Loaded="OnPageLoaded"
     mc:Ignorable="d">
 
-    <ScrollViewer>
+    <ScrollViewer Background="Transparent">
         <StackPanel Padding="32" Spacing="24">
 
             <!--  Header  -->
@@ -21,7 +23,7 @@
             </StackPanel>
 
             <!--  External IP Verification  -->
-            <Border Style="{ThemeResource CardBorderStyle}">
+            <Border x:Name="ExternalIpCard" Style="{ThemeResource CardBorderStyle}">
                 <StackPanel Spacing="12">
                     <TextBlock
                         FontSize="18"
@@ -53,7 +55,7 @@
             </Border>
 
             <!--  Connectivity Tests  -->
-            <Border Style="{ThemeResource CardBorderStyle}">
+            <Border x:Name="ConnectivityCard" Style="{ThemeResource CardBorderStyle}">
                 <StackPanel Spacing="12">
                     <TextBlock
                         FontSize="18"
@@ -74,7 +76,7 @@
             </Border>
 
             <!--  DNS Diagnostics  -->
-            <Border Style="{ThemeResource CardBorderStyle}">
+            <Border x:Name="DnsCard" Style="{ThemeResource CardBorderStyle}">
                 <StackPanel Spacing="12">
                     <TextBlock
                         FontSize="18"
@@ -90,7 +92,7 @@
             </Border>
 
             <!--  Port Reachability  -->
-            <Border Style="{ThemeResource CardBorderStyle}">
+            <Border x:Name="PortCard" Style="{ThemeResource CardBorderStyle}">
                 <StackPanel Spacing="12">
                     <TextBlock
                         FontSize="18"
@@ -111,7 +113,7 @@
             </Border>
 
             <!--  Event Timeline  -->
-            <Border Style="{ThemeResource CardBorderStyle}">
+            <Border x:Name="EventsCard" Style="{ThemeResource CardBorderStyle}">
                 <StackPanel Spacing="12">
                     <TextBlock
                         FontSize="18"

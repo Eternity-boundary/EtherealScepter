@@ -1,4 +1,4 @@
-﻿<!--  Created by: EternityBoundary on Jan 3, 2025  -->
+﻿<!--  Created by: EternityBoundary on Jan 3, 2026  -->
 <Page
     x:Class="EtherealScepter.UPnPPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -8,9 +8,16 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:EtherealScepter.Models"
     x:Name="Root"
-    mc:Ignorable="d">
+    Background="Transparent"
+    mc:Ignorable="d"
+    Loaded="OnPageLoaded">
 
-    <ScrollViewer>
+    <Page.Resources>
+        <!-- 定義可動態更新的卡片背景畫刷 -->
+        <SolidColorBrush x:Key="DeviceCardBackgroundBrush" Color="Transparent"/>
+    </Page.Resources>
+
+    <ScrollViewer Background="Transparent">
 
         <StackPanel Padding="32" Spacing="24">
 
@@ -27,8 +34,11 @@
 
             <!--  Summary Card  -->
             <Border
+                x:Name="StatusCard"
                 Padding="16"
-                Background="#1F1F1F"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
                 CornerRadius="8">
                 <StackPanel Spacing="8">
 
@@ -59,14 +69,18 @@
                     FontWeight="SemiBold"
                     Text="Devices" />
 
-                <ItemsControl ItemsSource="{x:Bind ViewModel.Devices, Mode=OneWay}">
+                <ItemsControl x:Name="DevicesItemsControl" ItemsSource="{x:Bind ViewModel.Devices, Mode=OneWay}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="models:UpnpDeviceInfo">
                             <Border
+                                x:Name="DeviceCardBorder"
                                 Margin="0,0,0,12"
                                 Padding="16"
-                                Background="#1F1F1F"
-                                CornerRadius="8">
+                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Loaded="OnDeviceCardLoaded">
 
                                 <StackPanel Spacing="8">
 
