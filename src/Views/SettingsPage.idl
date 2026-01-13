@@ -1,0 +1,12 @@
+﻿import "SettingsPageViewModel.idl";
+
+namespace EtherealScepter {
+
+[default_interface]
+runtimeclass SettingsPage : Microsoft.UI.Xaml.Controls.Page {
+  SettingsPage();
+  EtherealScepter.ViewModels.SettingsPageViewModel ViewModel { get; };
+  String FormatPercent(Double value);
+}
+
+}

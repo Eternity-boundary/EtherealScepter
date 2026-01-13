@@ -1,5 +1,5 @@
-﻿<!-- Created by: EternityBoundary on Jan 3, 2025-->
-    <Window
+﻿<!-- Created by: EternityBoundary on Jan 3, 2026-->
+<Window
     x:Class="EtherealScepter.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,21 +9,53 @@
     mc:Ignorable="d"
     Title="Ethereal Scepter">
 
-    <NavigationView x:Name="NavView"
-                    PaneDisplayMode="Left"
-                    IsBackButtonVisible="Collapsed"
-                    IsSettingsVisible="True"
-                    SelectionChanged="OnNavigationChanged">
+    <Grid x:Name="RootGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        
+        <!-- 側邊欄背景層 - 固定在左側，寬度會根據 Pane 狀態動態調整 -->
+        <Border x:Name="NavPaneBackgroundBorder" 
+                HorizontalAlignment="Left"
+                Width="320"
+                Visibility="Collapsed" />
+        
+        <!-- NavigationView -->
+        <NavigationView x:Name="NavView"
+                        PaneDisplayMode="Left"
+                        IsBackButtonVisible="Collapsed"
+                        IsSettingsVisible="True"
+                        SelectionChanged="OnNavigationChanged"
+                        PaneOpening="OnPaneOpening"
+                        PaneClosing="OnPaneClosing"
+                        OpenPaneLength="320"
+                        CompactPaneLength="48"
+                        IsPaneOpen="True"
+                        Background="Transparent">
 
-        <!-- 左側選單 -->
-        <NavigationView.MenuItems>
-            <NavigationViewItem Content="Dashboard" Icon="Home" Tag="dashboard"/>
-            <NavigationViewItem Content="UPnP" Icon="World" Tag="upnp"/>
-            <NavigationViewItem Content="Port Mapping" Icon="Forward" Tag="ports"/>
-            <NavigationViewItem Content="Network" Icon="Globe" Tag="network"/>
-        </NavigationView.MenuItems>
+            <!-- 覆寫 NavigationView 的背景資源使其透明 -->
+            <NavigationView.Resources>
+                <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent"/>
+                <SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="Transparent"/>
+                <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="Transparent"/>
+                <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent"/>
+                <SolidColorBrush x:Key="NavigationViewContentGridBorderBrush" Color="Transparent"/>
+            </NavigationView.Resources>
 
-        <!-- 主畫面 -->
-        <Frame x:Name="ContentFrame"/>
-    </NavigationView>
+            <!-- 左側選單 -->
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Dashboard" Icon="Home" Tag="dashboard"/>
+                <NavigationViewItem Content="UPnP" Icon="World" Tag="upnp"/>
+                <NavigationViewItem Content="Port Mapping" Icon="Forward" Tag="ports"/>
+                <NavigationViewItem Content="Network" Icon="Globe" Tag="network"/>
+            </NavigationView.MenuItems>
+
+            <!-- 主畫面內容區域 - 背景在這裡 -->
+            <Grid>
+                <!-- 右側內容區背景圖片 -->
+                <Border x:Name="BackgroundImageBorder" 
+                        Visibility="Collapsed" />
+                
+                <!-- 實際內容 Frame -->
+                <Frame x:Name="ContentFrame" Background="Transparent"/>
+            </Grid>
+        </NavigationView>
+    </Grid>
 </Window>
