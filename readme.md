@@ -30,8 +30,6 @@ EtherealScepter 目前是一個「UPnP 開關工具」，向下列目標發展�
 
 ### UPnP
 - IGD 裝置探索（SSDP）
-- External IP 查詢
-- Port Mapping 管理
 
 ### Port
 - 顯示目前 Port Mapping
