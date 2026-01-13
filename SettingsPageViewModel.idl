@@ -1,0 +1,81 @@
+﻿namespace EtherealScepter.ViewModels {
+
+[default_interface]
+runtimeclass SettingsPageViewModel : Microsoft.UI.Xaml.Data.INotifyPropertyChanged {
+  SettingsPageViewModel();
+
+  // Theme selection (0=System, 1=Light, 2=Dark, 3=Custom1, 4=Custom2)
+  Int32 SelectedThemeIndex;
+
+  // Current custom theme slot being edited (1 or 2)
+  Int32 CurrentCustomSlot;
+
+  // Display string for current slot
+  String CurrentSlotDisplayText { get; };
+
+  // Default theme names (read-only, from ThemeService)
+  String DefaultTheme1Name { get; };
+  String DefaultTheme2Name { get; };
+
+  // Custom theme settings
+  String CustomThemeName;
+  String BackgroundImagePath;
+  String NavPaneBackgroundImagePath;
+  Double PanelOpacity;
+  Double NavPaneOpacity;
+  Int32 BaseThemeIndex;  // 0=Light, 1=Dark
+
+  // Navigation pane background color
+  UInt8 NavPaneBgR;
+  UInt8 NavPaneBgG;
+  UInt8 NavPaneBgB;
+  Double NavPaneBgOpacity;
+
+  // Navigation button normal color
+  UInt8 NavBtnNormalR;
+  UInt8 NavBtnNormalG;
+  UInt8 NavBtnNormalB;
+  Double NavBtnNormalOpacity;
+
+  // Navigation button hover color
+  UInt8 NavBtnHoverR;
+  UInt8 NavBtnHoverG;
+  UInt8 NavBtnHoverB;
+  Double NavBtnHoverOpacity;
+
+  // Navigation button selected color
+  UInt8 NavBtnSelectedR;
+  UInt8 NavBtnSelectedG;
+  UInt8 NavBtnSelectedB;
+  Double NavBtnSelectedOpacity;
+
+  // Card/panel background color
+  UInt8 CardBgR;
+  UInt8 CardBgG;
+  UInt8 CardBgB;
+  Double CardBgOpacity;
+
+  // UI state
+  Boolean IsCustomThemeEnabled { get; };
+  Microsoft.UI.Xaml.Visibility CustomThemeVisibility { get; };
+  Microsoft.UI.Xaml.Visibility DefaultThemePreviewVisibility { get; };
+  Microsoft.UI.Xaml.Visibility SaveButtonVisibility { get; };
+
+  // Preview properties for default themes (read-only)
+  String PreviewThemeName { get; };
+  String PreviewBaseTheme { get; };
+  Microsoft.UI.Xaml.Media.Brush PreviewNavPaneBgBrush { get; };
+  Microsoft.UI.Xaml.Media.Brush PreviewCardBgBrush { get; };
+  Microsoft.UI.Xaml.Media.Brush PreviewBtnHoverBrush { get; };
+  Microsoft.UI.Xaml.Media.Brush PreviewBtnSelectedBrush { get; };
+
+  // Actions
+  Windows.Foundation.IAsyncAction PickBackgroundImageAsync();
+  Windows.Foundation.IAsyncAction PickNavPaneBackgroundImageAsync();
+  void ClearBackgroundImage();
+  void ClearNavPaneBackgroundImage();
+  void SwitchToCustomSlot(Int32 slot);
+  Windows.Foundation.IAsyncAction SaveSettingsAsync();
+}
+
+}

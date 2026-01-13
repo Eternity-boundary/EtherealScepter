@@ -1,4 +1,4 @@
-﻿<!--  Created by: EternityBoundary on Jan 3, 2025  -->
+﻿<!--  Created by: EternityBoundary on Jan 3, 2026  -->
 <Page
     x:Class="EtherealScepter.DashboardPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -6,9 +6,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:EtherealScepter"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="Transparent"
+    Loaded="OnPageLoaded"
     mc:Ignorable="d">
 
-    <ScrollViewer>
+    <ScrollViewer Background="Transparent">
         <StackPanel Padding="32" Spacing="24">
 
             <!--  Title  -->
@@ -32,9 +34,12 @@
 
                 <!--  Network  -->
                 <Border
+                    x:Name="NetworkCard"
                     Grid.Column="0"
                     Padding="16"
-                    Background="#1F1F1F"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
                     CornerRadius="8">
 
                     <StackPanel Spacing="8">
@@ -94,9 +99,12 @@
 
                 <!--  UPnP  -->
                 <Border
+                    x:Name="UpnpCard"
                     Grid.Column="1"
                     Padding="16"
-                    Background="#1F1F1F"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
                     CornerRadius="8">
                     <StackPanel Spacing="6">
                         <TextBlock FontWeight="SemiBold" Text="UPnP" />
@@ -113,9 +121,12 @@
 
                 <!--  NAT  -->
                 <Border
+                    x:Name="NatCard"
                     Grid.Column="2"
                     Padding="16"
-                    Background="#1F1F1F"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
                     CornerRadius="8">
                     <StackPanel Spacing="6">
                         <TextBlock FontWeight="SemiBold" Text="NAT Type" />
@@ -139,8 +150,11 @@
                     Text="Summary" />
 
                 <Border
+                    x:Name="SummaryCard"
                     Padding="16"
-                    Background="#1F1F1F"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
                     CornerRadius="8">
                     <StackPanel Spacing="6">
                         <TextBlock Text="{x:Bind ViewModel.SummaryText, Mode=OneWay}" />
