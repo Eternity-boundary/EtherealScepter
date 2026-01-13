@@ -226,6 +226,9 @@ void MainWindow::OnNavigationChanged(
     return;
   }
 
+void MainWindow::OnNavigationChanged(
+    NavigationView const & /*sender*/,
+    NavigationViewSelectionChangedEventArgs const &args) {
   if (!args.SelectedItem())
     return;
 

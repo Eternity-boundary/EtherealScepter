@@ -24,7 +24,7 @@ EtherealScepter 目前是一個「UPnP 開關工具」，向下列目標發展�
 - CGNAT 判斷
 - Port Mapping 摘要
 
-### Network(未完成)
+### Network
 - 連接埠/DNS測試
 - WAN / CGNAT 判斷邏輯整合
 
