@@ -59,8 +59,8 @@ hstring QueryWanIpHttpFallback() {
   }
 }
 
-hstring DetectCGNAT(hstring const &wanIp) {
-  if (wanIp == L"-" || wanIp.empty())
+hstring DetectCGNAT(hstring const &wanIp,bool const &isIpFallback) {
+  if (wanIp == L"-" || wanIp.empty() || isIpFallback)
     return L"Unknown";
   return IsPrivateIPv4(wanIp) ? L"CGNAT" : L"Open";
 }
@@ -92,7 +92,7 @@ NetworkSnapshot NetworkStatusService::Query() {
   snapshot.localIp = GetLocalIPv4();
   snapshot.httpWanIp = QueryWanIpHttpFallback();
   snapshot.wanIp = snapshot.httpWanIp;
-  snapshot.cgnatStatus = DetectCGNAT(snapshot.wanIp);
+  snapshot.cgnatStatus = DetectCGNAT(snapshot.wanIp, true);
   snapshot.summary = L"WAN IP via HTTP";
 
   // 初始化 upnpWanIp 為空（稍後如果 UPnP 成功會覆蓋）
@@ -174,13 +174,15 @@ NetworkSnapshot NetworkStatusService::Query() {
     wanIp = soap.GetExternalIPAddress(*snapshot.igdService);
 
     // fallback
-    if (!wanIp)
+    if (!wanIp) {
       wanIp = soap.GetExternalIPAddressViaStatus(*snapshot.igdService);
+      snapshot.isIpFallback = true;
+    }
 
     if (wanIp && !wanIp->empty()) {
       snapshot.upnpWanIp = winrt::hstring{wanIp->c_str()};
       snapshot.wanIp = winrt::hstring{wanIp->c_str()};
-      snapshot.cgnatStatus = DetectCGNAT(snapshot.wanIp);
+      snapshot.cgnatStatus = DetectCGNAT(snapshot.wanIp, snapshot.isIpFallback);
       snapshot.summary = L"WAN IP via UPnP";
       snapshot.portForwardingStatus = L"Forwarding Supported";
       snapshot.natType = L"Open";

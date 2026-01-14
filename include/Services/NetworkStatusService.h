@@ -30,6 +30,7 @@ struct NetworkSnapshot {
   winrt::hstring upnpWanIp;
 
   bool isStale;
+  bool isIpFallback;
 
   std::optional<ES::Services::Upnp::UpnpIgdServiceInfo> igdService;
 

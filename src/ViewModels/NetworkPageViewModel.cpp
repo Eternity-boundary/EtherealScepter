@@ -110,7 +110,7 @@ std::vector<DnsServerInfo> GetSystemDnsServers() {
   return dnsServers;
 }
 
-// Helper: 格式化 IPv6 位址用於 HostName（需要加中括號）
+// Helper: 格式化 IPv6 位址用於 HostName
 winrt::hstring FormatDnsAddress(const DnsServerInfo& dns) {
   return winrt::hstring(dns.address);
 }
@@ -303,7 +303,7 @@ void NetworkPageViewModel::ApplySnapshot(Services::NetworkSnapshot const &snapsh
 
   if (m_httpIp != L"-" && m_upnpIp != L"(Not available)" && m_httpIp != m_upnpIp) {
     m_status = L"⚠ Possible CGNAT detected";
-  } else if (snapshot.cgnatStatus.empty()) {
+  } else if (snapshot.cgnatStatus.empty() || snapshot.isIpFallback) {
     m_status = L"Unknown";
   } else {
     m_status = snapshot.cgnatStatus;
@@ -557,9 +557,14 @@ IAsyncAction NetworkPageViewModel::TestExternalPortAsync(int32_t port) {
     if (externalIp.empty() || externalIp == L"-") {
       result = L"⚠ Cannot determine external IPv4 address";
     } else {
-      // 使用 ipv4.ifconfig.co 強制 IPv4 (而非 ifconfig.co 可能使用 IPv6)
-      // 格式: https://ipv4.ifconfig.co/port/{port}
-      auto uri = Uri(L"https://ipv4.ifconfig.co/port/" + to_hstring(port));
+      // 使用 check-host.net API 進行 IPv4 端口檢測
+      // 格式: https://check-host.net/check-tcp?host={ip}:{port}
+      auto uri = Uri(L"https://check-host.net/check-tcp?host=" + externalIp + L":" + to_hstring(port));
+      
+      // 設定 Accept header 以取得 JSON 回應
+      client.DefaultRequestHeaders().Accept().Clear();
+      client.DefaultRequestHeaders().Accept().Append(
+          Headers::HttpMediaTypeWithQualityHeaderValue(L"application/json"));
       
       auto start = std::chrono::steady_clock::now();
       auto response = client.GetAsync(uri).get();
@@ -570,13 +575,55 @@ IAsyncAction NetworkPageViewModel::TestExternalPortAsync(int32_t port) {
         auto content = response.Content().ReadAsStringAsync().get();
         std::wstring contentStr(content.c_str());
         
-        // ifconfig.co 返回 JSON: {"ip":"...","port":...,"reachable":true/false}
-        if (contentStr.find(L"\"reachable\":true") != std::wstring::npos ||
-            contentStr.find(L"\"reachable\": true") != std::wstring::npos) {
-          result = L"✔ Port " + to_hstring(port) + L" is OPEN (" + externalIp + L", " + to_hstring(elapsed) + L" ms)";
-        } else if (contentStr.find(L"\"reachable\":false") != std::wstring::npos ||
-                   contentStr.find(L"\"reachable\": false") != std::wstring::npos) {
-          result = L"✖ Port " + to_hstring(port) + L" is CLOSED (" + externalIp + L", " + to_hstring(elapsed) + L" ms)";
+        // check-host.net 返回 JSON，包含 request_id 和多個檢測節點
+        // 成功回應表示檢測請求已排隊，需要輪詢結果
+        // 簡化處理：如果收到有效回應且包含 request_id，表示 API 可用
+        if (contentStr.find(L"\"request_id\"") != std::wstring::npos ||
+            contentStr.find(L"\"ok\"") != std::wstring::npos) {
+          // 取得 request_id 進行結果查詢
+          auto requestIdPos = contentStr.find(L"\"request_id\":\"");
+          if (requestIdPos != std::wstring::npos) {
+            auto idStart = requestIdPos + 14; // length of "\"request_id\":\""
+            auto idEnd = contentStr.find(L"\"", idStart);
+            if (idEnd != std::wstring::npos) {
+              auto requestId = contentStr.substr(idStart, idEnd - idStart);
+              
+              // 等待一小段時間讓檢測完成
+              Sleep(2000);
+              
+              // 查詢結果
+              auto resultUri = Uri(L"https://check-host.net/check-result/" + winrt::hstring(requestId));
+              auto resultResponse = client.GetAsync(resultUri).get();
+              
+              if (resultResponse.IsSuccessStatusCode()) {
+                auto resultContent = resultResponse.Content().ReadAsStringAsync().get();
+                std::wstring resultStr(resultContent.c_str());
+                
+                // 分析結果：檢查是否有任何節點回報連線成功
+                bool hasSuccess = false;
+                
+                // 如果結果中包含 "address" 和 "time" 欄位，表示有節點成功連線
+                if (resultStr.find(L"\"address\"") != std::wstring::npos &&
+                    resultStr.find(L"\"time\"") != std::wstring::npos) {
+                  hasSuccess = true;
+                }
+                
+                // 只要有任何節點成功連線，就視為端口開放
+                // (部分 null 可能是因為特定國家的網路限制，非端口問題)
+                if (hasSuccess) {
+                  result = L"✔ Port " + to_hstring(port) + L" is OPEN (" + externalIp + L")";
+                } else {
+                  result = L"✖ Port " + to_hstring(port) + L" is CLOSED (" + externalIp + L")";
+                }
+              } else {
+                result = L"⚠ Port " + to_hstring(port) + L" check pending (" + externalIp + L")";
+              }
+            } else {
+              result = L"⚠ Port " + to_hstring(port) + L" status unclear (" + externalIp + L")";
+            }
+          } else {
+            result = L"⚠ Port " + to_hstring(port) + L" status unclear (" + externalIp + L")";
+          }
         } else {
           result = L"⚠ Port " + to_hstring(port) + L" status unclear (" + externalIp + L")";
         }
