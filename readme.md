@@ -47,6 +47,16 @@ EtherealScepter 目前是一個「UPnP 開關工具」，向下列目標發展�
 - **非同步模型**：C++ coroutine (`IAsyncAction`)
 - **UI Thread 回切**：`winrt::apartment_context`
 
+
+---
+## 🖼️預覽截圖
+<img width="1622" height="891" alt="1768266063871" src="https://github.com/user-attachments/assets/cbffbdc7-4106-44d9-8423-0f52583805b5" />
+<img width="1622" height="891" alt="2d2c00555c89e9565c356705b8b9cf5f" src="https://github.com/user-attachments/assets/311d88a6-a77c-4b12-97e7-44a0ba8cb474" />
+<img width="1622" height="891" alt="1768266084237" src="https://github.com/user-attachments/assets/07d54499-2b5d-4aed-8ef9-99844077047e" />
+<img width="1622" height="891" alt="1768266106514" src="https://github.com/user-attachments/assets/8c68ce9f-c8cd-476c-ae97-80af32427d9a" />
+<img width="1622" height="891" alt="1768266166568" src="https://github.com/user-attachments/assets/1d79e055-0682-432b-9bfc-c3118ddcda89" />
+
+
 ---
 ⚠ 注意事項
 
