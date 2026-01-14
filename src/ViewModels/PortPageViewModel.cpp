@@ -49,14 +49,27 @@ PortPageViewModel::PortMappings() {
 
 void PortPageViewModel::AddMapping(
     EtherealScepter::Models::PortMappingInfo const &mapping) {
-  g_upnpService.Add(mapping);
-
-  m_portMappings.Append(mapping);
+  try {
+    g_upnpService.Add(mapping);
+    m_portMappings.Append(mapping);
+  } catch (winrt::hresult_error const &ex) {
+    // UPnP 裝置不可用或操作失敗時拋出例外
+    throw winrt::hresult_error(ex.code(), L"Failed to add port mapping: UPnP device unavailable or operation failed.");
+  } catch (...) {
+    throw winrt::hresult_error(E_FAIL, L"Failed to add port mapping: Unknown error.");
+  }
 }
 
 void PortPageViewModel::RemoveMapping(
     EtherealScepter::Models::PortMappingInfo const &mapping) {
-  g_upnpService.Remove(mapping);
+  try {
+    g_upnpService.Remove(mapping);
+  } catch (winrt::hresult_error const &ex) {
+    // UPnP 裝置不可用或操作失敗時拋出例外
+    throw winrt::hresult_error(ex.code(), L"Failed to remove port mapping: UPnP device unavailable or operation failed.");
+  } catch (...) {
+    throw winrt::hresult_error(E_FAIL, L"Failed to remove port mapping: Unknown error.");
+  }
 
   // 簡單比對
   uint32_t i = 0;
