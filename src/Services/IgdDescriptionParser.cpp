@@ -256,6 +256,19 @@ namespace EtherealScepter::Services::Upnp
                             ? location
                             : location.substr(0, slash);
 
+                        // Parse device info from root device element
+                        if (auto deviceNode = doc.SelectSingleNode(L"//*[local-name()='device']"))
+                        {
+                            if (auto node = deviceNode.SelectSingleNode(L"./*[local-name()='friendlyName']"))
+                                info.friendlyName = node.InnerText().c_str();
+                            if (auto node = deviceNode.SelectSingleNode(L"./*[local-name()='manufacturer']"))
+                                info.manufacturer = node.InnerText().c_str();
+                            if (auto node = deviceNode.SelectSingleNode(L"./*[local-name()='modelName']"))
+                                info.modelName = node.InnerText().c_str();
+                            if (auto node = deviceNode.SelectSingleNode(L"./*[local-name()='presentationURL']"))
+                                info.presentationUrl = node.InnerText().c_str();
+                        }
+
                         return info;
                     }
                 }
