@@ -86,8 +86,6 @@ namespace EtherealScepter::Services::Upnp
         xml.erase(std::remove(xml.begin(), xml.end(), L'\0'), xml.end());
     }
 
-    // ---- your original signature preserved ---------------------------------
-
     static std::wstring HttpGet(const std::wstring& url)
     {
         URL_COMPONENTS uc{};
