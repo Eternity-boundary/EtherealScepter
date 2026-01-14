@@ -240,9 +240,6 @@
     <ClInclude Include="include\Services\NetworkStatusService.h">
       <Filter>Services\include</Filter>
     </ClInclude>
-    <ClInclude Include="src\Services\PortMappingService.h">
-      <Filter>Services\include</Filter>
-    </ClInclude>
     <ClInclude Include="include\Services\SsdpParser.h">
       <Filter>Services\include</Filter>
     </ClInclude>

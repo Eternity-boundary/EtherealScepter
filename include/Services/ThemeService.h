@@ -25,9 +25,7 @@ struct ColorConfig {
   }
 };
 
-/// <summary>
-/// Custom theme configuration for user-defined themes
-/// </summary>
+//Custom theme configuration for user-defined themes
 struct CustomThemeConfig {
   // Background image path (empty = no image)
   std::wstring backgroundImagePath;

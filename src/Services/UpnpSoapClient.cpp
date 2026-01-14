@@ -50,7 +50,14 @@ namespace EtherealScepter::Services::Upnp
 
         // 回應 XML（通常 ASCII / UTF-8）
         const std::string& respBytes = *respBytesOpt;
-        std::wstring xml(respBytes.begin(), respBytes.end());
+        
+        // 正確處理 UTF-8 轉換
+        std::wstring xml;
+        int needed = MultiByteToWideChar(CP_UTF8, 0, respBytes.data(), (int)respBytes.size(), nullptr, 0);
+        if (needed > 0) {
+            xml.resize(needed);
+            MultiByteToWideChar(CP_UTF8, 0, respBytes.data(), (int)respBytes.size(), xml.data(), needed);
+        }
 
         // 嘗試解析 <NewExternalIPAddress>
         auto ip =
@@ -238,10 +245,14 @@ namespace EtherealScepter::Services::Upnp
         if (!respBytesOpt)
             return std::nullopt;
 
-        // Response is XML. Convert bytes -> wstring (ASCII/UTF-8 usually).
-        // For most IGD responses, characters are simple ASCII, so this is safe enough for now.
+        // Response is XML. Convert bytes -> wstring (UTF-8).
         const std::string& respBytes = *respBytesOpt;
-        std::wstring xml(respBytes.begin(), respBytes.end());
+        std::wstring xml;
+        int needed = MultiByteToWideChar(CP_UTF8, 0, respBytes.data(), (int)respBytes.size(), nullptr, 0);
+        if (needed > 0) {
+            xml.resize(needed);
+            MultiByteToWideChar(CP_UTF8, 0, respBytes.data(), (int)respBytes.size(), xml.data(), needed);
+        }
 
         // Parse <NewExternalIPAddress>...</NewExternalIPAddress>
         auto ip = ExtractXmlValue(xml, L"NewExternalIPAddress");
