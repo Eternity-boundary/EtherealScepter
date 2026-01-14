@@ -1,6 +1,6 @@
 # EtherealScepter
 
-![Language](https://img.shields.io/badge/language-C++-red)  ![Language](https://img.shields.io/badge/build-passing-blue)  
+![Language](https://img.shields.io/badge/language-C++-red)  [![MSBuildTest](https://github.com/Eternity-boundary/EtherealScepter/actions/workflows/msbuild.yml/badge.svg)](https://github.com/Eternity-boundary/EtherealScepter/actions/workflows/msbuild.yml)  
 一個以 **WinUI 3 + C++/WinRT** 打造的UPnP管理工具，用於快速建立網路連接埠轉發
 
 ---
