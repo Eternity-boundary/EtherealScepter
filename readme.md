@@ -1,6 +1,6 @@
 # EtherealScepter
 
-![Language](https://img.shields.io/badge/language-C++-red)  ![Language](https://img.shields.io/badge/build-passing-blue)  
+![Language](https://img.shields.io/badge/language-C++-red)  [![MSBuildTest](https://github.com/Eternity-boundary/EtherealScepter/actions/workflows/msbuild.yml/badge.svg)](https://github.com/Eternity-boundary/EtherealScepter/actions/workflows/msbuild.yml)  
 一個以 **WinUI 3 + C++/WinRT** 打造的UPnP管理工具，用於快速建立網路連接埠轉發
 
 ---
@@ -30,8 +30,6 @@ EtherealScepter 目前是一個「UPnP 開關工具」，向下列目標發展�
 
 ### UPnP
 - IGD 裝置探索（SSDP）
-- External IP 查詢
-- Port Mapping 管理
 
 ### Port
 - 顯示目前 Port Mapping

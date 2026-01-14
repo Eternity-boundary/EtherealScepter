@@ -10,7 +10,7 @@
   <Identity
     Name="a30bdc63-c414-4e59-b9c5-8555b0c4873f"
     Publisher="CN=EternityBoundary"
-    Version="0.0.1.0" />
+    Version="0.0.3.0" />
 
   <mp:PhoneIdentity PhoneProductId="a30bdc63-c414-4e59-b9c5-8555b0c4873f" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
