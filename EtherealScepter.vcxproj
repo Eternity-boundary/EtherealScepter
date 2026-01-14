@@ -174,7 +174,6 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     <ClInclude Include="src\App\App.xaml.h">
       <DependentUpon>src\App\App.xaml</DependentUpon>
     </ClInclude>
-    <ClInclude Include="src\Services\PortMappingService.h" />
     <ClInclude Include="src\Views\DashboardPage.xaml.h">
       <DependentUpon>src\Views\DashboardPage.xaml</DependentUpon>
     </ClInclude>

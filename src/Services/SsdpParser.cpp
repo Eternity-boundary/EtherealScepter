@@ -3,14 +3,16 @@
 #include "include/Services/SsdpParser.h"
 
 #include <algorithm>
+#include <string_view>
 
 namespace EtherealScepter::Services::Upnp
 {
-    static std::string TrimLeft(std::string s)
+    static std::string TrimLeft(std::string_view sv)
     {
-        while (!s.empty() && (s.front() == ' ' || s.front() == '\t'))
-            s.erase(s.begin());
-        return s;
+        size_t start = 0;
+        while (start < sv.size() && (sv[start] == ' ' || sv[start] == '\t'))
+            ++start;
+        return std::string(sv.substr(start));
     }
 
     static std::string ExtractHeaderValue(std::string const& response, char const* headerName)

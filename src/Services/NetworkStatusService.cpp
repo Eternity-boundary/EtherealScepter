@@ -28,9 +28,22 @@ namespace ES = ::EtherealScepter;
 namespace {
 bool IsPrivateIPv4(hstring const &ip) {
   std::wstring s = ip.c_str();
-  return s.starts_with(L"10.") || s.starts_with(L"192.168.") ||
-         (s.starts_with(L"172.") && std::stoi(s.substr(4, 2)) >= 16 &&
-          std::stoi(s.substr(4, 2)) <= 31);
+  if (s.starts_with(L"10.") || s.starts_with(L"192.168."))
+    return true;
+  
+  // 172.16.0.0 - 172.31.255.255
+  if (s.starts_with(L"172.") && s.size() >= 6) {
+    auto dotPos = s.find(L'.', 4);
+    if (dotPos != std::wstring::npos && dotPos > 4) {
+      try {
+        int second = std::stoi(s.substr(4, dotPos - 4));
+        return second >= 16 && second <= 31;
+      } catch (...) {
+        return false;
+      }
+    }
+  }
+  return false;
 }
 
 hstring GetLocalIPv4() {
@@ -59,7 +72,7 @@ hstring QueryWanIpHttpFallback() {
   }
 }
 
-hstring DetectCGNAT(hstring const &wanIp,bool const &isIpFallback) {
+hstring DetectCGNAT(hstring const &wanIp,bool const isIpFallback) {
   if (wanIp == L"-" || wanIp.empty() || isIpFallback)
     return L"Unknown";
   return IsPrivateIPv4(wanIp) ? L"CGNAT" : L"Open";
@@ -199,6 +212,7 @@ NetworkSnapshot NetworkStatusService::Query() {
       snapshot.summary = L"WAN IP via UPnP";
       snapshot.portForwardingStatus = L"Forwarding Supported";
       snapshot.natType = L"Open";
+      snapshot.isIpFallback = false;
     } else {
       snapshot.summary = L"UPnP IGD found, but WAN IP unavailable";
     }

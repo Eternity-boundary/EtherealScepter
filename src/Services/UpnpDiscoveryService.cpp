@@ -56,7 +56,14 @@ namespace EtherealScepter::Services::Upnp
         while (!value.empty() && (value.back() == ' ' || value.back() == '\t'))
             value.pop_back();
 
-        return std::wstring(value.begin(), value.end());
+        // 正確處理 UTF-8 轉換（SSDP 通常是 ASCII，但以防萬一）
+        std::wstring result;
+        int needed = MultiByteToWideChar(CP_UTF8, 0, value.data(), (int)value.size(), nullptr, 0);
+        if (needed > 0) {
+            result.resize(needed);
+            MultiByteToWideChar(CP_UTF8, 0, value.data(), (int)value.size(), result.data(), needed);
+        }
+        return result;
     }
 
     // -------------------------

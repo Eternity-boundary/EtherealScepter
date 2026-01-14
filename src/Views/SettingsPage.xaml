@@ -19,9 +19,7 @@
                     FontSize="28"
                     FontWeight="SemiBold"
                     Text="Settings" />
-                <TextBlock
-                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                    Text="Customize application appearance and behavior" />
+                <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="Customize application appearance and behavior" />
             </StackPanel>
 
             <!--  Theme Selection  -->
@@ -45,7 +43,7 @@
                 </StackPanel>
             </Border>
 
-            <!--  Default Theme Preview (Read-only) -->
+            <!--  Default Theme Preview (Read-only)  -->
             <Border
                 x:Name="DefaultThemePreviewCard"
                 Style="{ThemeResource CardBorderStyle}"
@@ -53,9 +51,9 @@
                 <StackPanel Spacing="16">
                     <StackPanel Orientation="Horizontal" Spacing="16">
                         <TextBlock
+                            VerticalAlignment="Center"
                             FontSize="18"
                             FontWeight="SemiBold"
-                            VerticalAlignment="Center"
                             Text="Theme Preview" />
                         <Border
                             Padding="8,4"
@@ -88,7 +86,7 @@
                     <!--  Color Preview  -->
                     <StackPanel Spacing="8">
                         <TextBlock FontWeight="SemiBold" Text="Color Settings" />
-                        
+
                         <Grid ColumnSpacing="24" RowSpacing="8">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -100,9 +98,14 @@
                             </Grid.RowDefinitions>
 
                             <!--  Nav Pane Background  -->
-                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                            <StackPanel
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Orientation="Horizontal"
+                                Spacing="8">
                                 <Border
-                                    Width="24" Height="24"
+                                    Width="24"
+                                    Height="24"
                                     Background="{x:Bind ViewModel.PreviewNavPaneBgBrush, Mode=OneWay}"
                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                     BorderThickness="1"
@@ -111,9 +114,14 @@
                             </StackPanel>
 
                             <!--  Card Background  -->
-                            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                            <StackPanel
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Orientation="Horizontal"
+                                Spacing="8">
                                 <Border
-                                    Width="24" Height="24"
+                                    Width="24"
+                                    Height="24"
                                     Background="{x:Bind ViewModel.PreviewCardBgBrush, Mode=OneWay}"
                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                     BorderThickness="1"
@@ -122,9 +130,14 @@
                             </StackPanel>
 
                             <!--  Button Hover  -->
-                            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                            <StackPanel
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Orientation="Horizontal"
+                                Spacing="8">
                                 <Border
-                                    Width="24" Height="24"
+                                    Width="24"
+                                    Height="24"
                                     Background="{x:Bind ViewModel.PreviewBtnHoverBrush, Mode=OneWay}"
                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                     BorderThickness="1"
@@ -133,9 +146,14 @@
                             </StackPanel>
 
                             <!--  Button Selected  -->
-                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                            <StackPanel
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Orientation="Horizontal"
+                                Spacing="8">
                                 <Border
-                                    Width="24" Height="24"
+                                    Width="24"
+                                    Height="24"
                                     Background="{x:Bind ViewModel.PreviewBtnSelectedBrush, Mode=OneWay}"
                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                     BorderThickness="1"
@@ -147,7 +165,7 @@
                 </StackPanel>
             </Border>
 
-            <!--  Custom Theme Settings (Editable) - 只在選擇可編輯主題時顯示  -->
+            <!--  Custom Theme Settings (Editable) - 只在選擇可編輯主題時顯示 此功能保留給未來擴展  -->
             <Border
                 x:Name="CustomThemeCard"
                 Style="{ThemeResource CardBorderStyle}"
@@ -155,9 +173,9 @@
                 <StackPanel Spacing="20">
                     <StackPanel Orientation="Horizontal" Spacing="16">
                         <TextBlock
+                            VerticalAlignment="Center"
                             FontSize="18"
                             FontWeight="SemiBold"
-                            VerticalAlignment="Center"
                             Text="Custom Theme Settings" />
                         <TextBlock
                             VerticalAlignment="Center"
@@ -167,9 +185,7 @@
 
                     <!--  Theme Name  -->
                     <StackPanel Spacing="8">
-                        <TextBlock
-                            FontWeight="SemiBold"
-                            Text="Theme Name" />
+                        <TextBlock FontWeight="SemiBold" Text="Theme Name" />
                         <TextBox
                             Width="300"
                             PlaceholderText="Enter theme name"
@@ -178,12 +194,8 @@
 
                     <!--  Base Theme  -->
                     <StackPanel Spacing="8">
-                        <TextBlock
-                            FontWeight="SemiBold"
-                            Text="Base Theme" />
-                        <ComboBox
-                            Width="200"
-                            SelectedIndex="{x:Bind ViewModel.BaseThemeIndex, Mode=TwoWay}">
+                        <TextBlock FontWeight="SemiBold" Text="Base Theme" />
+                        <ComboBox Width="200" SelectedIndex="{x:Bind ViewModel.BaseThemeIndex, Mode=TwoWay}">
                             <ComboBoxItem Content="Light" />
                             <ComboBoxItem Content="Dark" />
                         </ComboBox>
@@ -191,29 +203,21 @@
 
                     <!--  Background Image  -->
                     <StackPanel Spacing="8">
-                        <TextBlock
-                            FontWeight="SemiBold"
-                            Text="Background Image" />
+                        <TextBlock FontWeight="SemiBold" Text="Background Image" />
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <TextBox
                                 Width="400"
                                 IsReadOnly="True"
                                 PlaceholderText="No image selected"
                                 Text="{x:Bind ViewModel.BackgroundImagePath, Mode=OneWay}" />
-                            <Button
-                                Click="OnPickBackgroundImageClicked"
-                                Content="Browse..." />
-                            <Button
-                                Click="OnClearBackgroundImageClicked"
-                                Content="Clear" />
+                            <Button Click="OnPickBackgroundImageClicked" Content="Browse..." />
+                            <Button Click="OnClearBackgroundImageClicked" Content="Clear" />
                         </StackPanel>
                     </StackPanel>
 
                     <!--  Navigation Pane Background Image  -->
                     <StackPanel Spacing="8">
-                        <TextBlock
-                            FontWeight="SemiBold"
-                            Text="Navigation Pane Background Image" />
+                        <TextBlock FontWeight="SemiBold" Text="Navigation Pane Background Image" />
                         <TextBlock
                             FontSize="12"
                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
@@ -224,276 +228,274 @@
                                 IsReadOnly="True"
                                 PlaceholderText="No image selected (uses main background)"
                                 Text="{x:Bind ViewModel.NavPaneBackgroundImagePath, Mode=OneWay}" />
-                            <Button
-                                Click="OnPickNavPaneBackgroundImageClicked"
-                                Content="Browse..." />
-                            <Button
-                                Click="OnClearNavPaneBackgroundImageClicked"
-                                Content="Clear" />
+                            <Button Click="OnPickNavPaneBackgroundImageClicked" Content="Browse..." />
+                            <Button Click="OnClearNavPaneBackgroundImageClicked" Content="Clear" />
                         </StackPanel>
                     </StackPanel>
 
                     <TextBlock
+                        Margin="0,12,0,0"
                         FontSize="16"
                         FontWeight="SemiBold"
-                        Margin="0,12,0,0"
                         Text="Color Settings" />
 
                     <!--  Navigation Pane Background Color  -->
-                    <Expander
-                        Header="Navigation Pane Background"
-                        IsExpanded="False">
-                        <StackPanel Spacing="12" Padding="0,8,0,0">
+                    <Expander Header="Navigation Pane Background" IsExpanded="False">
+                        <StackPanel Padding="0,8,0,0" Spacing="12">
                             <StackPanel Orientation="Horizontal" Spacing="16">
-                                <StackPanel Spacing="4" Width="120">
-                                    <TextBlock Text="Red" FontSize="12" />
+                                <StackPanel Width="120" Spacing="4">
+                                    <TextBlock FontSize="12" Text="Red" />
                                     <NumberBox
-                                        Minimum="0" Maximum="255"
+                                        Maximum="255"
+                                        Minimum="0"
                                         SpinButtonPlacementMode="Compact"
                                         Value="{x:Bind ViewModel.NavPaneBgR, Mode=TwoWay}" />
                                 </StackPanel>
-                                <StackPanel Spacing="4" Width="120">
-                                    <TextBlock Text="Green" FontSize="12" />
+                                <StackPanel Width="120" Spacing="4">
+                                    <TextBlock FontSize="12" Text="Green" />
                                     <NumberBox
-                                        Minimum="0" Maximum="255"
+                                        Maximum="255"
+                                        Minimum="0"
                                         SpinButtonPlacementMode="Compact"
                                         Value="{x:Bind ViewModel.NavPaneBgG, Mode=TwoWay}" />
                                 </StackPanel>
-                                <StackPanel Spacing="4" Width="120">
-                                    <TextBlock Text="Blue" FontSize="12" />
+                                <StackPanel Width="120" Spacing="4">
+                                    <TextBlock FontSize="12" Text="Blue" />
                                     <NumberBox
-                                        Minimum="0" Maximum="255"
+                                        Maximum="255"
+                                        Minimum="0"
                                         SpinButtonPlacementMode="Compact"
                                         Value="{x:Bind ViewModel.NavPaneBgB, Mode=TwoWay}" />
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel Spacing="4">
-                                <TextBlock Text="Opacity" FontSize="12" />
+                                <TextBlock FontSize="12" Text="Opacity" />
                                 <StackPanel Orientation="Horizontal" Spacing="16">
                                     <Slider
                                         Width="300"
-                                        Maximum="1" Minimum="0"
+                                        Maximum="1"
+                                        Minimum="0"
                                         StepFrequency="0.05"
                                         Value="{x:Bind ViewModel.NavPaneBgOpacity, Mode=TwoWay}" />
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        Text="{x:Bind FormatPercent(ViewModel.NavPaneBgOpacity), Mode=OneWay}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{x:Bind FormatPercent(ViewModel.NavPaneBgOpacity), Mode=OneWay}" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
                     </Expander>
 
                     <!--  Navigation Button Normal Color  -->
-                    <Expander
-                        Header="Navigation Button (Normal State)"
-                        IsExpanded="False">
-                        <StackPanel Spacing="12" Padding="0,8,0,0">
+                    <Expander Header="Navigation Button (Normal State)" IsExpanded="False">
+                        <StackPanel Padding="0,8,0,0" Spacing="12">
                             <StackPanel Orientation="Horizontal" Spacing="16">
-                                <StackPanel Spacing="4" Width="120">
-                                    <TextBlock Text="Red" FontSize="12" />
+                                <StackPanel Width="120" Spacing="4">
+                                    <TextBlock FontSize="12" Text="Red" />
                                     <NumberBox
-                                        Minimum="0" Maximum="255"
+                                        Maximum="255"
+                                        Minimum="0"
                                         SpinButtonPlacementMode="Compact"
                                         Value="{x:Bind ViewModel.NavBtnNormalR, Mode=TwoWay}" />
                                 </StackPanel>
-                                <StackPanel Spacing="4" Width="120">
-                                    <TextBlock Text="Green" FontSize="12" />
+                                <StackPanel Width="120" Spacing="4">
+                                    <TextBlock FontSize="12" Text="Green" />
                                     <NumberBox
-                                        Minimum="0" Maximum="255"
+                                        Maximum="255"
+                                        Minimum="0"
                                         SpinButtonPlacementMode="Compact"
                                         Value="{x:Bind ViewModel.NavBtnNormalG, Mode=TwoWay}" />
                                 </StackPanel>
-                                <StackPanel Spacing="4" Width="120">
-                                    <TextBlock Text="Blue" FontSize="12" />
+                                <StackPanel Width="120" Spacing="4">
+                                    <TextBlock FontSize="12" Text="Blue" />
                                     <NumberBox
-                                        Minimum="0" Maximum="255"
+                                        Maximum="255"
+                                        Minimum="0"
                                         SpinButtonPlacementMode="Compact"
                                         Value="{x:Bind ViewModel.NavBtnNormalB, Mode=TwoWay}" />
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel Spacing="4">
-                                <TextBlock Text="Opacity" FontSize="12" />
+                                <TextBlock FontSize="12" Text="Opacity" />
                                 <StackPanel Orientation="Horizontal" Spacing="16">
                                     <Slider
                                         Width="300"
-                                        Maximum="1" Minimum="0"
+                                        Maximum="1"
+                                        Minimum="0"
                                         StepFrequency="0.05"
                                         Value="{x:Bind ViewModel.NavBtnNormalOpacity, Mode=TwoWay}" />
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        Text="{x:Bind FormatPercent(ViewModel.NavBtnNormalOpacity), Mode=OneWay}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{x:Bind FormatPercent(ViewModel.NavBtnNormalOpacity), Mode=OneWay}" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
                     </Expander>
 
                     <!--  Navigation Button Hover Color  -->
-                    <Expander
-                        Header="Navigation Button (Hover State)"
-                        IsExpanded="False">
-                        <StackPanel Spacing="12" Padding="0,8,0,0">
+                    <Expander Header="Navigation Button (Hover State)" IsExpanded="False">
+                        <StackPanel Padding="0,8,0,0" Spacing="12">
                             <StackPanel Orientation="Horizontal" Spacing="16">
-                                <StackPanel Spacing="4" Width="120">
-                                    <TextBlock Text="Red" FontSize="12" />
+                                <StackPanel Width="120" Spacing="4">
+                                    <TextBlock FontSize="12" Text="Red" />
                                     <NumberBox
-                                        Minimum="0" Maximum="255"
+                                        Maximum="255"
+                                        Minimum="0"
                                         SpinButtonPlacementMode="Compact"
                                         Value="{x:Bind ViewModel.NavBtnHoverR, Mode=TwoWay}" />
                                 </StackPanel>
-                                <StackPanel Spacing="4" Width="120">
-                                    <TextBlock Text="Green" FontSize="12" />
+                                <StackPanel Width="120" Spacing="4">
+                                    <TextBlock FontSize="12" Text="Green" />
                                     <NumberBox
-                                        Minimum="0" Maximum="255"
+                                        Maximum="255"
+                                        Minimum="0"
                                         SpinButtonPlacementMode="Compact"
                                         Value="{x:Bind ViewModel.NavBtnHoverG, Mode=TwoWay}" />
                                 </StackPanel>
-                                <StackPanel Spacing="4" Width="120">
-                                    <TextBlock Text="Blue" FontSize="12" />
+                                <StackPanel Width="120" Spacing="4">
+                                    <TextBlock FontSize="12" Text="Blue" />
                                     <NumberBox
-                                        Minimum="0" Maximum="255"
+                                        Maximum="255"
+                                        Minimum="0"
                                         SpinButtonPlacementMode="Compact"
                                         Value="{x:Bind ViewModel.NavBtnHoverB, Mode=TwoWay}" />
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel Spacing="4">
-                                <TextBlock Text="Opacity" FontSize="12" />
+                                <TextBlock FontSize="12" Text="Opacity" />
                                 <StackPanel Orientation="Horizontal" Spacing="16">
                                     <Slider
                                         Width="300"
-                                        Maximum="1" Minimum="0"
+                                        Maximum="1"
+                                        Minimum="0"
                                         StepFrequency="0.05"
                                         Value="{x:Bind ViewModel.NavBtnHoverOpacity, Mode=TwoWay}" />
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        Text="{x:Bind FormatPercent(ViewModel.NavBtnHoverOpacity), Mode=OneWay}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{x:Bind FormatPercent(ViewModel.NavBtnHoverOpacity), Mode=OneWay}" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
                     </Expander>
 
                     <!--  Navigation Button Selected Color  -->
-                    <Expander
-                        Header="Navigation Button (Selected State)"
-                        IsExpanded="False">
-                        <StackPanel Spacing="12" Padding="0,8,0,0">
+                    <Expander Header="Navigation Button (Selected State)" IsExpanded="False">
+                        <StackPanel Padding="0,8,0,0" Spacing="12">
                             <StackPanel Orientation="Horizontal" Spacing="16">
-                                <StackPanel Spacing="4" Width="120">
-                                    <TextBlock Text="Red" FontSize="12" />
+                                <StackPanel Width="120" Spacing="4">
+                                    <TextBlock FontSize="12" Text="Red" />
                                     <NumberBox
-                                        Minimum="0" Maximum="255"
+                                        Maximum="255"
+                                        Minimum="0"
                                         SpinButtonPlacementMode="Compact"
                                         Value="{x:Bind ViewModel.NavBtnSelectedR, Mode=TwoWay}" />
                                 </StackPanel>
-                                <StackPanel Spacing="4" Width="120">
-                                    <TextBlock Text="Green" FontSize="12" />
+                                <StackPanel Width="120" Spacing="4">
+                                    <TextBlock FontSize="12" Text="Green" />
                                     <NumberBox
-                                        Minimum="0" Maximum="255"
+                                        Maximum="255"
+                                        Minimum="0"
                                         SpinButtonPlacementMode="Compact"
                                         Value="{x:Bind ViewModel.NavBtnSelectedG, Mode=TwoWay}" />
                                 </StackPanel>
-                                <StackPanel Spacing="4" Width="120">
-                                    <TextBlock Text="Blue" FontSize="12" />
+                                <StackPanel Width="120" Spacing="4">
+                                    <TextBlock FontSize="12" Text="Blue" />
                                     <NumberBox
-                                        Minimum="0" Maximum="255"
+                                        Maximum="255"
+                                        Minimum="0"
                                         SpinButtonPlacementMode="Compact"
                                         Value="{x:Bind ViewModel.NavBtnSelectedB, Mode=TwoWay}" />
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel Spacing="4">
-                                <TextBlock Text="Opacity" FontSize="12" />
+                                <TextBlock FontSize="12" Text="Opacity" />
                                 <StackPanel Orientation="Horizontal" Spacing="16">
                                     <Slider
                                         Width="300"
-                                        Maximum="1" Minimum="0"
+                                        Maximum="1"
+                                        Minimum="0"
                                         StepFrequency="0.05"
                                         Value="{x:Bind ViewModel.NavBtnSelectedOpacity, Mode=TwoWay}" />
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        Text="{x:Bind FormatPercent(ViewModel.NavBtnSelectedOpacity), Mode=OneWay}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{x:Bind FormatPercent(ViewModel.NavBtnSelectedOpacity), Mode=OneWay}" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
                     </Expander>
 
                     <!--  Card Background Color  -->
-                    <Expander
-                        Header="Card/Panel Background"
-                        IsExpanded="False">
-                        <StackPanel Spacing="12" Padding="0,8,0,0">
+                    <Expander Header="Card/Panel Background" IsExpanded="False">
+                        <StackPanel Padding="0,8,0,0" Spacing="12">
                             <StackPanel Orientation="Horizontal" Spacing="16">
-                                <StackPanel Spacing="4" Width="120">
-                                    <TextBlock Text="Red" FontSize="12" />
+                                <StackPanel Width="120" Spacing="4">
+                                    <TextBlock FontSize="12" Text="Red" />
                                     <NumberBox
-                                        Minimum="0" Maximum="255"
+                                        Maximum="255"
+                                        Minimum="0"
                                         SpinButtonPlacementMode="Compact"
                                         Value="{x:Bind ViewModel.CardBgR, Mode=TwoWay}" />
                                 </StackPanel>
-                                <StackPanel Spacing="4" Width="120">
-                                    <TextBlock Text="Green" FontSize="12" />
+                                <StackPanel Width="120" Spacing="4">
+                                    <TextBlock FontSize="12" Text="Green" />
                                     <NumberBox
-                                        Minimum="0" Maximum="255"
+                                        Maximum="255"
+                                        Minimum="0"
                                         SpinButtonPlacementMode="Compact"
                                         Value="{x:Bind ViewModel.CardBgG, Mode=TwoWay}" />
                                 </StackPanel>
-                                <StackPanel Spacing="4" Width="120">
-                                    <TextBlock Text="Blue" FontSize="12" />
+                                <StackPanel Width="120" Spacing="4">
+                                    <TextBlock FontSize="12" Text="Blue" />
                                     <NumberBox
-                                        Minimum="0" Maximum="255"
+                                        Maximum="255"
+                                        Minimum="0"
                                         SpinButtonPlacementMode="Compact"
                                         Value="{x:Bind ViewModel.CardBgB, Mode=TwoWay}" />
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel Spacing="4">
-                                <TextBlock Text="Opacity" FontSize="12" />
+                                <TextBlock FontSize="12" Text="Opacity" />
                                 <StackPanel Orientation="Horizontal" Spacing="16">
                                     <Slider
                                         Width="300"
-                                        Maximum="1" Minimum="0"
+                                        Maximum="1"
+                                        Minimum="0"
                                         StepFrequency="0.05"
                                         Value="{x:Bind ViewModel.CardBgOpacity, Mode=TwoWay}" />
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        Text="{x:Bind FormatPercent(ViewModel.CardBgOpacity), Mode=OneWay}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{x:Bind FormatPercent(ViewModel.CardBgOpacity), Mode=OneWay}" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
                     </Expander>
 
                     <!--  Legacy Panel Opacity (kept for compatibility)  -->
-                    <Expander
-                        Header="Legacy Opacity Settings"
-                        IsExpanded="False">
-                        <StackPanel Spacing="12" Padding="0,8,0,0">
+                    <Expander Header="Legacy Opacity Settings" IsExpanded="False">
+                        <StackPanel Padding="0,8,0,0" Spacing="12">
                             <TextBlock
                                 FontSize="12"
                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                 Text="These settings are kept for backward compatibility. Use color settings above for more control." />
-                            
+
                             <StackPanel Spacing="4">
-                                <TextBlock Text="Panel Opacity" FontSize="12" FontWeight="SemiBold" />
+                                <TextBlock
+                                    FontSize="12"
+                                    FontWeight="SemiBold"
+                                    Text="Panel Opacity" />
                                 <StackPanel Orientation="Horizontal" Spacing="16">
                                     <Slider
                                         Width="300"
-                                        Maximum="1" Minimum="0"
+                                        Maximum="1"
+                                        Minimum="0"
                                         StepFrequency="0.05"
                                         Value="{x:Bind ViewModel.PanelOpacity, Mode=TwoWay}" />
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        Text="{x:Bind FormatPercent(ViewModel.PanelOpacity), Mode=OneWay}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{x:Bind FormatPercent(ViewModel.PanelOpacity), Mode=OneWay}" />
                                 </StackPanel>
                             </StackPanel>
 
                             <StackPanel Spacing="4">
-                                <TextBlock Text="Navigation Pane Opacity" FontSize="12" FontWeight="SemiBold" />
+                                <TextBlock
+                                    FontSize="12"
+                                    FontWeight="SemiBold"
+                                    Text="Navigation Pane Opacity" />
                                 <StackPanel Orientation="Horizontal" Spacing="16">
                                     <Slider
                                         Width="300"
-                                        Maximum="1" Minimum="0"
+                                        Maximum="1"
+                                        Minimum="0"
                                         StepFrequency="0.05"
                                         Value="{x:Bind ViewModel.NavPaneOpacity, Mode=TwoWay}" />
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        Text="{x:Bind FormatPercent(ViewModel.NavPaneOpacity), Mode=OneWay}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{x:Bind FormatPercent(ViewModel.NavPaneOpacity), Mode=OneWay}" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
@@ -501,7 +503,7 @@
                 </StackPanel>
             </Border>
 
-            <!--  Save Button - 只在可編輯主題時顯示  -->
+            <!--  Save Button - 只在可編輯主題時顯示 此功能尚未實作  -->
             <Button
                 HorizontalAlignment="Left"
                 Click="OnSaveSettingsClicked"
