@@ -158,7 +158,21 @@ NetworkSnapshot NetworkStatusService::Query() {
         info.IsIgd = true;
         info.IgdBadgeVisibility =
             winrt::Microsoft::UI::Xaml::Visibility::Visible;
-        // TODO:IgdServiceType / IgdControlUrl / IgdBaseUrl...
+        info.DeviceType =
+            winrt::hstring{snapshot.igdService->serviceType.c_str()};
+        info.PresentationUrl =
+            winrt::hstring{snapshot.igdService->presentationUrl.c_str()};
+
+        // Populate device info from parsed IGD description
+        if (!snapshot.igdService->friendlyName.empty())
+          info.FriendlyName =
+              winrt::hstring{snapshot.igdService->friendlyName.c_str()};
+        if (!snapshot.igdService->manufacturer.empty())
+          info.Manufacturer =
+              winrt::hstring{snapshot.igdService->manufacturer.c_str()};
+        if (!snapshot.igdService->modelName.empty())
+          info.ModelName =
+              winrt::hstring{snapshot.igdService->modelName.c_str()};
 
         break;
       }
