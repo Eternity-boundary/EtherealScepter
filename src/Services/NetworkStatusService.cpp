@@ -98,8 +98,6 @@ NetworkSnapshot NetworkStatusService::Query() {
   // 初始化 upnpWanIp 為空（稍後如果 UPnP 成功會覆蓋）
   snapshot.upnpWanIp = L"";
 
-  bool httpWanOk = (snapshot.wanIp != L"-" && !snapshot.wanIp.empty());
-
   // Default UPnP values
   snapshot.upnpStatus = L"Unavailable";
   snapshot.upnpDeviceCount = L"0 Devices";

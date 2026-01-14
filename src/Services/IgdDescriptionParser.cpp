@@ -189,20 +189,6 @@ namespace EtherealScepter::Services::Upnp
         return result;
     }
 
-    // (FindTag can stay; not used in current DOM approach, but keep harmless)
-    static std::optional<std::wstring>
-        FindTag(const std::wstring& xml, const std::wstring& tag)
-    {
-        auto start = xml.find(L"<" + tag + L">");
-        auto end = xml.find(L"</" + tag + L">");
-
-        if (start == std::wstring::npos || end == std::wstring::npos)
-            return std::nullopt;
-
-        start += tag.length() + 2;
-        return xml.substr(start, end - start);
-    }
-
     std::optional<UpnpIgdServiceInfo>
         IgdDescriptionParser::ParseFromLocation(std::wstring const& location)
     {
