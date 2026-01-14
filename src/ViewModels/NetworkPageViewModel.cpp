@@ -566,10 +566,7 @@ IAsyncAction NetworkPageViewModel::TestExternalPortAsync(int32_t port) {
       client.DefaultRequestHeaders().Accept().Append(
           Headers::HttpMediaTypeWithQualityHeaderValue(L"application/json"));
       
-      auto start = std::chrono::steady_clock::now();
       auto response = client.GetAsync(uri).get();
-      auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
-          std::chrono::steady_clock::now() - start).count();
       
       if (response.IsSuccessStatusCode()) {
         auto content = response.Content().ReadAsStringAsync().get();

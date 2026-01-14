@@ -98,8 +98,6 @@ NetworkSnapshot NetworkStatusService::Query() {
   // 初始化 upnpWanIp 為空（稍後如果 UPnP 成功會覆蓋）
   snapshot.upnpWanIp = L"";
 
-  bool httpWanOk = (snapshot.wanIp != L"-" && !snapshot.wanIp.empty());
-
   // Default UPnP values
   snapshot.upnpStatus = L"Unavailable";
   snapshot.upnpDeviceCount = L"0 Devices";
@@ -119,6 +117,7 @@ NetworkSnapshot NetworkStatusService::Query() {
     info.Location = winrt::hstring{d.location.c_str()};
 
     // TODO:沒有 St/Server 欄位：先暫用現有欄位讓 UI 能顯示
+    // finished by: EternityBoundary on Jan 14, 2026
     info.DeviceType = winrt::hstring{d.st.c_str()};
     info.Manufacturer = winrt::hstring{d.server.c_str()};
 

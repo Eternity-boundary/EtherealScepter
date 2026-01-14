@@ -86,16 +86,47 @@ namespace winrt::EtherealScepter::implementation
             dialog.InternalClient(),
         };
 
-        m_viewModel.AddMapping(m);
+        hstring errorMessage;
+        try {
+            m_viewModel.AddMapping(m);
+        } catch (winrt::hresult_error const& ex) {
+            errorMessage = ex.message();
+        }
+
+        if (!errorMessage.empty()) {
+            ContentDialog errorDialog;
+            errorDialog.XamlRoot(this->XamlRoot());
+            errorDialog.Title(box_value(L"Error"));
+            errorDialog.Content(box_value(errorMessage));
+            errorDialog.CloseButtonText(L"OK");
+            co_await errorDialog.ShowAsync();
+        }
     }
 
-    void PortPage::OnDeleteClicked(IInspectable const& sender, RoutedEventArgs const&)
+    winrt::fire_and_forget PortPage::OnDeleteClicked(IInspectable const& sender, RoutedEventArgs const&)
     {
+        auto lifetime = get_strong();
+
         auto fe = sender.try_as<FrameworkElement>();
-        if (!fe) return;
+        if (!fe) co_return;
 
         auto dc = fe.DataContext();
         auto m = winrt::unbox_value<EtherealScepter::Models::PortMappingInfo>(dc);
-        m_viewModel.RemoveMapping(m);
+
+        hstring errorMessage;
+        try {
+            m_viewModel.RemoveMapping(m);
+        } catch (winrt::hresult_error const& ex) {
+            errorMessage = ex.message();
+        }
+
+        if (!errorMessage.empty()) {
+            ContentDialog errorDialog;
+            errorDialog.XamlRoot(this->XamlRoot());
+            errorDialog.Title(box_value(L"Error"));
+            errorDialog.Content(box_value(errorMessage));
+            errorDialog.CloseButtonText(L"OK");
+            co_await errorDialog.ShowAsync();
+        }
     }
 }

@@ -18,7 +18,7 @@ namespace winrt::EtherealScepter::implementation
             winrt::Windows::Foundation::IInspectable const& sender,
             Microsoft::UI::Xaml::RoutedEventArgs const& e);
 
-        void OnDeleteClicked(
+        winrt::fire_and_forget OnDeleteClicked(
             winrt::Windows::Foundation::IInspectable const& sender,
             Microsoft::UI::Xaml::RoutedEventArgs const& e);
 

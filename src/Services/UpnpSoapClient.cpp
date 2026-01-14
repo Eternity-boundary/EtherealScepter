@@ -33,8 +33,13 @@ namespace EtherealScepter::Services::Upnp
             L"</s:Body>"
             L"</s:Envelope>";
 
-        // 轉 UTF-8（IP 內容是 ASCII，這樣足夠）
-        std::string bodyUtf8(body.begin(), body.end());
+        // 轉 UTF-8
+        std::string bodyUtf8;
+        int size_needed = WideCharToMultiByte(CP_UTF8, 0, body.c_str(), (int)body.size(), nullptr, 0, nullptr, nullptr);
+        if (size_needed > 0) {
+            bodyUtf8.resize(size_needed);
+            WideCharToMultiByte(CP_UTF8, 0, body.c_str(), (int)body.size(), bodyUtf8.data(), size_needed, nullptr, nullptr);
+        }
 
         // 發送 SOAP
         auto respBytesOpt =
@@ -207,7 +212,13 @@ namespace EtherealScepter::Services::Upnp
             L"</s:Envelope>";
 
         // Most routers accept UTF-8.
-        return std::string(body.begin(), body.end());
+        std::string result;
+        int size_needed = WideCharToMultiByte(CP_UTF8, 0, body.c_str(), (int)body.size(), nullptr, 0, nullptr, nullptr);
+        if (size_needed > 0) {
+            result.resize(size_needed);
+            WideCharToMultiByte(CP_UTF8, 0, body.c_str(), (int)body.size(), result.data(), size_needed, nullptr, nullptr);
+        }
+        return result;
     }
 
     // -------- public API --------
