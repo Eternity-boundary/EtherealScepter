@@ -73,5 +73,5 @@ Clean + Rebuild
 強烈建議搭配 Git 使用，以避免編輯器快取造成的錯誤判斷
 
 ---
-📜 授權
+## 📜 授權  
 GNU GENERAL PUBLIC LICENSE Version 3
