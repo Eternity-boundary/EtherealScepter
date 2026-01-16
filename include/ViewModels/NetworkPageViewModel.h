@@ -21,9 +21,24 @@ struct NetworkPageViewModel : NetworkPageViewModelT<NetworkPageViewModel> {
   void HttpExternalIp(winrt::hstring const &value);
   winrt::hstring UpnpExternalIp() const;
   void UpnpExternalIp(winrt::hstring const &value);
+  winrt::hstring StunExternalIp() const;
+  void StunExternalIp(winrt::hstring const &value);
   winrt::hstring VerificationStatus() const;
   void VerificationStatus(winrt::hstring const &value);
   winrt::Microsoft::UI::Xaml::Media::Brush VerificationStatusBrush();
+
+  // --- NAT Analysis (RFC 5780) ---
+  winrt::hstring NatType() const;
+  void NatType(winrt::hstring const &value);
+  winrt::hstring NatTypeDescription() const;
+  void NatTypeDescription(winrt::hstring const &value);
+  winrt::hstring StunServer() const;
+  void StunServer(winrt::hstring const &value);
+  winrt::hstring MappingBehavior() const;
+  void MappingBehavior(winrt::hstring const &value);
+  winrt::hstring FilteringBehavior() const;
+  void FilteringBehavior(winrt::hstring const &value);
+  winrt::Microsoft::UI::Xaml::Media::Brush NatTypeBrush();
 
   // --- Connectivity Tests ---
   winrt::hstring PingGatewayResult() const;
@@ -79,7 +94,15 @@ private:
   // External IP
   winrt::hstring m_httpIp{L"-"};
   winrt::hstring m_upnpIp{L"(Not available)"};
+  winrt::hstring m_stunIp{L"(Not available)"};
   winrt::hstring m_status{L"Not checked"};
+
+  // NAT Analysis (RFC 5780)
+  winrt::hstring m_natType{L"Unknown"};
+  winrt::hstring m_natTypeDescription{L"Not analyzed"};
+  winrt::hstring m_stunServer{L"-"};
+  winrt::hstring m_mappingBehavior{L"Unknown"};
+  winrt::hstring m_filteringBehavior{L"Unknown"};
 
   // Connectivity Tests
   winrt::hstring m_pingGateway{L"Not tested"};

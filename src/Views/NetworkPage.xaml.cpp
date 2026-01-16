@@ -52,6 +52,7 @@ void NetworkPage::ApplyThemeToCards() {
   bool isCustomTheme = themeService.IsCustomThemeActive();
 
   auto externalIpCard = ExternalIpCard();
+  auto natAnalysisCard = NatAnalysisCard();
   auto connectivityCard = ConnectivityCard();
   auto dnsCard = DnsCard();
   auto portCard = PortCard();
@@ -61,6 +62,7 @@ void NetworkPage::ApplyThemeToCards() {
     auto brush = themeService.GetCardBackgroundBrush();
     if (brush) {
       if (externalIpCard) externalIpCard.Background(brush);
+      if (natAnalysisCard) natAnalysisCard.Background(brush);
       if (connectivityCard) connectivityCard.Background(brush);
       if (dnsCard) dnsCard.Background(brush);
       if (portCard) portCard.Background(brush);
@@ -68,6 +70,7 @@ void NetworkPage::ApplyThemeToCards() {
     }
   } else {
     if (externalIpCard) externalIpCard.Background(nullptr);
+    if (natAnalysisCard) natAnalysisCard.Background(nullptr);
     if (connectivityCard) connectivityCard.Background(nullptr);
     if (dnsCard) dnsCard.Background(nullptr);
     if (portCard) portCard.Background(nullptr);

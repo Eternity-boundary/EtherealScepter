@@ -190,6 +190,9 @@
     <ClCompile Include="src\Views\Theme\DefaultThemes.cpp">
       <Filter>Views\Theme</Filter>
     </ClCompile>
+    <ClCompile Include="src\Services\StunClient.cpp">
+      <Filter>Services\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <!-- Header Files (.h) -->
   <ItemGroup>
@@ -268,6 +271,9 @@
     <ClInclude Include="src\Views\Theme\Theme.h" />
     <ClInclude Include="src\Views\Theme\DefaultThemes.h">
       <Filter>Views\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Services\StunClient.h">
+      <Filter>Services\include</Filter>
     </ClInclude>
   </ItemGroup>
   <!-- Image Assets -->

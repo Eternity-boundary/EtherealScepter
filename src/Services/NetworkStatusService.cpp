@@ -3,6 +3,7 @@
 
 #include "include/Services/IgdDescriptionParser.h"
 #include "include/Services/NetworkStatusService.h"
+#include "include/Services/StunClient.h"
 #include "include/Services/UpnpDiscoveryService.h"
 #include "include/Services/UpnpSoapClient.h"
 #include <include/Services/UpnpIgdServiceInfo.h>
@@ -211,11 +212,56 @@ NetworkSnapshot NetworkStatusService::Query() {
       snapshot.cgnatStatus = DetectCGNAT(snapshot.wanIp, snapshot.isIpFallback);
       snapshot.summary = L"WAN IP via UPnP";
       snapshot.portForwardingStatus = L"Forwarding Supported";
-      snapshot.natType = L"Open";
       snapshot.isIpFallback = false;
     } else {
       snapshot.summary = L"UPnP IGD found, but WAN IP unavailable";
     }
+  }
+
+  // 6. RFC 5780 STUN NAT Analysis
+  try {
+    ES::Services::Stun::StunClient stunClient;
+    auto natResult = stunClient.AnalyzeNat();
+
+    snapshot.stunNatType = natResult.natType;
+    snapshot.stunServer = winrt::hstring{natResult.stunServer};
+    snapshot.mappingBehavior = winrt::hstring{natResult.mappingDescription};
+    snapshot.filteringBehavior = winrt::hstring{natResult.filteringDescription};
+    snapshot.natTypeDescription = winrt::hstring{natResult.natTypeDescription};
+
+    // Update NAT type based on STUN analysis
+    switch (natResult.natType) {
+    case ES::Services::Stun::NatType::Open:
+      snapshot.natType = L"Open";
+      break;
+    case ES::Services::Stun::NatType::Moderate:
+      snapshot.natType = L"Moderate";
+      break;
+    case ES::Services::Stun::NatType::Strict:
+      snapshot.natType = L"Strict";
+      break;
+    case ES::Services::Stun::NatType::UdpBlocked:
+      snapshot.natType = L"UDP Blocked";
+      break;
+    default:
+      snapshot.natType = L"Unknown";
+      break;
+    }
+
+    // Use STUN external IP if available and no other source
+    if (!natResult.externalIp.empty()) {
+      snapshot.stunWanIp = winrt::hstring{natResult.externalIp};
+      if (snapshot.wanIp == L"-" || snapshot.wanIp.empty()) {
+        snapshot.wanIp = snapshot.stunWanIp;
+        snapshot.summary = L"WAN IP via STUN";
+      }
+    }
+  } catch (...) {
+    // STUN analysis failed, keep previous NAT type
+    if (snapshot.natType.empty()) {
+      snapshot.natType = L"Unknown";
+    }
+    snapshot.natTypeDescription = L"STUN analysis unavailable";
   }
 
   return snapshot;

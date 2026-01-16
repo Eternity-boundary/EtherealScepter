@@ -1,4 +1,4 @@
-import "Models.idl";
+﻿import "Models.idl";
 
 namespace EtherealScepter.ViewModels
 {
@@ -10,6 +10,7 @@ namespace EtherealScepter.ViewModels
         String NetworkStatus { get; };
         String UpnpStatus { get; };
         String NatType { get; };
+        String NatTypeDescription { get; };
         String SummaryText { get; };
 		String NumberOfUPnPDevice{ get; };
 		String IsPortForwardingAvailable{ get; };

@@ -48,7 +48,7 @@ namespace winrt::EtherealScepter::ViewModels::implementation
             return SolidColorBrush(Colors::Green());
         if (m_natType == L"Moderate")
             return SolidColorBrush(Colors::Orange());
-        if (m_natType == L"Strict")
+        if (m_natType == L"Strict" || m_natType == L"UDP Blocked")
             return SolidColorBrush(Colors::Red());
 
         return SolidColorBrush(Colors::Gray());
@@ -126,6 +126,7 @@ namespace winrt::EtherealScepter::ViewModels::implementation
         m_networkStatus = snapshot.networkStatus;
         m_upnpStatus = snapshot.upnpStatus;
         m_natType = snapshot.natType;
+        m_natTypeDescription = snapshot.natTypeDescription;
         m_summary = snapshot.summary;
 
         m_localIp = snapshot.localIp;
@@ -165,6 +166,7 @@ namespace winrt::EtherealScepter::ViewModels::implementation
         RaisePropertyChanged(L"UpnpStatusBrush");
         RaisePropertyChanged(L"NatType");
         RaisePropertyChanged(L"NatTypeBrush");
+        RaisePropertyChanged(L"NatTypeDescription");
         RaisePropertyChanged(L"SummaryText");
         RaisePropertyChanged(L"LocalIp");
         RaisePropertyChanged(L"WanIp");
@@ -211,6 +213,7 @@ namespace winrt::EtherealScepter::ViewModels::implementation
     winrt::hstring DashboardViewModel::NetworkStatus() { return m_networkStatus; }
     winrt::hstring DashboardViewModel::UpnpStatus() { return m_upnpStatus; }
     winrt::hstring DashboardViewModel::NatType() { return m_natType; }
+    winrt::hstring DashboardViewModel::NatTypeDescription() { return m_natTypeDescription; }
     winrt::hstring DashboardViewModel::SummaryText() { return m_summary; }
     winrt::hstring DashboardViewModel::NumberOfUPnPDevice() { return m_numberOfUPnPDevice; }
     winrt::hstring DashboardViewModel::IsPortForwardingAvailable() { return m_isPortForwardingAvailable; }
