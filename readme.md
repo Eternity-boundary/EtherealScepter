@@ -73,6 +73,10 @@ Clean + Rebuild
 
 強烈建議搭配 Git 使用，以避免編輯器快取造成的錯誤判斷
 
+
+---
+## AI產生程式碼使用範圍
+- Code Review
 ---
 ## 📜 授權  
 GNU GENERAL PUBLIC LICENSE Version 3
