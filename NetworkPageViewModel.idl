@@ -6,8 +6,17 @@
   // --- External IP Verification ---
   String HttpExternalIp;
   String UpnpExternalIp;
+  String StunExternalIp;
   String VerificationStatus;
   Microsoft.UI.Xaml.Media.Brush VerificationStatusBrush { get; };
+
+  // --- NAT Analysis (RFC 5780) ---
+  String NatType;
+  String NatTypeDescription;
+  String StunServer;
+  String MappingBehavior;
+  String FilteringBehavior;
+  Microsoft.UI.Xaml.Media.Brush NatTypeBrush { get; };
 
   // --- Connectivity Tests ---
   String PingGatewayResult;

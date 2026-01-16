@@ -129,11 +129,16 @@
                     BorderThickness="1"
                     CornerRadius="8">
                     <StackPanel Spacing="6">
-                        <TextBlock FontWeight="SemiBold" Text="NAT Type" />
+                        <TextBlock FontWeight="SemiBold" Text="NAT Type (RFC 5780)" />
                         <TextBlock
                             FontSize="16"
                             Foreground="{x:Bind ViewModel.NatTypeBrush, Mode=OneWay}"
                             Text="{x:Bind ViewModel.NatType, Mode=OneWay}" />
+                        <TextBlock
+                            FontSize="11"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="{x:Bind ViewModel.NatTypeDescription, Mode=OneWay}"
+                            TextWrapping="Wrap" />
                         <TextBlock
                             FontSize="12"
                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"

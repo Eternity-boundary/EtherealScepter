@@ -45,10 +45,71 @@
                                 Foreground="{ThemeResource TextFillColorSecondary}"
                                 Text="HTTP Detected IP" />
                             <TextBlock Text="{x:Bind ViewModel.HttpExternalIp, Mode=OneWay}" />
+
+                            <TextBlock
+                                Margin="0,8,0,0"
+                                Foreground="{ThemeResource TextFillColorSecondary}"
+                                Text="STUN Detected IP" />
+                            <TextBlock Text="{x:Bind ViewModel.StunExternalIp, Mode=OneWay}" />
                         </StackPanel>
 
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
                             <TextBlock Foreground="{x:Bind ViewModel.VerificationStatusBrush, Mode=OneWay}" Text="{x:Bind ViewModel.VerificationStatus, Mode=OneWay}" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!--  NAT Type Analysis (RFC 5780)  -->
+            <Border x:Name="NatAnalysisCard" Style="{ThemeResource CardBorderStyle}">
+                <StackPanel Spacing="12">
+                    <TextBlock
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Text="NAT Type Analysis (RFC 5780)" />
+
+                    <Grid ColumnSpacing="24" RowSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                            <TextBlock Foreground="{ThemeResource TextFillColorSecondary}" Text="NAT Type" />
+                            <TextBlock
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Foreground="{x:Bind ViewModel.NatTypeBrush, Mode=OneWay}"
+                                Text="{x:Bind ViewModel.NatType, Mode=OneWay}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                            <TextBlock Foreground="{ThemeResource TextFillColorSecondary}" Text="STUN Server" />
+                            <TextBlock Text="{x:Bind ViewModel.StunServer, Mode=OneWay}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Grid.Column="0" Spacing="4">
+                            <TextBlock Foreground="{ThemeResource TextFillColorSecondary}" Text="Mapping Behavior" />
+                            <TextBlock Text="{x:Bind ViewModel.MappingBehavior, Mode=OneWay}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
+                            <TextBlock Foreground="{ThemeResource TextFillColorSecondary}" Text="Filtering Behavior" />
+                            <TextBlock Text="{x:Bind ViewModel.FilteringBehavior, Mode=OneWay}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Spacing="4">
+                            <TextBlock Foreground="{ThemeResource TextFillColorSecondary}" Text="Description" />
+                            <TextBlock
+                                Foreground="{ThemeResource TextFillColorPrimary}"
+                                Text="{x:Bind ViewModel.NatTypeDescription, Mode=OneWay}"
+                                TextWrapping="Wrap" />
                         </StackPanel>
                     </Grid>
                 </StackPanel>

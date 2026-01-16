@@ -19,6 +19,7 @@ struct DashboardViewModel : DashboardViewModelT<DashboardViewModel> {
   winrt::hstring NetworkStatus();
   winrt::hstring UpnpStatus();
   winrt::hstring NatType();
+  winrt::hstring NatTypeDescription();
   winrt::hstring SummaryText();
   winrt::hstring NumberOfUPnPDevice();
   winrt::hstring IsPortForwardingAvailable();
@@ -65,6 +66,7 @@ private:
   winrt::hstring m_networkStatus;
   winrt::hstring m_upnpStatus;
   winrt::hstring m_natType;
+  winrt::hstring m_natTypeDescription;
   winrt::hstring m_summary;
   winrt::hstring m_localIp;
   winrt::hstring m_wanIp;

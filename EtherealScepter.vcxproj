@@ -158,6 +158,7 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     <ClInclude Include="include\Services\IgdDescriptionParser.h" />
     <ClInclude Include="include\Services\NetworkStatusProvider.h" />
     <ClInclude Include="include\Services\NetworkStatusService.h" />
+    <ClInclude Include="include\Services\StunClient.h" />
     <ClInclude Include="include\Services\ThemeService.h" />
     <ClInclude Include="include\Services\UpnpNatPortMappingService.h" />
     <ClInclude Include="include\Services\SsdpParser.h" />
@@ -223,6 +224,7 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     <ClCompile Include="src\Services\NetworkStatusProvider.cpp" />
     <ClCompile Include="src\Services\NetworkStatusService.cpp" />
     <ClCompile Include="src\Services\SsdpParser.cpp" />
+    <ClCompile Include="src\Services\StunClient.cpp" />
     <ClCompile Include="src\Services\ThemeService.cpp" />
     <ClCompile Include="src\Services\UpnpDiscoveryService.cpp" />
     <ClCompile Include="src\Services\UpnpNatPortMappingService.cpp" />

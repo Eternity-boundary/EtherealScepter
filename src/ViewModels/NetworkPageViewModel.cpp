@@ -180,6 +180,11 @@ void NetworkPageViewModel::UpnpExternalIp(winrt::hstring const &value) {
   if (m_upnpIp != value) { m_upnpIp = value; RaisePropertyChanged(L"UpnpExternalIp"); }
 }
 
+winrt::hstring NetworkPageViewModel::StunExternalIp() const { return m_stunIp; }
+void NetworkPageViewModel::StunExternalIp(winrt::hstring const &value) {
+  if (m_stunIp != value) { m_stunIp = value; RaisePropertyChanged(L"StunExternalIp"); }
+}
+
 winrt::hstring NetworkPageViewModel::VerificationStatus() const { return m_status; }
 void NetworkPageViewModel::VerificationStatus(winrt::hstring const &value) {
   if (m_status != value) {
@@ -195,6 +200,63 @@ Brush NetworkPageViewModel::VerificationStatusBrush() {
   }
   if (m_status == L"Open") {
     return SolidColorBrush(Colors::Green());
+  }
+  return SolidColorBrush(Colors::Gray());
+}
+
+// -------------------------
+// NAT Analysis Properties (RFC 5780)
+// -------------------------
+winrt::hstring NetworkPageViewModel::NatType() const { return m_natType; }
+void NetworkPageViewModel::NatType(winrt::hstring const &value) {
+  if (m_natType != value) {
+    m_natType = value;
+    RaisePropertyChanged(L"NatType");
+    RaisePropertyChanged(L"NatTypeBrush");
+  }
+}
+
+winrt::hstring NetworkPageViewModel::NatTypeDescription() const { return m_natTypeDescription; }
+void NetworkPageViewModel::NatTypeDescription(winrt::hstring const &value) {
+  if (m_natTypeDescription != value) {
+    m_natTypeDescription = value;
+    RaisePropertyChanged(L"NatTypeDescription");
+  }
+}
+
+winrt::hstring NetworkPageViewModel::StunServer() const { return m_stunServer; }
+void NetworkPageViewModel::StunServer(winrt::hstring const &value) {
+  if (m_stunServer != value) {
+    m_stunServer = value;
+    RaisePropertyChanged(L"StunServer");
+  }
+}
+
+winrt::hstring NetworkPageViewModel::MappingBehavior() const { return m_mappingBehavior; }
+void NetworkPageViewModel::MappingBehavior(winrt::hstring const &value) {
+  if (m_mappingBehavior != value) {
+    m_mappingBehavior = value;
+    RaisePropertyChanged(L"MappingBehavior");
+  }
+}
+
+winrt::hstring NetworkPageViewModel::FilteringBehavior() const { return m_filteringBehavior; }
+void NetworkPageViewModel::FilteringBehavior(winrt::hstring const &value) {
+  if (m_filteringBehavior != value) {
+    m_filteringBehavior = value;
+    RaisePropertyChanged(L"FilteringBehavior");
+  }
+}
+
+Brush NetworkPageViewModel::NatTypeBrush() {
+  if (m_natType == L"Open") {
+    return SolidColorBrush(Colors::Green());
+  }
+  if (m_natType == L"Moderate") {
+    return SolidColorBrush(Colors::Orange());
+  }
+  if (m_natType == L"Strict" || m_natType == L"UDP Blocked") {
+    return SolidColorBrush(Colors::Red());
   }
   return SolidColorBrush(Colors::Gray());
 }
@@ -300,6 +362,7 @@ void NetworkPageViewModel::IsTestingPort(bool value) {
 void NetworkPageViewModel::ApplySnapshot(Services::NetworkSnapshot const &snapshot) {
   m_httpIp = (snapshot.httpWanIp.empty() || snapshot.httpWanIp == L"-") ? L"-" : snapshot.httpWanIp;
   m_upnpIp = snapshot.upnpWanIp.empty() ? L"(Not available)" : snapshot.upnpWanIp;
+  m_stunIp = snapshot.stunWanIp.empty() ? L"(Not available)" : snapshot.stunWanIp;
 
   if (m_httpIp != L"-" && m_upnpIp != L"(Not available)" && m_httpIp != m_upnpIp) {
     m_status = L"⚠ Possible CGNAT detected";
@@ -308,6 +371,13 @@ void NetworkPageViewModel::ApplySnapshot(Services::NetworkSnapshot const &snapsh
   } else {
     m_status = snapshot.cgnatStatus;
   }
+
+  // NAT Analysis (RFC 5780)
+  m_natType = snapshot.natType.empty() ? L"Unknown" : snapshot.natType;
+  m_natTypeDescription = snapshot.natTypeDescription.empty() ? L"Not analyzed" : snapshot.natTypeDescription;
+  m_stunServer = snapshot.stunServer.empty() ? L"-" : snapshot.stunServer;
+  m_mappingBehavior = snapshot.mappingBehavior.empty() ? L"Unknown" : snapshot.mappingBehavior;
+  m_filteringBehavior = snapshot.filteringBehavior.empty() ? L"Unknown" : snapshot.filteringBehavior;
 
   RaiseAll();
 }
@@ -659,8 +729,15 @@ void NetworkPageViewModel::RaisePropertyChanged(std::wstring_view name) {
 void NetworkPageViewModel::RaiseAll() {
   RaisePropertyChanged(L"HttpExternalIp");
   RaisePropertyChanged(L"UpnpExternalIp");
+  RaisePropertyChanged(L"StunExternalIp");
   RaisePropertyChanged(L"VerificationStatus");
   RaisePropertyChanged(L"VerificationStatusBrush");
+  RaisePropertyChanged(L"NatType");
+  RaisePropertyChanged(L"NatTypeBrush");
+  RaisePropertyChanged(L"NatTypeDescription");
+  RaisePropertyChanged(L"StunServer");
+  RaisePropertyChanged(L"MappingBehavior");
+  RaisePropertyChanged(L"FilteringBehavior");
 }
 
 } // namespace winrt::EtherealScepter::ViewModels::implementation
