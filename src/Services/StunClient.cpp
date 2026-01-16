@@ -3,11 +3,11 @@
 
 #include "include/Services/StunClient.h"
 
+#include <winsock2.h>
 #include <WS2tcpip.h>
 #include <algorithm>
 #include <array>
 #include <random>
-#include <winsock2.h>
 
 #pragma comment(lib, "ws2_32.lib")
 
