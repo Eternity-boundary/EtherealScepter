@@ -17,7 +17,7 @@ EtherealScepter 目前是一個「UPnP 開關工具」，向下列目標發展�
 ### Dashboard（狀態總覽）
 - Network Status（Connected / Disconnected）
 - UPnP Status（Enabled / Disabled）
-- NAT Type（Open / Moderate / Strict）
+- NAT Type（RFC5780）
 - Local IP
 - WAN IP
 - CGNAT 判斷
