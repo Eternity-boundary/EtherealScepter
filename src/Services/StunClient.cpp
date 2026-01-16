@@ -199,8 +199,11 @@ std::optional<StunResult> StunClient::SendStunRequest(const std::string &server,
 
   // Set socket timeout
   DWORD timeout = 3000; // 3 seconds
-  setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char *)&timeout,
-             sizeof(timeout));
+  if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char *)&timeout,
+                 sizeof(timeout)) == SOCKET_ERROR) {
+    closesocket(sock);
+    return std::nullopt;
+  }
 
   // Bind to specific local port if requested
   if (localPort > 0) {
