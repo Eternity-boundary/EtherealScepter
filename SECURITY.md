@@ -9,7 +9,10 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability, please simply open an issue. 
-I will handle the report and respond directly within that issue.
-If the issue is critical and cannot be disclosed publicly, please contact me via email instead.
-My Email:boundary6@icloud.com
+If you discover a security vulnerability, please report it privately via email:
+
+Email: boundary6@icloud.com
+
+For non-sensitive security-related questions (e.g., hardening suggestions), feel free to open a public issue.
+
+As this is a solo-maintained project, response time may vary, but I will do my best to reply promptly.
