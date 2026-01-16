@@ -208,7 +208,10 @@ std::optional<StunResult> StunClient::SendStunRequest(const std::string &server,
     localAddr.sin_family = AF_INET;
     localAddr.sin_port = htons(static_cast<u_short>(localPort));
     localAddr.sin_addr.s_addr = INADDR_ANY;
-    bind(sock, reinterpret_cast<sockaddr *>(&localAddr), sizeof(localAddr));
+    if (bind(sock, reinterpret_cast<sockaddr *>(&localAddr), sizeof(localAddr)) == SOCKET_ERROR) {
+      closesocket(sock);
+      return std::nullopt;
+    }
   }
 
   // Resolve server address
