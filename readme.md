@@ -77,6 +77,13 @@ Clean + Rebuild
 ---
 ## AI產生程式碼使用範圍
 - Code Review
+
+本專案主要由一位貢獻者獨立開發。
+
+為減少錯誤並提高程式碼質量，開發過程中可能會使用人工智慧輔助程式碼審查。
+
+所有變更在合併前已經經過手動驗證和測試。
+
 ---
 ## 📜 授權  
 GNU GENERAL PUBLIC LICENSE Version 3
