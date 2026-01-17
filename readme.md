@@ -50,7 +50,7 @@ EtherealScepter 目前是一個「UPnP 開關工具」，向下列目標發展�
 
 ---
 ## 🖼️預覽截圖
-<img width="1622" height="891" alt="1768266063871" src="https://github.com/user-attachments/assets/cbffbdc7-4106-44d9-8423-0f52583805b5" />
+<img width="1622" height="891" alt="1768568720930" src="https://github.com/user-attachments/assets/7b7bb646-902a-484d-83e9-610a47ca586c" />
 <img width="1616" height="887" alt="98b961fab5197115171f9d623d608464" src="https://github.com/user-attachments/assets/5f42e1df-0536-4e30-8224-833ef89c97b6" />
 <img width="1622" height="891" alt="1768266084237" src="https://github.com/user-attachments/assets/07d54499-2b5d-4aed-8ef9-99844077047e" />
 <img width="1622" height="891" alt="1768266106514" src="https://github.com/user-attachments/assets/8c68ce9f-c8cd-476c-ae97-80af32427d9a" />
