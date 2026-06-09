@@ -6,9 +6,7 @@ using namespace EtherealScepter::Services;
 
 namespace EtherealScepter::Views::Theme {
 
-/// <summary>
-/// 註冊預設的自定義主題
-/// </summary>
+// 註冊預設的自定義主題
 void RegisterDefaultCustomThemes() {
     auto& themeService = ThemeService::Instance();
 
@@ -75,16 +73,12 @@ void RegisterDefaultCustomThemes() {
     themeService.SetCustomThemeConfig(theme2, 2);
 }
 
-/// <summary>
-/// 切換到自定義主題 1
-/// </summary>
+// 切換到自定義主題 1
 void ApplyCustomTheme1() {
     ThemeService::Instance().SetTheme(ThemeType::Custom1);
 }
 
-/// <summary>
-/// 切換到自定義主題 2
-/// </summary>
+// 切換到自定義主題 2
 void ApplyCustomTheme2() {
     ThemeService::Instance().SetTheme(ThemeType::Custom2);
 }
