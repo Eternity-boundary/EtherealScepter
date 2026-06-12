@@ -7,29 +7,268 @@
 #include <WS2tcpip.h>
 #include <algorithm>
 #include <array>
+#include <charconv>
+#include <memory>
 #include <random>
+#include <sstream>
+#include <string_view>
+#include <unordered_set>
+#include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.Web.Http.h>
 
 #pragma comment(lib, "ws2_32.lib")
 
 namespace EtherealScepter::Services::Stun {
 
-StunClient::StunClient() { GenerateTransactionId(); }
+namespace {
+constexpr wchar_t STUN_SERVER_LIST_URL[] =
+    L"https://raw.githubusercontent.com/pradt2/always-online-stun/master/"
+    L"valid_hosts.txt";
+constexpr size_t MAX_STUN_SERVERS_TO_PROBE = 16;
+
+struct AddrInfoDeleter {
+  void operator()(addrinfo *value) const noexcept {
+    if (value) {
+      freeaddrinfo(value);
+    }
+  }
+};
+
+std::string ToNarrowIp(std::wstring const &value) {
+  std::string result;
+  result.reserve(value.size());
+  for (wchar_t ch : value) {
+    if (ch > 0x7F) {
+      return {};
+    }
+    result.push_back(static_cast<char>(ch));
+  }
+  return result;
+}
+
+bool HasMappedEndpoint(StunResult const &result) {
+  return !result.mappedAddress.empty() && result.mappedPort != 0;
+}
+
+bool HasAlternateEndpoint(StunResult const &result) {
+  return !result.changedAddress.empty() && result.changedPort != 0;
+}
+
+bool SameMappedEndpoint(StunResult const &lhs, StunResult const &rhs) {
+  return lhs.mappedAddress == rhs.mappedAddress &&
+         lhs.mappedPort == rhs.mappedPort;
+}
+
+bool IsPublicIPv4(std::wstring const &address) {
+  in_addr parsed{};
+  if (InetPtonW(AF_INET, address.c_str(), &parsed) != 1) {
+    return false;
+  }
+
+  auto const ip = ntohl(parsed.S_un.S_addr);
+  auto const first = (ip >> 24) & 0xFF;
+  auto const second = (ip >> 16) & 0xFF;
+
+  if (first == 0 || first == 10 || first == 127 || first >= 224) {
+    return false;
+  }
+  if (first == 100 && second >= 64 && second <= 127) {
+    return false;
+  }
+  if (first == 169 && second == 254) {
+    return false;
+  }
+  if (first == 172 && second >= 16 && second <= 31) {
+    return false;
+  }
+  if (first == 192 && second == 168) {
+    return false;
+  }
+
+  return true;
+}
+
+bool HasUsableAlternateEndpoint(StunResult const &result) {
+  return HasAlternateEndpoint(result) && IsPublicIPv4(result.changedAddress);
+}
+
+std::optional<StunServerInfo> ParseStunServerToken(std::string_view token) {
+  if (token.empty() || token.front() == '#') {
+    return std::nullopt;
+  }
+
+  std::string_view host;
+  std::string_view portText;
+
+  if (token.front() == '[') {
+    auto const endBracket = token.find(']');
+    if (endBracket == std::string_view::npos ||
+        endBracket + 2 > token.size() || token[endBracket + 1] != ':') {
+      return std::nullopt;
+    }
+
+    host = token.substr(1, endBracket - 1);
+    portText = token.substr(endBracket + 2);
+  } else {
+    auto const colon = token.rfind(':');
+    if (colon == std::string_view::npos || colon == 0 ||
+        colon + 1 >= token.size()) {
+      return std::nullopt;
+    }
+
+    host = token.substr(0, colon);
+    portText = token.substr(colon + 1);
+  }
+
+  unsigned int port{};
+  auto const *first = portText.data();
+  auto const *last = first + portText.size();
+  auto [ptr, ec] = std::from_chars(first, last, port);
+  if (ec != std::errc{} || ptr != last || port == 0 || port > 65535) {
+    return std::nullopt;
+  }
+
+  return StunServerInfo{std::string(host), static_cast<uint16_t>(port)};
+}
+
+std::vector<StunServerInfo> ParseStunServerList(std::string const &content) {
+  std::vector<StunServerInfo> servers;
+  std::unordered_set<std::string> seen;
+  std::istringstream lines(content);
+  std::string line;
+
+  while (std::getline(lines, line)) {
+    auto const comment = line.find('#');
+    if (comment != std::string::npos) {
+      line.resize(comment);
+    }
+
+    std::istringstream tokens(line);
+    std::string token;
+    while (tokens >> token) {
+      auto parsed = ParseStunServerToken(token);
+      if (!parsed) {
+        continue;
+      }
+
+      auto key = parsed->host + ":" + std::to_string(parsed->port);
+      if (seen.insert(key).second) {
+        servers.push_back(std::move(*parsed));
+      }
+    }
+  }
+
+  return servers;
+}
+
+std::optional<std::string> DownloadStunServerList() {
+  try {
+    winrt::Windows::Web::Http::HttpClient client;
+    auto content = client.GetStringAsync(
+                             winrt::Windows::Foundation::Uri{
+                                 winrt::hstring{STUN_SERVER_LIST_URL}})
+                       .get();
+    if (content.empty()) {
+      return std::nullopt;
+    }
+
+    return winrt::to_string(content);
+  } catch (...) {
+    return std::nullopt;
+  }
+}
+} // namespace
+
+class StunClient::WinsockSession {
+public:
+  WinsockSession() {
+    WSADATA data{};
+    initialized_ = WSAStartup(MAKEWORD(2, 2), &data) == 0;
+  }
+
+  ~WinsockSession() {
+    if (initialized_) {
+      WSACleanup();
+    }
+  }
+
+  WinsockSession(WinsockSession const &) = delete;
+  WinsockSession &operator=(WinsockSession const &) = delete;
+
+  bool IsInitialized() const { return initialized_; }
+
+private:
+  bool initialized_{false};
+};
+
+class StunClient::SocketHandle {
+public:
+  SocketHandle() = default;
+  ~SocketHandle() { Reset(); }
+
+  SocketHandle(SocketHandle const &) = delete;
+  SocketHandle &operator=(SocketHandle const &) = delete;
+
+  bool EnsureOpen() {
+    if (handle_ != INVALID_SOCKET) {
+      return true;
+    }
+
+    handle_ = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if (handle_ == INVALID_SOCKET) {
+      return false;
+    }
+
+    DWORD timeout = 3000;
+    if (setsockopt(handle_, SOL_SOCKET, SO_RCVTIMEO,
+                   reinterpret_cast<const char *>(&timeout),
+                   sizeof(timeout)) == SOCKET_ERROR) {
+      Reset();
+      return false;
+    }
+
+    sockaddr_in localAddr{};
+    localAddr.sin_family = AF_INET;
+    localAddr.sin_port = htons(0);
+    localAddr.sin_addr.s_addr = INADDR_ANY;
+
+    if (bind(handle_, reinterpret_cast<sockaddr *>(&localAddr),
+             sizeof(localAddr)) == SOCKET_ERROR) {
+      Reset();
+      return false;
+    }
+
+    return true;
+  }
+
+  SOCKET Get() const { return handle_; }
+
+private:
+  void Reset() {
+    if (handle_ != INVALID_SOCKET) {
+      closesocket(handle_);
+      handle_ = INVALID_SOCKET;
+    }
+  }
+
+  SOCKET handle_{INVALID_SOCKET};
+};
+
+StunClient::StunClient()
+    : winsock_(std::make_unique<WinsockSession>()),
+      socket_(std::make_unique<SocketHandle>()) {
+  GenerateTransactionId();
+}
 
 StunClient::~StunClient() = default;
 
 std::vector<StunServerInfo> StunClient::GetPublicStunServers() {
-  return {
-      // Google STUN servers
-      {"stun.l.google.com", 19302, 19305},
-      {"stun1.l.google.com", 19302, 19305},
-      {"stun2.l.google.com", 19302, 19305},
-      // Cloudflare
-      {"stun.cloudflare.com", 3478, 3479},
-      // Mozilla
-      {"stun.services.mozilla.com", 3478, 3479},
-      // Twilio
-      {"global.stun.twilio.com", 3478, 3479},
-  };
+  auto content = DownloadStunServerList();
+  if (!content) {
+    return {};
+  }
+
+  return ParseStunServerList(*content);
 }
 
 void StunClient::GenerateTransactionId() {
@@ -40,6 +279,11 @@ void StunClient::GenerateTransactionId() {
   for (int i = 0; i < 12; i++) {
     m_transactionId[i] = static_cast<uint8_t>(dist(gen));
   }
+}
+
+bool StunClient::EnsureSocket() {
+  return winsock_ && winsock_->IsInitialized() && socket_ &&
+         socket_->EnsureOpen();
 }
 
 std::vector<uint8_t> StunClient::BuildBindingRequest(bool changeIp,
@@ -190,146 +434,133 @@ StunClient::ParseBindingResponse(const std::vector<uint8_t> &response,
 std::optional<StunResult> StunClient::SendStunRequest(const std::string &server,
                                                       uint16_t port,
                                                       bool changeIp,
-                                                      bool changePort,
-                                                      int localPort) {
-  SOCKET sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-  if (sock == INVALID_SOCKET) {
+                                                      bool changePort) {
+  if (!EnsureSocket()) {
     return std::nullopt;
-  }
-
-  // Set socket timeout
-  DWORD timeout = 3000; // 3 seconds
-  if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char *)&timeout,
-                 sizeof(timeout)) == SOCKET_ERROR) {
-    closesocket(sock);
-    return std::nullopt;
-  }
-
-  // Bind to specific local port if requested
-  if (localPort > 0) {
-    sockaddr_in localAddr{};
-    localAddr.sin_family = AF_INET;
-    localAddr.sin_port = htons(static_cast<u_short>(localPort));
-    localAddr.sin_addr.s_addr = INADDR_ANY;
-    if (bind(sock, reinterpret_cast<sockaddr *>(&localAddr), sizeof(localAddr)) == SOCKET_ERROR) {
-      closesocket(sock);
-      return std::nullopt;
-    }
   }
 
   // Resolve server address
   addrinfo hints{};
   hints.ai_family = AF_INET;
   hints.ai_socktype = SOCK_DGRAM;
-  addrinfo *result = nullptr;
+  addrinfo *rawResult = nullptr;
+  std::string portString = std::to_string(port);
 
-  if (getaddrinfo(server.c_str(), std::to_string(port).c_str(), &hints,
-                  &result) != 0) {
-    closesocket(sock);
+  if (getaddrinfo(server.c_str(), portString.c_str(), &hints, &rawResult) !=
+      0) {
     return std::nullopt;
   }
+  std::unique_ptr<addrinfo, AddrInfoDeleter> result(rawResult);
 
   auto request = BuildBindingRequest(changeIp, changePort);
   uint8_t savedTransactionId[12];
   memcpy(savedTransactionId, m_transactionId, 12);
 
   // Send request
-  int sent = sendto(sock, reinterpret_cast<const char *>(request.data()),
+  int sent = sendto(socket_->Get(), reinterpret_cast<const char *>(request.data()),
                     static_cast<int>(request.size()), 0, result->ai_addr,
                     static_cast<int>(result->ai_addrlen));
 
-  freeaddrinfo(result);
-
   if (sent == SOCKET_ERROR) {
-    closesocket(sock);
     return std::nullopt;
   }
 
   // Receive response
-  std::vector<uint8_t> responseBuffer(1024);
-  int received =
-      recv(sock, reinterpret_cast<char *>(responseBuffer.data()),
-           static_cast<int>(responseBuffer.size()), 0);
+  for (int attempt = 0; attempt < 3; ++attempt) {
+    std::vector<uint8_t> responseBuffer(1024);
+    sockaddr_storage from{};
+    int fromLen = sizeof(from);
+    int received = recvfrom(socket_->Get(),
+                            reinterpret_cast<char *>(responseBuffer.data()),
+                            static_cast<int>(responseBuffer.size()), 0,
+                            reinterpret_cast<sockaddr *>(&from), &fromLen);
 
-  closesocket(sock);
+    if (received <= 0) {
+      return std::nullopt;
+    }
 
-  if (received <= 0) {
-    return std::nullopt;
+    responseBuffer.resize(received);
+    if (auto parsed = ParseBindingResponse(responseBuffer, savedTransactionId)) {
+      return parsed;
+    }
   }
 
-  responseBuffer.resize(received);
-  return ParseBindingResponse(responseBuffer, savedTransactionId);
+  return std::nullopt;
 }
 
 std::optional<StunResult> StunClient::BindingRequest(const std::string &server,
                                                      uint16_t port) {
-  return SendStunRequest(server, port, false, false, 0);
+  return SendStunRequest(server, port, false, false);
 }
 
 NatMappingBehavior
-StunClient::DetermineMappingBehavior(const StunServerInfo &server1,
-                                     const StunServerInfo &server2) {
-  // Test 1: Send to server1
-  auto result1 = SendStunRequest(server1.host, server1.port, false, false, 0);
-  if (!result1 || result1->mappedAddress.empty()) {
+StunClient::DetermineMappingBehavior(const StunServerInfo &server,
+                                     const StunResult &initialResult) {
+  if (!HasMappedEndpoint(initialResult) ||
+      !HasUsableAlternateEndpoint(initialResult)) {
     return NatMappingBehavior::Unknown;
   }
 
-  auto mappedIp1 = result1->mappedAddress;
-  auto mappedPort1 = result1->mappedPort;
-
-  // Test 2: Send to server2 (different IP) from same local port
-  // Since we can't easily reuse the same port, we use a heuristic:
-  // Send to server1 on alternate port
+  // RFC 5780 mapping Test II: use only the alternate endpoint advertised by
+  // the STUN response, while keeping the same local socket/port.
+  auto alternateHost = ToNarrowIp(initialResult.changedAddress);
+  if (alternateHost.empty()) {
+    return NatMappingBehavior::Unknown;
+  }
   auto result2 =
-      SendStunRequest(server1.host, server1.altPort, false, false, 0);
-  if (!result2 || result2->mappedAddress.empty()) {
-    // Try with server2
-    result2 = SendStunRequest(server2.host, server2.port, false, false, 0);
-    if (!result2 || result2->mappedAddress.empty()) {
-      return NatMappingBehavior::Unknown;
-    }
+      SendStunRequest(alternateHost, initialResult.changedPort, false, false);
+  if (!result2 || !HasMappedEndpoint(*result2)) {
+    return NatMappingBehavior::Unknown;
   }
 
-  auto mappedIp2 = result2->mappedAddress;
-  auto mappedPort2 = result2->mappedPort;
-
-  // Compare results
-  if (mappedIp1 == mappedIp2 && mappedPort1 == mappedPort2) {
-    // Same mapping regardless of destination = Endpoint Independent
+  if (SameMappedEndpoint(initialResult, *result2)) {
     return NatMappingBehavior::EndpointIndependent;
-  } else if (mappedIp1 == mappedIp2) {
-    // Same IP but different port = Address Dependent
-    return NatMappingBehavior::AddressDependent;
-  } else {
-    // Different IP and port = Address and Port Dependent (Symmetric)
-    return NatMappingBehavior::AddressAndPortDependent;
   }
+
+  // RFC 5780 mapping Test III: compare the alternate address on the original
+  // server port when the server exposes enough data to distinguish behaviors.
+  if (initialResult.changedPort == server.port) {
+    return NatMappingBehavior::Unknown;
+  }
+
+  auto result3 = SendStunRequest(alternateHost, server.port, false, false);
+  if (!result3 || !HasMappedEndpoint(*result3)) {
+    return NatMappingBehavior::Unknown;
+  }
+
+  if (SameMappedEndpoint(*result2, *result3)) {
+    return NatMappingBehavior::AddressDependent;
+  }
+
+  return NatMappingBehavior::AddressAndPortDependent;
 }
 
 NatFilteringBehavior
-StunClient::DetermineFilteringBehavior(const StunServerInfo &server) {
-  // Test 1: Normal binding request
-  auto result1 = SendStunRequest(server.host, server.port, false, false, 0);
-  if (!result1 || result1->mappedAddress.empty()) {
+StunClient::DetermineFilteringBehavior(const StunServerInfo &server,
+                                       const StunResult &initialResult,
+                                       bool alternateEndpointVerified) {
+  if (!HasMappedEndpoint(initialResult) ||
+      !HasUsableAlternateEndpoint(initialResult) ||
+      !alternateEndpointVerified) {
     return NatFilteringBehavior::Unknown;
   }
 
-  // Test 2: Request response from different IP (CHANGE_IP flag)
-  auto result2 = SendStunRequest(server.host, server.port, true, false, 0);
+  // RFC 5780 filtering Test II: ask the server to reply from alternate IP and
+  // port. A successful response proves endpoint-independent filtering.
+  auto result2 = SendStunRequest(server.host, server.port, true, true);
   if (result2 && result2->success) {
-    // Received response from different IP = Endpoint Independent Filtering
     return NatFilteringBehavior::EndpointIndependent;
   }
 
-  // Test 3: Request response from different port (CHANGE_PORT flag)
-  auto result3 = SendStunRequest(server.host, server.port, false, true, 0);
+  // RFC 5780 filtering Test III: a response from the same IP but alternate
+  // port proves address-dependent filtering.
+  auto result3 = SendStunRequest(server.host, server.port, false, true);
   if (result3 && result3->success) {
-    // Received response from different port = Address Dependent Filtering
     return NatFilteringBehavior::AddressDependent;
   }
 
-  // No response from different IP or port = Address and Port Dependent
+  // The advertised alternate endpoint was already verified on a separate
+  // socket, so dual CHANGE-REQUEST timeouts can be attributed to filtering.
   return NatFilteringBehavior::AddressAndPortDependent;
 }
 
@@ -339,18 +570,48 @@ NatAnalysisResult StunClient::AnalyzeNat() {
   auto servers = GetPublicStunServers();
   if (servers.empty()) {
     result.natType = NatType::Unknown;
-    result.natTypeDescription = L"No STUN servers available";
+    result.natTypeDescription = L"No STUN servers available from remote list";
     return result;
   }
 
-  // Try multiple servers until one works
+  // Prefer a server that advertises an RFC 5780 alternate endpoint. Keep the
+  // first basic binding result as a fallback so external IP display remains
+  // useful even when no full RFC 5780 server is found.
   std::optional<StunResult> initialResult;
-  StunServerInfo workingServer;
+  StunServerInfo workingServer{};
+  std::optional<StunResult> firstSuccessfulResult;
+  StunServerInfo firstSuccessfulServer{};
+  bool alternateEndpointVerified = false;
 
-  for (const auto &server : servers) {
-    initialResult = BindingRequest(server.host, server.port);
-    if (initialResult && initialResult->success) {
+  auto const probeCount = std::min(servers.size(), MAX_STUN_SERVERS_TO_PROBE);
+  for (size_t index = 0; index < probeCount; ++index) {
+    auto const &server = servers[index];
+    auto bindingResult = BindingRequest(server.host, server.port);
+    if (bindingResult && bindingResult->success) {
+      if (!firstSuccessfulResult) {
+        firstSuccessfulResult = bindingResult;
+        firstSuccessfulServer = server;
+      }
+
+      if (!HasUsableAlternateEndpoint(*bindingResult)) {
+        continue;
+      }
+
+      auto alternateHost = ToNarrowIp(bindingResult->changedAddress);
+      if (alternateHost.empty()) {
+        continue;
+      }
+
+      StunClient alternateProbeClient;
+      auto alternateResult = alternateProbeClient.BindingRequest(
+          alternateHost, bindingResult->changedPort);
+      if (!alternateResult || !HasMappedEndpoint(*alternateResult)) {
+        continue;
+      }
+
+      initialResult = bindingResult;
       workingServer = server;
+      alternateEndpointVerified = true;
       result.stunServer =
           std::wstring(server.host.begin(), server.host.end()) + L":" +
           std::to_wstring(server.port);
@@ -358,9 +619,18 @@ NatAnalysisResult StunClient::AnalyzeNat() {
     }
   }
 
+  if (!initialResult && firstSuccessfulResult) {
+    initialResult = firstSuccessfulResult;
+    workingServer = firstSuccessfulServer;
+    result.stunServer =
+        std::wstring(workingServer.host.begin(), workingServer.host.end()) +
+        L":" + std::to_wstring(workingServer.port);
+  }
+
   if (!initialResult || !initialResult->success) {
     result.natType = NatType::UdpBlocked;
-    result.natTypeDescription = L"UDP traffic appears to be blocked";
+    result.natTypeDescription =
+        L"UDP traffic appears to be blocked or STUN hosts are unreachable";
     return result;
   }
 
@@ -375,16 +645,17 @@ NatAnalysisResult StunClient::AnalyzeNat() {
     return result;
   }
 
-  // Determine mapping behavior
-  StunServerInfo secondServer =
-      servers.size() > 1 ? servers[1] : workingServer;
-  result.mappingBehavior =
-      DetermineMappingBehavior(workingServer, secondServer);
-  result.mappingDescription = GetMappingDescription(result.mappingBehavior);
-
-  // Determine filtering behavior
-  result.filteringBehavior = DetermineFilteringBehavior(workingServer);
+  // Determine filtering behavior before mapping tests contact the alternate
+  // endpoint on this socket.
+  result.filteringBehavior =
+      DetermineFilteringBehavior(workingServer, *initialResult,
+                                 alternateEndpointVerified);
   result.filteringDescription = GetFilteringDescription(result.filteringBehavior);
+
+  // Determine mapping behavior
+  result.mappingBehavior =
+      DetermineMappingBehavior(workingServer, *initialResult);
+  result.mappingDescription = GetMappingDescription(result.mappingBehavior);
 
   // Classify NAT type based on behaviors
   if (result.mappingBehavior == NatMappingBehavior::EndpointIndependent) {
@@ -393,8 +664,11 @@ NatAnalysisResult StunClient::AnalyzeNat() {
     } else if (result.filteringBehavior ==
                NatFilteringBehavior::AddressDependent) {
       result.natType = NatType::Moderate; // Restricted Cone NAT
-    } else {
+    } else if (result.filteringBehavior ==
+               NatFilteringBehavior::AddressAndPortDependent) {
       result.natType = NatType::Moderate; // Port Restricted Cone NAT
+    } else {
+      result.natType = NatType::Unknown;
     }
   } else if (result.mappingBehavior == NatMappingBehavior::AddressDependent) {
     result.natType = NatType::Moderate;
@@ -421,7 +695,7 @@ std::wstring StunClient::GetNatTypeDescription(NatType type) {
   case NatType::UdpBlocked:
     return L"UDP Blocked - Cannot connect to P2P services";
   default:
-    return L"Unknown";
+    return L"Unknown - RFC 5780 analysis incomplete";
   }
 }
 
@@ -434,7 +708,7 @@ std::wstring StunClient::GetMappingDescription(NatMappingBehavior behavior) {
   case NatMappingBehavior::AddressAndPortDependent:
     return L"Address & Port Dependent";
   default:
-    return L"Unknown";
+    return L"Unknown (insufficient RFC 5780 alternate endpoint data)";
   }
 }
 
@@ -447,7 +721,7 @@ std::wstring StunClient::GetFilteringDescription(NatFilteringBehavior behavior) 
   case NatFilteringBehavior::AddressAndPortDependent:
     return L"Address & Port Dependent";
   default:
-    return L"Unknown";
+    return L"Unknown (CHANGE-REQUEST test inconclusive)";
   }
 }
 

@@ -2,6 +2,7 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 #include <optional>
 #include <string>
 #include <vector>
@@ -57,7 +58,6 @@ struct NatAnalysisResult {
 struct StunServerInfo {
   std::string host;
   uint16_t port;
-  uint16_t altPort; // Alternate port for RFC 5780 tests
 };
 
 class StunClient {
@@ -72,7 +72,7 @@ public:
   std::optional<StunResult> BindingRequest(const std::string &server,
                                            uint16_t port);
 
-  // Get list of public STUN servers
+  // Download the current public STUN server list.
   static std::vector<StunServerInfo> GetPublicStunServers();
 
 private:
@@ -104,17 +104,25 @@ private:
                        const uint8_t *transactionId);
   std::optional<StunResult> SendStunRequest(const std::string &server,
                                             uint16_t port, bool changeIp = false,
-                                            bool changePort = false,
-                                            int localPort = 0);
+                                            bool changePort = false);
 
-  NatMappingBehavior DetermineMappingBehavior(const StunServerInfo &server1,
-                                              const StunServerInfo &server2);
-  NatFilteringBehavior DetermineFilteringBehavior(const StunServerInfo &server);
+  NatMappingBehavior DetermineMappingBehavior(const StunServerInfo &server,
+                                              const StunResult &initialResult);
+  NatFilteringBehavior DetermineFilteringBehavior(const StunServerInfo &server,
+                                                  const StunResult &initialResult,
+                                                  bool alternateEndpointVerified);
 
   std::wstring GetNatTypeDescription(NatType type);
   std::wstring GetMappingDescription(NatMappingBehavior behavior);
   std::wstring GetFilteringDescription(NatFilteringBehavior behavior);
 
+  class WinsockSession;
+  class SocketHandle;
+
+  bool EnsureSocket();
+
+  std::unique_ptr<WinsockSession> winsock_;
+  std::unique_ptr<SocketHandle> socket_;
   uint8_t m_transactionId[12];
   void GenerateTransactionId();
 };
