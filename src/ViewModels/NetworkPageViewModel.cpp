@@ -1,4 +1,5 @@
 ﻿// Created by: EternityBoundary on Jan 12, 2026
+//TODO:此編譯單元過度耦合，預計後續重構，大部分程式碼將拆分進Services中
 #include "pch.h"
 
 #include "include/ViewModels/NetworkPageViewModel.h"
