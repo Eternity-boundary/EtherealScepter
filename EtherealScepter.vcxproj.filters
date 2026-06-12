@@ -163,7 +163,13 @@
     <ClCompile Include="src\Services\IgdDescriptionParser.cpp">
       <Filter>Services\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Services\NetworkConnectivityTestService.cpp">
+      <Filter>Services\src</Filter>
+    </ClCompile>
     <ClCompile Include="src\Services\NetworkStatusService.cpp">
+      <Filter>Services\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Services\PortReachabilityService.cpp">
       <Filter>Services\src</Filter>
     </ClCompile>
     <ClCompile Include="src\Services\SsdpParser.cpp">
@@ -240,7 +246,13 @@
     <ClInclude Include="include\Services\IgdDescriptionParser.h">
       <Filter>Services\include</Filter>
     </ClInclude>
+    <ClInclude Include="include\Services\NetworkConnectivityTestService.h">
+      <Filter>Services\include</Filter>
+    </ClInclude>
     <ClInclude Include="include\Services\NetworkStatusService.h">
+      <Filter>Services\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Services\PortReachabilityService.h">
       <Filter>Services\include</Filter>
     </ClInclude>
     <ClInclude Include="include\Services\SsdpParser.h">

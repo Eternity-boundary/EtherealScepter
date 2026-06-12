@@ -1,5 +1,4 @@
 ﻿// Created by: EternityBoundary on Jan 12, 2026
-//TODO:此編譯單元過度耦合，預計後續重構，大部分程式碼將拆分進Services中
 #include "pch.h"
 
 #include "include/ViewModels/NetworkPageViewModel.h"
@@ -7,123 +6,22 @@
 #include "ViewModels.NetworkPageViewModel.g.cpp"
 #endif
 
+#include "include/Services/NetworkConnectivityTestService.h"
 #include "include/Services/NetworkStatusProvider.h"
+#include "include/Services/NetworkStatusService.h"
+#include "include/Services/PortReachabilityService.h"
 #include <string_view>
 #include <winrt/Microsoft.UI.Dispatching.h>
 #include <winrt/Microsoft.UI.Xaml.Data.h>
 #include <winrt/Microsoft.UI.Xaml.Media.h>
-#include <winrt/Windows.Networking.Connectivity.h>
-#include <winrt/Windows.Networking.Sockets.h>
-#include <winrt/Windows.Web.Http.h>
-#include <winrt/Windows.Web.Http.Headers.h>
 #include <winrt/base.h>
-
-// Win32 API for DNS server detection
-#include <iphlpapi.h>
-#include <ws2tcpip.h>
-#pragma comment(lib, "iphlpapi.lib")
-#pragma comment(lib, "ws2_32.lib")
 
 using namespace winrt;
 using namespace winrt::Windows::Foundation;
 using namespace winrt::Microsoft::UI::Xaml::Data;
 using namespace winrt::Microsoft::UI::Xaml::Media;
 using namespace winrt::Microsoft::UI;
-using namespace winrt::Windows::Networking;
-using namespace winrt::Windows::Networking::Connectivity;
-using namespace winrt::Windows::Networking::Sockets;
-using namespace winrt::Windows::Web::Http;
 namespace Services = ::EtherealScepter::Services;
-
-namespace {
-// DNS 伺服器資訊結構
-struct DnsServerInfo {
-  std::wstring address;
-  bool isIPv6;
-};
-
-// Helper: 取得系統配置的 DNS 伺服器位址
-std::vector<DnsServerInfo> GetSystemDnsServers() {
-  std::vector<DnsServerInfo> dnsServers;
-  
-  ULONG bufferSize = 15000;
-  std::vector<BYTE> buffer(bufferSize);
-  PIP_ADAPTER_ADDRESSES addresses = reinterpret_cast<PIP_ADAPTER_ADDRESSES>(buffer.data());
-  
-  ULONG flags = GAA_FLAG_INCLUDE_PREFIX | GAA_FLAG_SKIP_ANYCAST | 
-                GAA_FLAG_SKIP_MULTICAST | GAA_FLAG_SKIP_FRIENDLY_NAME;
-  
-  DWORD result = GetAdaptersAddresses(AF_UNSPEC, flags, nullptr, addresses, &bufferSize);
-  
-  if (result == ERROR_BUFFER_OVERFLOW) {
-    buffer.resize(bufferSize);
-    addresses = reinterpret_cast<PIP_ADAPTER_ADDRESSES>(buffer.data());
-    result = GetAdaptersAddresses(AF_UNSPEC, flags, nullptr, addresses, &bufferSize);
-  }
-  
-  if (result != NO_ERROR) {
-    return dnsServers;
-  }
-  
-  for (PIP_ADAPTER_ADDRESSES adapter = addresses; adapter != nullptr; adapter = adapter->Next) {
-    // 跳過非活動的網路卡
-    if (adapter->OperStatus != IfOperStatusUp) {
-      continue;
-    }
-    
-    // 取得 DNS 伺服器
-    for (PIP_ADAPTER_DNS_SERVER_ADDRESS dnsServer = adapter->FirstDnsServerAddress;
-         dnsServer != nullptr; dnsServer = dnsServer->Next) {
-      
-      wchar_t ipStr[INET6_ADDRSTRLEN] = {};
-      bool isIPv6 = false;
-      
-      if (dnsServer->Address.lpSockaddr->sa_family == AF_INET) {
-        auto* addr = reinterpret_cast<sockaddr_in*>(dnsServer->Address.lpSockaddr);
-        InetNtopW(AF_INET, &addr->sin_addr, ipStr, INET_ADDRSTRLEN);
-        isIPv6 = false;
-      } else if (dnsServer->Address.lpSockaddr->sa_family == AF_INET6) {
-        auto* addr = reinterpret_cast<sockaddr_in6*>(dnsServer->Address.lpSockaddr);
-        InetNtopW(AF_INET6, &addr->sin6_addr, ipStr, INET6_ADDRSTRLEN);
-        isIPv6 = true;
-      }
-      
-      if (wcslen(ipStr) > 0) {
-        std::wstring ip(ipStr);
-        // 過濾掉 localhost 和 link-local
-        if (ip != L"127.0.0.1" && ip != L"::1" && !ip.starts_with(L"fe80")) {
-          // 避免重複
-          bool found = false;
-          for (const auto& existing : dnsServers) {
-            if (existing.address == ip) {
-              found = true;
-              break;
-            }
-          }
-          if (!found) {
-            dnsServers.push_back({ip, isIPv6});
-          }
-        }
-      }
-    }
-  }
-  
-  return dnsServers;
-}
-
-// Helper: 格式化 IPv6 位址用於 HostName
-winrt::hstring FormatDnsAddress(const DnsServerInfo& dns) {
-  return winrt::hstring(dns.address);
-}
-
-// Helper: 格式化顯示用的 DNS 位址
-winrt::hstring FormatDnsDisplayAddress(const DnsServerInfo& dns) {
-  if (dns.isIPv6) {
-    return L"[" + winrt::hstring(dns.address) + L"]";
-  }
-  return winrt::hstring(dns.address);
-}
-} // namespace
 
 namespace winrt::EtherealScepter::ViewModels::implementation {
 
@@ -404,163 +302,15 @@ IAsyncAction NetworkPageViewModel::RunConnectivityTestsAsync() {
 
   co_await resume_background();
 
-  // 先取得系統 DNS 伺服器位址
-  auto dnsServers = GetSystemDnsServers();
-
-  // --- Test 1: Ping Gateway ---
-  winrt::hstring gatewayResult = L"✖ Gateway unreachable";
-  try {
-    auto profile = NetworkInformation::GetInternetConnectionProfile();
-    if (profile && profile.GetNetworkConnectivityLevel() != NetworkConnectivityLevel::None) {
-      gatewayResult = L"✔ Gateway reachable";
-    }
-  } catch (...) { }
+  auto results = Services::NetworkConnectivityTestService::Run();
 
   co_await ui_thread;
-  PingGatewayResult(gatewayResult);
-  co_await resume_background();
-
-  // --- Test 2: Ping 8.8.8.8 (TCP connect to port 443) ---
-  winrt::hstring googleResult = L"✖ 8.8.8.8 unreachable";
-  try {
-    StreamSocket socket;
-    auto hostName = HostName(L"8.8.8.8");
-    
-    auto start = std::chrono::steady_clock::now();
-    socket.ConnectAsync(hostName, L"443").get();
-    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    googleResult = L"✔ 8.8.8.8 (" + to_hstring(elapsed.count()) + L" ms)";
-    socket.Close();
-  } catch (...) { }
-
-  co_await ui_thread;
-  PingGoogleResult(googleResult);
-  co_await resume_background();
-
-  // --- Test 3: HTTP Reachability ---
-  winrt::hstring httpResult = L"✖ HTTP Timeout";
-  try {
-    HttpClient client;
-    auto start = std::chrono::steady_clock::now();
-    auto response = client.GetAsync(Uri(L"http://www.msftconnecttest.com/connecttest.txt")).get();
-    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    if (response.IsSuccessStatusCode()) {
-      httpResult = L"✔ HTTP OK (" + to_hstring(elapsed.count()) + L" ms)";
-    } else {
-      httpResult = L"✖ HTTP Error: " + to_hstring(static_cast<int>(response.StatusCode()));
-    }
-  } catch (...) { }
-
-  co_await ui_thread;
-  HttpReachabilityResult(httpResult);
-  co_await resume_background();
-
-  // --- Test 4: System DNS (使用系統 DNS 解析) ---
-  winrt::hstring systemDns = L"✖ System DNS failed";
-  try {
-    auto start = std::chrono::steady_clock::now();
-    auto hosts = DatagramSocket::GetEndpointPairsAsync(HostName(L"www.microsoft.com"), L"80").get();
-    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    if (hosts.Size() > 0) {
-      systemDns = L"✔ System DNS OK (" + to_hstring(elapsed.count()) + L" ms)";
-    }
-  } catch (...) { }
-
-  co_await ui_thread;
-  SystemDnsResult(systemDns);
-  co_await resume_background();
-
-  // --- Test 5: ISP/Configured DNS (測試系統配置的 DNS 伺服器) ---
-  winrt::hstring ispDns = L"⚠ No DNS servers configured";
-  if (!dnsServers.empty()) {
-    // 取得第一個 DNS 伺服器並測試連線
-    const auto& firstDns = dnsServers[0];
-    winrt::hstring displayAddr = FormatDnsDisplayAddress(firstDns);
-    winrt::hstring hostAddr = FormatDnsAddress(firstDns);
-    
-    bool connected = false;
-    int64_t elapsedMs = 0;
-    
-    // 嘗試多個 port：53 (DNS), 853 (DoT), 443 (DoH)
-    std::vector<winrt::hstring> ports = {L"53", L"853", L"443"};
-    
-    for (const auto& port : ports) {
-      if (connected) break;
-      
-      try {
-        StreamSocket socket;
-        auto start = std::chrono::steady_clock::now();
-        socket.ConnectAsync(HostName(hostAddr), port).get();
-        elapsedMs = std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::steady_clock::now() - start).count();
-        connected = true;
-        socket.Close();
-      } catch (...) {
-        // 嘗試下一個 port
-      }
-    }
-    
-    if (connected) {
-      ispDns = L"✔ DNS " + displayAddr + L" (" + to_hstring(elapsedMs) + L" ms)";
-    } else if (systemDns.starts_with(L"✔")) {
-      // 直接連線失敗，但系統 DNS 解析成功，表示 DNS 可能透過其他方式運作（如 DoH 內建）
-      ispDns = L"✔ DNS " + displayAddr + L" (via system resolver)";
-    } else {
-      ispDns = L"✖ DNS " + displayAddr + L" unreachable";
-    }
-  }
-
-  co_await ui_thread;
-  IspDnsResult(ispDns);
-  co_await resume_background();
-
-  // --- Test 6: Public DNS (IPv4: 1.1.1.1, IPv6: 2606:4700:4700::1111) ---
-  winrt::hstring publicDns = L"✖ Public DNS unreachable";
-  
-  // 先嘗試 IPv4 (1.1.1.1)
-  bool ipv4Success = false;
-  int64_t ipv4Elapsed = 0;
-  try {
-    StreamSocket socket;
-    auto start = std::chrono::steady_clock::now();
-    socket.ConnectAsync(HostName(L"1.1.1.1"), L"443").get();
-    ipv4Elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start).count();
-    ipv4Success = true;
-    socket.Close();
-  } catch (...) { }
-
-  // 嘗試 IPv6 (2606:4700:4700::1111)
-  bool ipv6Success = false;
-  int64_t ipv6Elapsed = 0;
-  try {
-    StreamSocket socket;
-    auto start = std::chrono::steady_clock::now();
-    socket.ConnectAsync(HostName(L"2606:4700:4700::1111"), L"443").get();
-    ipv6Elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start).count();
-    ipv6Success = true;
-    socket.Close();
-  } catch (...) { }
-
-  // 根據結果組合顯示
-  if (ipv4Success && ipv6Success) {
-    publicDns = L"✔ 1.1.1.1 (" + to_hstring(ipv4Elapsed) + L" ms) / IPv6 (" + to_hstring(ipv6Elapsed) + L" ms)";
-  } else if (ipv4Success) {
-    publicDns = L"✔ 1.1.1.1 (" + to_hstring(ipv4Elapsed) + L" ms) / ⚠ IPv6 N/A";
-  } else if (ipv6Success) {
-    publicDns = L"⚠ IPv4 N/A / ✔ IPv6 (" + to_hstring(ipv6Elapsed) + L" ms)";
-  }
-
-  co_await ui_thread;
-  PublicDnsResult(publicDns);
-
+  PingGatewayResult(results.pingGateway);
+  PingGoogleResult(results.pingGoogle);
+  HttpReachabilityResult(results.httpReachability);
+  SystemDnsResult(results.systemDns);
+  IspDnsResult(results.ispDns);
+  PublicDnsResult(results.publicDns);
   IsRunningTests(false);
 }
 
@@ -578,17 +328,7 @@ IAsyncAction NetworkPageViewModel::TestPortAsync(int32_t port) {
 
   co_await resume_background();
 
-  winrt::hstring result = L"✖ Port " + to_hstring(port) + L" unavailable";
-  try {
-    StreamSocketListener listener;
-    listener.BindServiceNameAsync(to_hstring(port)).get();
-    listener.Close();
-    result = L"✔ Port " + to_hstring(port) + L" available locally";
-  } catch (winrt::hresult_error const& ex) {
-    if (ex.code() == HRESULT_FROM_WIN32(WSAEADDRINUSE)) {
-      result = L"⚠ Port " + to_hstring(port) + L" in use";
-    }
-  } catch (...) { }
+  auto result = Services::PortReachabilityService::TestLocalPort(port);
 
   co_await ui_thread;
   PortTestResult(result);
@@ -607,105 +347,11 @@ IAsyncAction NetworkPageViewModel::TestExternalPortAsync(int32_t port) {
   IsTestingPort(true);
   ExternalPortTestResult(L"Checking port " + to_hstring(port) + L" from internet...");
 
+  auto externalIp = m_httpIp;
   co_await resume_background();
 
-  winrt::hstring result = L"✖ Unable to check external port";
-  
-  try {
-    HttpClient client;
-    
-    // 先取得外部 IPv4 位址 (使用 IPv4-only 的 api.ipify.org)
-    winrt::hstring externalIp = m_httpIp;
-    if (externalIp.empty() || externalIp == L"-") {
-      try {
-        auto ipResponse = client.GetStringAsync(Uri(L"https://api.ipify.org")).get();
-        if (!ipResponse.empty()) {
-          externalIp = ipResponse;
-        }
-      } catch (...) { }
-    }
-    
-    if (externalIp.empty() || externalIp == L"-") {
-      result = L"⚠ Cannot determine external IPv4 address";
-    } else {
-      // 使用 check-host.net API 進行 IPv4 端口檢測
-      // 格式: https://check-host.net/check-tcp?host={ip}:{port}
-      auto uri = Uri(L"https://check-host.net/check-tcp?host=" + externalIp + L":" + to_hstring(port));
-      
-      // 設定 Accept header 以取得 JSON 回應
-      client.DefaultRequestHeaders().Accept().Clear();
-      client.DefaultRequestHeaders().Accept().Append(
-          Headers::HttpMediaTypeWithQualityHeaderValue(L"application/json"));
-      
-      auto response = client.GetAsync(uri).get();
-      
-      if (response.IsSuccessStatusCode()) {
-        auto content = response.Content().ReadAsStringAsync().get();
-        std::wstring contentStr(content.c_str());
-        
-        // check-host.net 返回 JSON，包含 request_id 和多個檢測節點
-        // 成功回應表示檢測請求已排隊，需要輪詢結果
-        // 簡化處理：如果收到有效回應且包含 request_id，表示 API 可用
-        if (contentStr.find(L"\"request_id\"") != std::wstring::npos ||
-            contentStr.find(L"\"ok\"") != std::wstring::npos) {
-          // 取得 request_id 進行結果查詢
-          auto requestIdPos = contentStr.find(L"\"request_id\":\"");
-          if (requestIdPos != std::wstring::npos) {
-            auto idStart = requestIdPos + 14; // length of "\"request_id\":\""
-            auto idEnd = contentStr.find(L"\"", idStart);
-            if (idEnd != std::wstring::npos) {
-              auto requestId = contentStr.substr(idStart, idEnd - idStart);
-              
-              // 等待一小段時間讓檢測完成
-              Sleep(2000);
-              
-              // 查詢結果
-              auto resultUri = Uri(L"https://check-host.net/check-result/" + winrt::hstring(requestId));
-              auto resultResponse = client.GetAsync(resultUri).get();
-              
-              if (resultResponse.IsSuccessStatusCode()) {
-                auto resultContent = resultResponse.Content().ReadAsStringAsync().get();
-                std::wstring resultStr(resultContent.c_str());
-                
-                // 分析結果：檢查是否有任何節點回報連線成功
-                bool hasSuccess = false;
-                
-                // 如果結果中包含 "address" 和 "time" 欄位，表示有節點成功連線
-                if (resultStr.find(L"\"address\"") != std::wstring::npos &&
-                    resultStr.find(L"\"time\"") != std::wstring::npos) {
-                  hasSuccess = true;
-                }
-                
-                // 只要有任何節點成功連線，就視為端口開放
-                // (部分 null 可能是因為特定國家的網路限制，非端口問題)
-                if (hasSuccess) {
-                  result = L"✔ Port " + to_hstring(port) + L" is OPEN (" + externalIp + L")";
-                } else {
-                  result = L"✖ Port " + to_hstring(port) + L" is CLOSED (" + externalIp + L")";
-                }
-              } else {
-                result = L"⚠ Port " + to_hstring(port) + L" check pending (" + externalIp + L")";
-              }
-            } else {
-              result = L"⚠ Port " + to_hstring(port) + L" status unclear (" + externalIp + L")";
-            }
-          } else {
-            result = L"⚠ Port " + to_hstring(port) + L" status unclear (" + externalIp + L")";
-          }
-        } else {
-          result = L"⚠ Port " + to_hstring(port) + L" status unclear (" + externalIp + L")";
-        }
-      } else if (response.StatusCode() == HttpStatusCode::TooManyRequests) {
-        result = L"⚠ Rate limited, please try again later";
-      } else {
-        result = L"⚠ API error (HTTP " + to_hstring(static_cast<int>(response.StatusCode())) + L")";
-      }
-    }
-  } catch (winrt::hresult_error const&) {
-    result = L"⚠ Check manually: canyouseeme.org or portchecker.co";
-  } catch (...) {
-    result = L"⚠ External check failed";
-  }
+  auto result =
+      Services::PortReachabilityService::TestExternalPort(port, externalIp);
 
   co_await ui_thread;
   ExternalPortTestResult(result);
