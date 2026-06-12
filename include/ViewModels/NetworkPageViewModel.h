@@ -5,11 +5,14 @@
 #include <winrt/base.h>
 
 #include "ViewModels.NetworkPageViewModel.g.h"
-#include "include/Services/NetworkStatusService.h"
 #include <winrt/impl/Microsoft.UI.Dispatching.2.h>
 #include <winrt/impl/Microsoft.UI.Xaml.Data.2.h>
 #include <winrt/impl/Microsoft.UI.Xaml.Media.2.h>
 #include <winrt/impl/Windows.Foundation.1.h>
+
+namespace EtherealScepter::Services {
+struct NetworkSnapshot;
+}
 
 namespace winrt::EtherealScepter::ViewModels::implementation {
 struct NetworkPageViewModel : NetworkPageViewModelT<NetworkPageViewModel> {

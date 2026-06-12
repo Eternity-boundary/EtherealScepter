@@ -156,8 +156,10 @@ echo #include "AddPortRuleDialog.xaml.g.h"
     <ClInclude Include="Generated Files\PortPage.xaml.g.h" />
     <ClInclude Include="Generated Files\UPnPPage.xaml.g.h" />
     <ClInclude Include="include\Services\IgdDescriptionParser.h" />
+    <ClInclude Include="include\Services\NetworkConnectivityTestService.h" />
     <ClInclude Include="include\Services\NetworkStatusProvider.h" />
     <ClInclude Include="include\Services\NetworkStatusService.h" />
+    <ClInclude Include="include\Services\PortReachabilityService.h" />
     <ClInclude Include="include\Services\StunClient.h" />
     <ClInclude Include="include\Services\ThemeService.h" />
     <ClInclude Include="include\Services\UpnpNatPortMappingService.h" />
@@ -221,8 +223,10 @@ echo #include "AddPortRuleDialog.xaml.g.h"
       <DependentUpon>src\App\App.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="src\Services\IgdDescriptionParser.cpp" />
+    <ClCompile Include="src\Services\NetworkConnectivityTestService.cpp" />
     <ClCompile Include="src\Services\NetworkStatusProvider.cpp" />
     <ClCompile Include="src\Services\NetworkStatusService.cpp" />
+    <ClCompile Include="src\Services\PortReachabilityService.cpp" />
     <ClCompile Include="src\Services\SsdpParser.cpp" />
     <ClCompile Include="src\Services\StunClient.cpp" />
     <ClCompile Include="src\Services\ThemeService.cpp" />
