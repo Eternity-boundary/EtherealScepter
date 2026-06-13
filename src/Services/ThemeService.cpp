@@ -2,6 +2,11 @@
 #include "pch.h"
 #include "include/Services/ThemeService.h"
 
+#include <cmath>
+#include <filesystem>
+#include <fstream>
+#include <sstream>
+
 #include <winrt/Microsoft.UI.Xaml.Media.Imaging.h>
 #include <winrt/Microsoft.UI.h>
 #include <winrt/Windows.Storage.h>
@@ -15,6 +20,20 @@ using namespace winrt::Windows::Storage;
 using namespace winrt::Windows::Data::Json;
 
 namespace EtherealScepter::Services {
+namespace {
+
+constexpr wchar_t kSettingsFileName[] = L"theme_settings.json";
+constexpr wchar_t kThemeTypeKey[] = L"themeType";
+constexpr wchar_t kWindowWidthDipKey[] = L"windowWidthDip";
+constexpr wchar_t kWindowHeightDipKey[] = L"windowHeightDip";
+
+bool IsValidWindowSizeDip(double widthDip, double heightDip) {
+  return std::isfinite(widthDip) && std::isfinite(heightDip) &&
+         widthDip >= 320.0 && heightDip >= 240.0 && widthDip <= 10000.0 &&
+         heightDip <= 10000.0;
+}
+
+} // namespace
 
 ThemeService &ThemeService::Instance() {
   static ThemeService instance;
@@ -23,8 +42,8 @@ ThemeService &ThemeService::Instance() {
 
 ThemeService::ThemeService() {
   // Initialize default custom theme names
-  m_customConfig1.themeName = L"Custom Theme 1";
-  m_customConfig2.themeName = L"Custom Theme 2";
+  m_customConfig1.themeName = L"Starry Sky";
+  m_customConfig2.themeName = L"Black Souls Leaf";
 }
 
 void ThemeService::Initialize(FrameworkElement const &rootElement) {
@@ -61,7 +80,7 @@ CustomThemeConfig const &ThemeService::GetCustomThemeConfig(int slot) const {
 
 CustomThemeConfig const &ThemeService::GetActiveCustomThemeConfig() const {
   std::lock_guard lock(m_mutex);
-  if (m_currentTheme == ThemeType::Custom2) {
+  if (m_currentTheme == ThemeType::BlackSoulsLeaf) {
     return m_customConfig2;
   }
   return m_customConfig1;
@@ -81,8 +100,8 @@ void ThemeService::SetCustomThemeConfig(CustomThemeConfig const &config, int slo
   }
 
   // If the corresponding custom theme is active, reapply
-  if ((slot == 1 && currentTheme == ThemeType::Custom1) ||
-      (slot == 2 && currentTheme == ThemeType::Custom2)) {
+  if ((slot == 1 && currentTheme == ThemeType::StarrySky) ||
+      (slot == 2 && currentTheme == ThemeType::BlackSoulsLeaf)) {
     ApplyTheme();
     NotifySubscribers();
   }
@@ -90,12 +109,12 @@ void ThemeService::SetCustomThemeConfig(CustomThemeConfig const &config, int slo
 
 bool ThemeService::IsCustomThemeActive() const {
   std::lock_guard lock(m_mutex);
-  return m_currentTheme == ThemeType::Custom1 || m_currentTheme == ThemeType::Custom2;
+  return m_currentTheme == ThemeType::StarrySky || m_currentTheme == ThemeType::BlackSoulsLeaf;
 }
 
 // Private helper - must be called with lock already held
 bool ThemeService::IsCustomThemeActiveInternal() const {
-  return m_currentTheme == ThemeType::Custom1 || m_currentTheme == ThemeType::Custom2;
+  return m_currentTheme == ThemeType::StarrySky || m_currentTheme == ThemeType::BlackSoulsLeaf;
 }
 
 Brush ThemeService::GetBackgroundBrush() const {
@@ -105,7 +124,7 @@ Brush ThemeService::GetBackgroundBrush() const {
     return nullptr;
   }
 
-  auto const &config = (m_currentTheme == ThemeType::Custom2) ? m_customConfig2 : m_customConfig1;
+  auto const &config = (m_currentTheme == ThemeType::BlackSoulsLeaf) ? m_customConfig2 : m_customConfig1;
 
   if (config.backgroundImagePath.empty()) {
     return nullptr;
@@ -125,7 +144,7 @@ Brush ThemeService::GetNavPaneBackgroundBrush() const {
     return nullptr;
   }
 
-  auto const &config = (m_currentTheme == ThemeType::Custom2) ? m_customConfig2 : m_customConfig1;
+  auto const &config = (m_currentTheme == ThemeType::BlackSoulsLeaf) ? m_customConfig2 : m_customConfig1;
 
   if (!config.navPaneBackgroundImagePath.empty()) {
     if (!m_navPaneImageBrush) {
@@ -144,7 +163,7 @@ Brush ThemeService::GetNavPaneColorBrush() const {
     return nullptr;
   }
 
-  auto const &config = (m_currentTheme == ThemeType::Custom2) ? m_customConfig2 : m_customConfig1;
+  auto const &config = (m_currentTheme == ThemeType::BlackSoulsLeaf) ? m_customConfig2 : m_customConfig1;
 
   if (!m_navPaneColorBrush) {
     m_navPaneColorBrush = CreateColorBrush(config.navPaneBackgroundColor);
@@ -160,7 +179,7 @@ Brush ThemeService::GetNavButtonNormalBrush() const {
     return nullptr;
   }
 
-  auto const &config = (m_currentTheme == ThemeType::Custom2) ? m_customConfig2 : m_customConfig1;
+  auto const &config = (m_currentTheme == ThemeType::BlackSoulsLeaf) ? m_customConfig2 : m_customConfig1;
 
   if (!m_navButtonNormalBrush) {
     m_navButtonNormalBrush = CreateColorBrush(config.navButtonNormalColor);
@@ -176,7 +195,7 @@ Brush ThemeService::GetNavButtonHoverBrush() const {
     return nullptr;
   }
 
-  auto const &config = (m_currentTheme == ThemeType::Custom2) ? m_customConfig2 : m_customConfig1;
+  auto const &config = (m_currentTheme == ThemeType::BlackSoulsLeaf) ? m_customConfig2 : m_customConfig1;
 
   if (!m_navButtonHoverBrush) {
     m_navButtonHoverBrush = CreateColorBrush(config.navButtonHoverColor);
@@ -192,7 +211,7 @@ Brush ThemeService::GetNavButtonSelectedBrush() const {
     return nullptr;
   }
 
-  auto const &config = (m_currentTheme == ThemeType::Custom2) ? m_customConfig2 : m_customConfig1;
+  auto const &config = (m_currentTheme == ThemeType::BlackSoulsLeaf) ? m_customConfig2 : m_customConfig1;
 
   if (!m_navButtonSelectedBrush) {
     m_navButtonSelectedBrush = CreateColorBrush(config.navButtonSelectedColor);
@@ -208,7 +227,7 @@ Brush ThemeService::GetCardBackgroundBrush() const {
     return nullptr;
   }
 
-  auto const &config = (m_currentTheme == ThemeType::Custom2) ? m_customConfig2 : m_customConfig1;
+  auto const &config = (m_currentTheme == ThemeType::BlackSoulsLeaf) ? m_customConfig2 : m_customConfig1;
 
   if (!m_cardBackgroundBrush) {
     m_cardBackgroundBrush = CreateColorBrush(config.cardBackgroundColor);
@@ -220,7 +239,7 @@ Brush ThemeService::GetCardBackgroundBrush() const {
 double ThemeService::GetPanelOpacity() const {
   std::lock_guard lock(m_mutex);
   if (IsCustomThemeActiveInternal()) {
-    auto const &config = (m_currentTheme == ThemeType::Custom2) ? m_customConfig2 : m_customConfig1;
+    auto const &config = (m_currentTheme == ThemeType::BlackSoulsLeaf) ? m_customConfig2 : m_customConfig1;
     return config.panelOpacity;
   }
   return 1.0;
@@ -229,10 +248,33 @@ double ThemeService::GetPanelOpacity() const {
 double ThemeService::GetNavPaneOpacity() const {
   std::lock_guard lock(m_mutex);
   if (IsCustomThemeActiveInternal()) {
-    auto const &config = (m_currentTheme == ThemeType::Custom2) ? m_customConfig2 : m_customConfig1;
+    auto const &config = (m_currentTheme == ThemeType::BlackSoulsLeaf) ? m_customConfig2 : m_customConfig1;
     return config.navPaneOpacity;
   }
   return 1.0;
+}
+
+bool ThemeService::TryGetSavedWindowSize(double &widthDip,
+                                         double &heightDip) const {
+  std::lock_guard lock(m_mutex);
+  if (!m_hasSavedWindowSize) {
+    return false;
+  }
+
+  widthDip = m_savedWindowWidthDip;
+  heightDip = m_savedWindowHeightDip;
+  return true;
+}
+
+void ThemeService::SetSavedWindowSize(double widthDip, double heightDip) {
+  if (!IsValidWindowSizeDip(widthDip, heightDip)) {
+    return;
+  }
+
+  std::lock_guard lock(m_mutex);
+  m_savedWindowWidthDip = widthDip;
+  m_savedWindowHeightDip = heightDip;
+  m_hasSavedWindowSize = true;
 }
 
 uint32_t ThemeService::Subscribe(ThemeChangedCallback callback) {
@@ -263,10 +305,10 @@ void ThemeService::ApplyTheme() {
   case ThemeType::Dark:
     theme = ElementTheme::Dark;
     break;
-  case ThemeType::Custom1:
+  case ThemeType::StarrySky:
     theme = m_customConfig1.baseTheme;
     break;
-  case ThemeType::Custom2:
+  case ThemeType::BlackSoulsLeaf:
     theme = m_customConfig2.baseTheme;
     break;
   }
@@ -329,40 +371,40 @@ Brush ThemeService::CreateColorBrush(ColorConfig const &config) const {
 
 winrt::Windows::Foundation::IAsyncAction ThemeService::SaveSettingsAsync() {
   auto localFolder = ApplicationData::Current().LocalFolder();
+  JsonObject json = CreateSettingsJson();
 
-  JsonObject json;
-
-  {
-    std::lock_guard lock(m_mutex);
-    json.SetNamedValue(L"themeType", JsonValue::CreateNumberValue(static_cast<int>(m_currentTheme)));
-  }
-
-  auto file = co_await localFolder.CreateFileAsync(L"theme_settings.json",
+  auto file = co_await localFolder.CreateFileAsync(kSettingsFileName,
       CreationCollisionOption::ReplaceExisting);
   co_await FileIO::WriteTextAsync(file, json.Stringify());
+}
+
+void ThemeService::SaveSettings() {
+  auto localFolderPath = ApplicationData::Current().LocalFolder().Path();
+  std::filesystem::path settingsPath{std::wstring{localFolderPath.c_str()}};
+  settingsPath /= kSettingsFileName;
+
+  try {
+    std::ofstream file(settingsPath,
+                       std::ios::binary | std::ios::trunc);
+    if (!file) {
+      return;
+    }
+
+    file << winrt::to_string(CreateSettingsJson().Stringify());
+  } catch (...) {
+  }
 }
 
 winrt::Windows::Foundation::IAsyncAction ThemeService::LoadSettingsAsync() {
   auto localFolder = ApplicationData::Current().LocalFolder();
 
   try {
-    auto file = co_await localFolder.GetFileAsync(L"theme_settings.json");
+    auto file = co_await localFolder.GetFileAsync(kSettingsFileName);
     auto content = co_await FileIO::ReadTextAsync(file);
 
     JsonObject json;
     if (JsonObject::TryParse(content, json)) {
-      {
-        std::lock_guard lock(m_mutex);
-
-        // 只載入使用者選擇的主題類型，不載入自定義主題配置
-        // 預設主題的配置由 RegisterSystemDefaultThemes() 設定
-        if (json.HasKey(L"themeType")) {
-          m_currentTheme = static_cast<ThemeType>(
-              static_cast<int>(json.GetNamedNumber(L"themeType")));
-        }
-
-        ClearCachedBrushes();
-      }
+      ApplyLoadedSettings(json);
       
       // 在鎖外面通知訂閱者
       ApplyTheme();
@@ -372,6 +414,77 @@ winrt::Windows::Foundation::IAsyncAction ThemeService::LoadSettingsAsync() {
     // File doesn't exist or is invalid, use defaults
     ApplyTheme();
   }
+}
+
+void ThemeService::LoadSettings() {
+  auto localFolderPath = ApplicationData::Current().LocalFolder().Path();
+  std::filesystem::path settingsPath{std::wstring{localFolderPath.c_str()}};
+  settingsPath /= kSettingsFileName;
+
+  try {
+    std::ifstream file(settingsPath, std::ios::binary);
+    if (!file) {
+      ApplyTheme();
+      return;
+    }
+
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+
+    JsonObject json;
+    if (JsonObject::TryParse(winrt::to_hstring(buffer.str()), json)) {
+      ApplyLoadedSettings(json);
+      ApplyTheme();
+      NotifySubscribers();
+      return;
+    }
+  } catch (...) {
+  }
+
+  ApplyTheme();
+}
+
+void ThemeService::ApplyLoadedSettings(JsonObject const &json) {
+  std::lock_guard lock(m_mutex);
+
+  // 只載入使用者選擇的主題類型，不載入自定義主題配置
+  // 預設主題的配置由 RegisterSystemDefaultThemes() 設定
+  if (json.HasKey(kThemeTypeKey)) {
+    int themeType = static_cast<int>(json.GetNamedNumber(kThemeTypeKey));
+    if (themeType >= static_cast<int>(ThemeType::System) &&
+        themeType <= static_cast<int>(ThemeType::BlackSoulsLeaf)) {
+      m_currentTheme = static_cast<ThemeType>(themeType);
+    }
+  }
+
+  if (json.HasKey(kWindowWidthDipKey) && json.HasKey(kWindowHeightDipKey)) {
+    double widthDip = json.GetNamedNumber(kWindowWidthDipKey);
+    double heightDip = json.GetNamedNumber(kWindowHeightDipKey);
+    if (IsValidWindowSizeDip(widthDip, heightDip)) {
+      m_savedWindowWidthDip = widthDip;
+      m_savedWindowHeightDip = heightDip;
+      m_hasSavedWindowSize = true;
+    }
+  }
+
+  ClearCachedBrushes();
+}
+
+JsonObject ThemeService::CreateSettingsJson() const {
+  JsonObject json;
+
+  std::lock_guard lock(m_mutex);
+  json.SetNamedValue(kThemeTypeKey,
+                     JsonValue::CreateNumberValue(static_cast<int>(m_currentTheme)));
+
+  if (m_hasSavedWindowSize) {
+    json.SetNamedValue(kWindowWidthDipKey,
+                       JsonValue::CreateNumberValue(m_savedWindowWidthDip));
+    json.SetNamedValue(kWindowHeightDipKey,
+                       JsonValue::CreateNumberValue(m_savedWindowHeightDip));
+  }
+
+  return json;
 }
 
 } // namespace EtherealScepter::Services

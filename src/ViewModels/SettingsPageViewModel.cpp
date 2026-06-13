@@ -33,7 +33,7 @@ void SettingsPageViewModel::LoadFromService() {
   m_selectedThemeIndex = static_cast<int32_t>(currentTheme);
 
   // Determine which slot to load
-  if (currentTheme == Services::ThemeType::Custom2) {
+  if (currentTheme == Services::ThemeType::BlackSoulsLeaf) {
     m_currentCustomSlot = 2;
   } else {
     m_currentCustomSlot = 1;
@@ -140,9 +140,9 @@ void SettingsPageViewModel::SelectedThemeIndex(int32_t value) {
     RaisePropertyChanged(L"PreviewBtnSelectedBrush");
 
     // Update custom slot when selecting custom themes
-    if (value == 3) { // Custom1
+    if (value == 3) { // StarrySky
       SwitchToCustomSlot(1);
-    } else if (value == 4) { // Custom2
+    } else if (value == 4) { // BlackSoulsLeaf
       SwitchToCustomSlot(2);
     }
   }
@@ -240,9 +240,9 @@ Brush SettingsPageViewModel::PreviewBtnSelectedBrush() const {
   return nullptr;
 }
 
-// Visibility for default theme preview (only show for Custom1/Custom2, which are now default themes)
+// Visibility for default theme preview (only show for StarrySky/BlackSoulsLeaf, which are now default themes)
 Visibility SettingsPageViewModel::DefaultThemePreviewVisibility() const {
-  // 顯示預設主題預覽（Custom1 和 Custom2 現在是預設主題，只讀）
+  // 顯示預設主題預覽（StarrySky 和 BlackSoulsLeaf 現在是預設主題，只讀）
   return (m_selectedThemeIndex == 3 || m_selectedThemeIndex == 4) 
          ? Visibility::Visible : Visibility::Collapsed;
 }
@@ -440,7 +440,7 @@ void SettingsPageViewModel::CardBgOpacity(double value) {
 }
 
 bool SettingsPageViewModel::IsCustomThemeEnabled() const {
-  // 現在 Custom1 和 Custom2 是預設主題（不可編輯），所以這裡返回 false
+  // 現在 StarrySky 和 BlackSoulsLeaf 是預設主題（不可編輯），所以這裡返回 false
   return false;
 }
 

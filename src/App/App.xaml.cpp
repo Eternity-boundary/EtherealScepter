@@ -50,10 +50,9 @@ void App::OnLaunched([[maybe_unused]] LaunchActivatedEventArgs const &e) {
   window = make<MainWindow>();
   window.Activate();
 
-  // MainWindow::InitializeTheme() 會呼叫 LoadSettingsAsync()，
-  // 這會從儲存的設定檔中載入使用者的設定（包括選擇的主題類型）。
-  // 但是 LoadSettingsAsync() 也會覆蓋主題配置，所以我們需要再次註冊預設主題。
-  // 重新註冊預設主題，確保 themeName 等配置是正確的
+  // MainWindow 建構時會從儲存的設定檔中載入使用者的設定
+  // （包括選擇的主題類型與視窗大小）。維持既有流程，在建立主視窗後
+  // 重新註冊預設主題，確保 themeName 等配置是正確的。
   ::EtherealScepter::Views::Theme::RegisterSystemDefaultThemes();
 
   m_dashboardVm = winrt::EtherealScepter::ViewModels::DashboardViewModel{};

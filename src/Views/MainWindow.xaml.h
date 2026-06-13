@@ -2,6 +2,8 @@
 #pragma once
 #include "MainWindow.g.h"
 #include "include/Services/ThemeService.h"
+#include <winrt/Microsoft.UI.Dispatching.h>
+#include <winrt/Microsoft.UI.Windowing.h>
 
 namespace winrt::EtherealScepter::implementation
 {
@@ -24,11 +26,20 @@ namespace winrt::EtherealScepter::implementation
 
     private:
         void InitializeTheme();
+        void InitializeWindowSizePersistence();
+        void OnWindowChanged(
+            Microsoft::UI::Windowing::AppWindow const& sender,
+            Microsoft::UI::Windowing::AppWindowChangedEventArgs const& args);
+        void SaveCurrentWindowSize();
         void OnThemeChanged(::EtherealScepter::Services::ThemeType theme);
         void ApplyThemeVisuals();
         void UpdateNavPaneBackgroundWidth(bool isPaneOpen);
 
         uint32_t m_themeSubscriptionId = 0;
+        Microsoft::UI::Windowing::AppWindow m_appWindow{ nullptr };
+        winrt::event_token m_windowChangedToken{};
+        bool m_hasWindowChangedSubscription = false;
+        Microsoft::UI::Dispatching::DispatcherQueueTimer m_saveWindowSizeTimer{ nullptr };
     };
 }
 

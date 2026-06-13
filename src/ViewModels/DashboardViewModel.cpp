@@ -79,7 +79,7 @@ namespace winrt::EtherealScepter::ViewModels::implementation
             });
 
         // 顯示初始載入狀態
-        m_summary = L"Refreshing…";
+        m_summary = L"Refreshing… This might take more than 10 seconds.";
         m_statusMessage = L"Loading...";
         RaisePropertyChanged(L"SummaryText");
         RaisePropertyChanged(L"StatusMessage");

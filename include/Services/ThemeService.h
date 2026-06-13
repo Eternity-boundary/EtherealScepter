@@ -8,6 +8,7 @@
 #include <winrt/Microsoft.UI.Xaml.Media.Imaging.h>
 #include <winrt/Microsoft.UI.Xaml.Media.h>
 #include <winrt/Microsoft.UI.Xaml.h>
+#include <winrt/Windows.Data.Json.h>
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.UI.h>
 
@@ -66,7 +67,7 @@ struct CustomThemeConfig {
 };
 
 // Theme types supported by the application
-enum class ThemeType { System, Light, Dark, Custom1, Custom2 };
+enum class ThemeType { System, Light, Dark, StarrySky, BlackSoulsLeaf };
 
 // Singleton service for managing application themes
 class ThemeService {
@@ -125,6 +126,12 @@ public:
   // Get the navigation pane opacity
   double GetNavPaneOpacity() const;
 
+  // Get the saved main window size in DIPs, if the user has resized it.
+  bool TryGetSavedWindowSize(double &widthDip, double &heightDip) const;
+
+  // Update the saved main window size in DIPs.
+  void SetSavedWindowSize(double widthDip, double heightDip);
+
   // Check if custom theme is currently active
   bool IsCustomThemeActive() const;
 
@@ -137,8 +144,15 @@ public:
   // Save theme settings to local storage
   winrt::Windows::Foundation::IAsyncAction SaveSettingsAsync();
 
+  // Save settings synchronously for shutdown paths.
+  void SaveSettings();
+
   // Load theme settings from local storage
   winrt::Windows::Foundation::IAsyncAction LoadSettingsAsync();
+
+  // Load settings synchronously for startup decisions that must happen before
+  // the first window is shown.
+  void LoadSettings();
 
 private:
   ThemeService();
@@ -152,11 +166,16 @@ private:
   CreateColorBrush(ColorConfig const &config) const;
   void ClearCachedBrushes();
   bool IsCustomThemeActiveInternal() const;
+  void ApplyLoadedSettings(winrt::Windows::Data::Json::JsonObject const &json);
+  winrt::Windows::Data::Json::JsonObject CreateSettingsJson() const;
 
   mutable std::mutex m_mutex;
   ThemeType m_currentTheme = ThemeType::System;
   CustomThemeConfig m_customConfig1; // Custom theme slot 1
   CustomThemeConfig m_customConfig2; // Custom theme slot 2
+  bool m_hasSavedWindowSize = false;
+  double m_savedWindowWidthDip = 0.0;
+  double m_savedWindowHeightDip = 0.0;
   winrt::Microsoft::UI::Xaml::FrameworkElement m_rootElement{nullptr};
 
   std::map<uint32_t, ThemeChangedCallback> m_subscribers;

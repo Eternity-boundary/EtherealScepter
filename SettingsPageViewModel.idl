@@ -4,7 +4,7 @@
 runtimeclass SettingsPageViewModel : Microsoft.UI.Xaml.Data.INotifyPropertyChanged {
   SettingsPageViewModel();
 
-  // Theme selection (0=System, 1=Light, 2=Dark, 3=Custom1, 4=Custom2)
+  // Theme selection (0=System, 1=Light, 2=Dark, 3=StarrySky, 4=BlackSoulsLeaf)
   Int32 SelectedThemeIndex;
 
   // Current custom theme slot being edited (1 or 2)

@@ -96,11 +96,11 @@ void RegisterSystemDefaultThemes() {
 }
 
 void ApplyDefaultDarkTheme() {
-  ThemeService::Instance().SetTheme(ThemeType::Custom1);
+  ThemeService::Instance().SetTheme(ThemeType::StarrySky);
 }
 
 void ApplyDefaultLightTheme() {
-  ThemeService::Instance().SetTheme(ThemeType::Custom2);
+  ThemeService::Instance().SetTheme(ThemeType::BlackSoulsLeaf);
 }
 
 } // namespace EtherealScepter::Views::Theme

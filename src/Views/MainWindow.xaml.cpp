@@ -5,6 +5,9 @@
 #if __has_include("MainWindow.g.cpp")
 #include "MainWindow.g.cpp"
 #endif
+#include <algorithm>
+#include <cmath>
+
 #include <microsoft.ui.xaml.window.h>
 #include <winrt/Microsoft.UI.Interop.h>
 #include <winrt/Microsoft.UI.Windowing.h>
@@ -48,31 +51,96 @@ void SetTitleBarIcon(winrt::Microsoft::UI::Xaml::Window const &window) {
   appWindow.SetIcon(iconPath);
 }
 
-static void SetFixedWindowSize(winrt::Microsoft::UI::Xaml::Window const &window,
-                               int width, int height) {
+static UINT GetWindowDpi(HWND hwnd) {
+  UINT dpi = GetDpiForWindow(hwnd);
+  return dpi == 0 ? 96 : dpi;
+}
+
+static int ScaleDipToPixel(double value, UINT dpi) {
+  return std::max(1, static_cast<int>(std::lround(value * dpi / 96.0)));
+}
+
+static double ScalePixelToDip(int value, UINT dpi) {
+  return static_cast<double>(value) * 96.0 / dpi;
+}
+
+static Windows::Graphics::SizeInt32 GetStartupWindowSize(HWND hwnd) {
+  constexpr double kPreferredWidthDip = 1200.0;
+  constexpr double kPreferredHeightDip = 760.0;
+  constexpr double kMinimumStartupWidthDip = 900.0;
+  constexpr double kMinimumStartupHeightDip = 560.0;
+  constexpr double kMinimumSavedStartupWidthDip = 640.0;
+  constexpr double kMinimumSavedStartupHeightDip = 420.0;
+
+  UINT dpi = GetWindowDpi(hwnd);
+  double preferredWidthDip = kPreferredWidthDip;
+  double preferredHeightDip = kPreferredHeightDip;
+  bool hasSavedWindowSize = Services::ThemeService::Instance()
+                                .TryGetSavedWindowSize(preferredWidthDip,
+                                                       preferredHeightDip);
+
+  int preferredWidth = ScaleDipToPixel(preferredWidthDip, dpi);
+  int preferredHeight = ScaleDipToPixel(preferredHeightDip, dpi);
+
+  HMONITOR monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+  MONITORINFO monitorInfo{sizeof(MONITORINFO)};
+  if (GetMonitorInfo(monitor, &monitorInfo)) {
+    int workWidth = monitorInfo.rcWork.right - monitorInfo.rcWork.left;
+    int workHeight = monitorInfo.rcWork.bottom - monitorInfo.rcWork.top;
+
+    // 保留一點桌面邊界，同時避免小螢幕或高 DPI 環境中視窗超出工作區。
+    int maxWidth = std::max(1, MulDiv(workWidth, 92, 100));
+    int maxHeight = std::max(1, MulDiv(workHeight, 92, 100));
+    double minimumWidthDip = hasSavedWindowSize ? kMinimumSavedStartupWidthDip
+                                                : kMinimumStartupWidthDip;
+    double minimumHeightDip = hasSavedWindowSize ? kMinimumSavedStartupHeightDip
+                                                 : kMinimumStartupHeightDip;
+    int minWidth = std::min(maxWidth, ScaleDipToPixel(minimumWidthDip, dpi));
+    int minHeight = std::min(maxHeight, ScaleDipToPixel(minimumHeightDip, dpi));
+
+    preferredWidth = std::clamp(preferredWidth, minWidth, maxWidth);
+    preferredHeight = std::clamp(preferredHeight, minHeight, maxHeight);
+  }
+
+  return Windows::Graphics::SizeInt32{preferredWidth, preferredHeight};
+}
+
+static void ConfigureStartupWindow(
+    winrt::Microsoft::UI::Xaml::Window const &window) {
   HWND hwnd = GetHwnd(window);
 
   auto windowId = Microsoft::UI::GetWindowIdFromWindow(hwnd);
   auto appWindow =
       Microsoft::UI::Windowing::AppWindow::GetFromWindowId(windowId);
 
-  // 設置固定視窗大小
-  Windows::Graphics::SizeInt32 size{width, height};
-  appWindow.Resize(size);
+  auto size = GetStartupWindowSize(hwnd);
+  HMONITOR monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+  MONITORINFO monitorInfo{sizeof(MONITORINFO)};
+  if (GetMonitorInfo(monitor, &monitorInfo)) {
+    int workWidth = monitorInfo.rcWork.right - monitorInfo.rcWork.left;
+    int workHeight = monitorInfo.rcWork.bottom - monitorInfo.rcWork.top;
+    int x = monitorInfo.rcWork.left + (workWidth - size.Width) / 2;
+    int y = monitorInfo.rcWork.top + (workHeight - size.Height) / 2;
+    appWindow.MoveAndResize(Windows::Graphics::RectInt32{x, y, size.Width,
+                                                         size.Height});
+  } else {
+    appWindow.Resize(size);
+  }
 
-  // 獲取 OverlappedPresenter 並禁用調整大小和最大化
-  auto presenter =
-      appWindow.Presenter().as<Microsoft::UI::Windowing::OverlappedPresenter>();
-  presenter.IsResizable(false);
-  presenter.IsMaximizable(false);
+  if (auto presenter = appWindow.Presenter().try_as<OverlappedPresenter>()) {
+    presenter.IsResizable(true);
+    presenter.IsMaximizable(true);
+  }
 }
 
 namespace winrt::EtherealScepter::implementation {
 
 MainWindow::MainWindow() {
   InitializeComponent();
+  Services::ThemeService::Instance().LoadSettings();
   SetTitleBarIcon(*this);
-  SetFixedWindowSize(*this, 1640, 900);
+  ConfigureStartupWindow(*this);
+  InitializeWindowSizePersistence();
 
   // Initialize theme service
   InitializeTheme();
@@ -82,10 +150,88 @@ MainWindow::MainWindow() {
 }
 
 MainWindow::~MainWindow() {
+  if (m_saveWindowSizeTimer) {
+    m_saveWindowSizeTimer.Stop();
+  }
+
+  SaveCurrentWindowSize();
+
+  if (m_hasWindowChangedSubscription && m_appWindow) {
+    m_appWindow.Changed(m_windowChangedToken);
+    m_hasWindowChangedSubscription = false;
+  }
+
   if (m_themeSubscriptionId != 0) {
     Services::ThemeService::Instance().Unsubscribe(m_themeSubscriptionId);
     m_themeSubscriptionId = 0;
   }
+}
+
+void MainWindow::InitializeWindowSizePersistence() {
+  HWND hwnd = GetHwnd(*this);
+  auto windowId = Microsoft::UI::GetWindowIdFromWindow(hwnd);
+  m_appWindow = Microsoft::UI::Windowing::AppWindow::GetFromWindowId(windowId);
+
+  auto dispatcherQueue = DispatcherQueue();
+  if (dispatcherQueue) {
+    m_saveWindowSizeTimer = dispatcherQueue.CreateTimer();
+    m_saveWindowSizeTimer.Interval(std::chrono::milliseconds(500));
+    m_saveWindowSizeTimer.Tick(
+        [weak_this = get_weak()](auto const &, auto const &) {
+          if (auto strong_this = weak_this.get()) {
+            strong_this->m_saveWindowSizeTimer.Stop();
+            strong_this->SaveCurrentWindowSize();
+          }
+        });
+  }
+
+  m_windowChangedToken = m_appWindow.Changed(
+      {this, &MainWindow::OnWindowChanged});
+  m_hasWindowChangedSubscription = true;
+}
+
+void MainWindow::OnWindowChanged(
+    Microsoft::UI::Windowing::AppWindow const &sender,
+    Microsoft::UI::Windowing::AppWindowChangedEventArgs const &args) {
+  if (!args.DidSizeChange()) {
+    return;
+  }
+
+  if (auto presenter = sender.Presenter().try_as<OverlappedPresenter>()) {
+    if (presenter.State() != OverlappedPresenterState::Restored) {
+      return;
+    }
+  }
+
+  if (m_saveWindowSizeTimer) {
+    m_saveWindowSizeTimer.Stop();
+    m_saveWindowSizeTimer.Start();
+  } else {
+    SaveCurrentWindowSize();
+  }
+}
+
+void MainWindow::SaveCurrentWindowSize() {
+  if (!m_appWindow) {
+    return;
+  }
+
+  if (auto presenter = m_appWindow.Presenter().try_as<OverlappedPresenter>()) {
+    if (presenter.State() != OverlappedPresenterState::Restored) {
+      return;
+    }
+  }
+
+  auto size = m_appWindow.Size();
+  if (size.Width <= 0 || size.Height <= 0) {
+    return;
+  }
+
+  UINT dpi = GetWindowDpi(GetHwnd(*this));
+  auto &themeService = Services::ThemeService::Instance();
+  themeService.SetSavedWindowSize(ScalePixelToDip(size.Width, dpi),
+                                  ScalePixelToDip(size.Height, dpi));
+  themeService.SaveSettings();
 }
 
 void MainWindow::InitializeTheme() {
@@ -105,8 +251,6 @@ void MainWindow::InitializeTheme() {
         }
       });
 
-  // Load saved settings and apply
-  themeService.LoadSettingsAsync();
   ApplyThemeVisuals();
 }
 
@@ -149,8 +293,8 @@ void MainWindow::ApplyThemeVisuals() {
   case Services::ThemeType::Dark:
     elementTheme = ElementTheme::Dark;
     break;
-  case Services::ThemeType::Custom1:
-  case Services::ThemeType::Custom2:
+  case Services::ThemeType::StarrySky:
+  case Services::ThemeType::BlackSoulsLeaf:
     elementTheme = themeService.GetActiveCustomThemeConfig().baseTheme;
     break;
   }
